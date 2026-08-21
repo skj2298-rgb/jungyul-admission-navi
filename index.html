@@ -116,6 +116,8 @@ tbody tr:hover{background:#fafbff}
 .exam-list{display:grid;gap:8px;margin-top:12px}
 .exam-row{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
 .exam-title{font-weight:850}.exam-meta{font-size:11px;color:var(--muted);margin-top:4px}
+.official-score-fields{margin:14px 0 0;background:#f8f9ff;border-color:#dfe3ff}
+.inquiry-score-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.inquiry-score-card{border:1px solid var(--line);border-radius:12px;padding:11px;background:#fff}.inquiry-score-card>b{display:block;font-size:12px;margin-bottom:8px}.form-row.compact{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .mode-banner{padding:11px 12px;border-radius:12px;background:#eef2ff;border:1px solid #dfe3ff;color:#3730a3;font-size:11px;line-height:1.5;margin-bottom:12px}
 .mode-banner.school{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}
 .score-section-label{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:900;color:#667085;margin:12px 0 8px}
@@ -124,7 +126,7 @@ tbody tr:hover{background:#fafbff}
 .footer{padding:28px 0 12px;text-align:center;color:#98a2b3;font-size:11px}
 @media(max-width:1220px){.split{grid-template-columns:360px minmax(0,1fr)}.score-grid{grid-template-columns:1fr}}
 @media(max-width:1050px){.grid.cols-4{grid-template-columns:repeat(2,1fr)}.split,.score-entry-grid{grid-template-columns:1fr}.sticky{position:static}.hero{grid-template-columns:1fr}.result-card{grid-template-columns:1fr 90px 90px}.result-card .delta{display:none}.top-nav{overflow:auto}.brand{min-width:200px}}
-@media(max-width:720px){.app-header{padding:0 12px}.brand{min-width:auto}.brand div:last-child{display:none}.header-actions{display:none}.shell{padding:16px}.grid.cols-4,.grid.cols-2{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.result-card{grid-template-columns:1fr 85px}.result-card .cutoff{display:none}.score-grid,.form-row,.goal-cards,.detail-years,.kpi-strip,.rule-detail-head,.official-gate-grid{grid-template-columns:1fr}.audit-banner{align-items:flex-start;flex-direction:column}.top-nav{margin-left:12px}.nav-btn{white-space:nowrap}}
+@media(max-width:720px){.app-header{padding:0 12px}.brand{min-width:auto}.brand div:last-child{display:none}.header-actions{display:none}.shell{padding:16px}.grid.cols-4,.grid.cols-2{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.result-card{grid-template-columns:1fr 85px}.result-card .cutoff{display:none}.score-grid,.form-row,.form-row.compact,.inquiry-score-grid,.goal-cards,.detail-years,.kpi-strip,.rule-detail-head,.official-gate-grid{grid-template-columns:1fr}.audit-banner{align-items:flex-start;flex-direction:column}.top-nav{margin-left:12px}.nav-btn{white-space:nowrap}}
 </style>
 </head>
 <body>
@@ -225,6 +227,36 @@ tbody tr:hover{background:#fafbff}
           <div class="form-group"><label>수학 백분위</label><input id="mockMat" class="input" type="number" min="0" max="100"></div>
           <div class="form-group"><label>영어 등급</label><input id="mockEng" class="input" type="number" min="1" max="9"></div>
           <div class="form-group"><label>탐구 평균 백분위</label><input id="mockInq" class="input" type="number" min="0" max="100"></div>
+        </div>
+        <div class="subsection official-score-fields">
+          <div class="subsection-title"><span>공식 환산용 세부 성적</span><span class="badge blue">성적표 원자료</span></div>
+          <div class="notice" style="margin-bottom:12px">성적표에 적힌 값만 입력하세요. 대학별 <b>탐구 변환표준점수는 직접 입력하지 않으며</b>, 공식 변환표가 등록된 뒤 과목명·표준점수·백분위로 자동 계산합니다.</div>
+          <div class="form-row">
+            <div class="form-group"><label>국어 표준점수</label><input id="mockKorStandard" class="input" type="number" min="1" max="300"></div>
+            <div class="form-group"><label>수학 표준점수</label><input id="mockMatStandard" class="input" type="number" min="1" max="300"></div>
+            <div class="form-group"><label>수학 선택과목</label><select id="mockMathSelection" class="select"><option value="">선택 안 함</option><option>확률과통계</option><option>미적분</option><option>기하</option></select></div>
+            <div class="form-group"><label>한국사 등급</label><input id="mockHistoryGrade" class="input" type="number" min="1" max="9"></div>
+          </div>
+          <div class="inquiry-score-grid">
+            <div class="inquiry-score-card">
+              <b>탐구 1</b>
+              <div class="form-row compact">
+                <div class="form-group"><label>과목명</label><input id="mockInq1Name" class="input" placeholder="예: 생활과 윤리"></div>
+                <div class="form-group"><label>계열</label><select id="mockInq1Category" class="select"><option value="">선택 안 함</option><option>사회탐구</option><option>과학탐구</option><option>직업탐구</option></select></div>
+                <div class="form-group"><label>표준점수</label><input id="mockInq1Standard" class="input" type="number" min="1" max="300"></div>
+                <div class="form-group"><label>백분위</label><input id="mockInq1Percentile" class="input" type="number" min="0" max="100"></div>
+              </div>
+            </div>
+            <div class="inquiry-score-card">
+              <b>탐구 2</b>
+              <div class="form-row compact">
+                <div class="form-group"><label>과목명</label><input id="mockInq2Name" class="input" placeholder="예: 사회·문화"></div>
+                <div class="form-group"><label>계열</label><select id="mockInq2Category" class="select"><option value="">선택 안 함</option><option>사회탐구</option><option>과학탐구</option><option>직업탐구</option></select></div>
+                <div class="form-group"><label>표준점수</label><input id="mockInq2Standard" class="input" type="number" min="1" max="300"></div>
+                <div class="form-group"><label>백분위</label><input id="mockInq2Percentile" class="input" type="number" min="0" max="100"></div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="data-actions">
           <button class="btn primary" onclick="saveMockScore()">모의고사 저장</button>
@@ -530,8 +562,19 @@ function normalizeStudent(s){
   if(!s.mockScores.length && [s.kor,s.mat,s.eng,s.inq].some(v=>v!==undefined)){
     s.mockScores.push({id:Date.now()+Math.floor(Math.random()*100000),year:2026,exam:'기존 입력값',kor:+s.kor||0,mat:+s.mat||0,eng:+s.eng||9,inq:+s.inq||0,representative:true});
   }
+  s.mockScores=s.mockScores.map(normalizeMockScore);
   if(s.mockScores.length && !s.mockScores.some(m=>m.representative)) s.mockScores[0].representative=true;
   return s;
+}
+function optionalNumber(value){return String(value??'').trim()===''?null:Number(value)}
+function normalizeMockScore(m){
+  const subjects=Array.isArray(m.inquirySubjects)?m.inquirySubjects:[];
+  m.korStandard=optionalNumber(m.korStandard);
+  m.matStandard=optionalNumber(m.matStandard);
+  m.mathSelection=String(m.mathSelection||'');
+  m.koreanHistoryGrade=optionalNumber(m.koreanHistoryGrade);
+  m.inquirySubjects=[0,1].map(index=>{const item=subjects[index]||{};return{name:String(item.name||''),category:String(item.category||''),standardScore:optionalNumber(item.standardScore),percentile:optionalNumber(item.percentile)}});
+  return m;
 }
 function normalizeUniversity(u){
   if(!u.schoolYears){
@@ -677,11 +720,25 @@ function saveSchoolGrades(){
   if(Object.values(vals).some(v=>v!==null&&(v<1||v>9))){alert('교과 등급은 1~9 사이로 입력하세요.');return}
   s.schoolGrades=vals;persist();renderStudents();renderDashboard();renderScoreInput();renderSimStudentOptions();alert('교과 성적을 저장했습니다.');
 }
-function clearMockForm(){mockEditId.value='';mockYear.value=2026;mockExam.value='6월 평가원';mockKor.value='';mockMat.value='';mockEng.value='';mockInq.value=''}
+function clearMockForm(){
+  mockEditId.value='';mockYear.value=2026;mockExam.value='6월 평가원';mockKor.value='';mockMat.value='';mockEng.value='';mockInq.value='';
+  mockKorStandard.value='';mockMatStandard.value='';mockMathSelection.value='';mockHistoryGrade.value='';
+  ['mockInq1Name','mockInq1Category','mockInq1Standard','mockInq1Percentile','mockInq2Name','mockInq2Category','mockInq2Standard','mockInq2Percentile'].forEach(id=>document.getElementById(id).value='');
+}
 function saveMockScore(){
   const s=currentScoreStudent();if(!s)return;
-  const m={id:+mockEditId.value||Date.now(),year:+mockYear.value||2026,exam:mockExam.value,kor:+mockKor.value,mat:+mockMat.value,eng:+mockEng.value,inq:+mockInq.value,representative:false};
+  const m=normalizeMockScore({id:+mockEditId.value||Date.now(),year:+mockYear.value||2026,exam:mockExam.value,kor:+mockKor.value,mat:+mockMat.value,eng:+mockEng.value,inq:+mockInq.value,representative:false,
+    korStandard:optionalNumber(mockKorStandard.value),matStandard:optionalNumber(mockMatStandard.value),mathSelection:mockMathSelection.value,koreanHistoryGrade:optionalNumber(mockHistoryGrade.value),
+    inquirySubjects:[
+      {name:mockInq1Name.value.trim(),category:mockInq1Category.value,standardScore:optionalNumber(mockInq1Standard.value),percentile:optionalNumber(mockInq1Percentile.value)},
+      {name:mockInq2Name.value.trim(),category:mockInq2Category.value,standardScore:optionalNumber(mockInq2Standard.value),percentile:optionalNumber(mockInq2Percentile.value)}
+    ]});
   if(m.kor<0||m.kor>100||m.mat<0||m.mat>100||m.inq<0||m.inq>100||m.eng<1||m.eng>9){alert('모의고사 성적 범위를 확인하세요.');return}
+  const standardScores=[m.korStandard,m.matStandard,...m.inquirySubjects.map(item=>item.standardScore)].filter(value=>value!==null);
+  const inquiryPercentiles=m.inquirySubjects.map(item=>item.percentile).filter(value=>value!==null);
+  if(standardScores.some(value=>!Number.isFinite(value)||value<1||value>300)){alert('표준점수는 1~300 범위에서 입력하세요.');return}
+  if(inquiryPercentiles.some(value=>!Number.isFinite(value)||value<0||value>100)){alert('탐구 백분위는 0~100 범위에서 입력하세요.');return}
+  if(m.koreanHistoryGrade!==null&&(!Number.isFinite(m.koreanHistoryGrade)||m.koreanHistoryGrade<1||m.koreanHistoryGrade>9)){alert('한국사 등급은 1~9 사이로 입력하세요.');return}
   const idx=s.mockScores.findIndex(x=>x.id===m.id);
   if(idx>=0){m.representative=s.mockScores[idx].representative;s.mockScores[idx]=m}
   else{s.mockScores.forEach(x=>x.representative=false);m.representative=true;s.mockScores.unshift(m)}
@@ -690,14 +747,16 @@ function saveMockScore(){
 function renderMockList(){
   const s=currentScoreStudent();const el=document.getElementById('mockScoreList');if(!el||!s)return;
   const list=[...(s.mockScores||[])].sort((a,b)=>(b.year||0)-(a.year||0)||b.id-a.id);
-  el.innerHTML=list.map(m=>`<div class="exam-row"><div><div class="exam-title">${m.year||''} ${m.exam} ${m.representative?'<span class="badge green" style="margin-left:6px">대표</span>':''}</div><div class="exam-meta">국 ${m.kor} · 수 ${m.mat} · 영 ${m.eng}등급 · 탐 ${m.inq}</div></div><div class="row-actions"><button class="small-btn" onclick="setRepresentativeMock(${m.id})">대표 지정</button><button class="small-btn" onclick="editMockScore(${m.id})">수정</button><button class="small-btn" onclick="deleteMockScore(${m.id})">삭제</button></div></div>`).join('')||'<div class="empty">저장된 모의고사 성적이 없습니다.</div>';
+  el.innerHTML=list.map(raw=>{const m=normalizeMockScore(raw),subjects=m.inquirySubjects.filter(item=>item.name||item.category||item.standardScore!==null||item.percentile!==null);return `<div class="exam-row"><div><div class="exam-title">${m.year||''} ${escapeHTML(m.exam)} ${m.representative?'<span class="badge green" style="margin-left:6px">대표</span>':''}</div><div class="exam-meta">백분위 국 ${m.kor} · 수 ${m.mat} · 영 ${m.eng}등급 · 탐 ${m.inq}</div><div class="exam-meta">표준점수 국 ${m.korStandard??'-'} · 수 ${m.matStandard??'-'} · 수학 선택 ${escapeHTML(m.mathSelection||'-')} · 한국사 ${m.koreanHistoryGrade?m.koreanHistoryGrade+'등급':'-'}</div>${subjects.length?`<div class="exam-meta">${subjects.map((item,index)=>`탐구${index+1} ${escapeHTML(item.name||'-')} · ${escapeHTML(item.category||'-')} · 표준 ${item.standardScore??'-'} · 백분위 ${item.percentile??'-'}`).join('<br>')}</div>`:''}</div><div class="row-actions"><button class="small-btn" onclick="setRepresentativeMock(${m.id})">대표 지정</button><button class="small-btn" onclick="editMockScore(${m.id})">수정</button><button class="small-btn" onclick="deleteMockScore(${m.id})">삭제</button></div></div>`}).join('')||'<div class="empty">저장된 모의고사 성적이 없습니다.</div>';
 }
 function setRepresentativeMock(id){
   const s=currentScoreStudent();if(!s)return;s.mockScores.forEach(m=>m.representative=m.id===id);persist();renderMockList();renderStudents();renderSimStudentOptions();
 }
 function editMockScore(id){
-  const s=currentScoreStudent(),m=s?.mockScores.find(x=>x.id===id);if(!m)return;
+  const s=currentScoreStudent(),raw=s?.mockScores.find(x=>x.id===id);if(!raw)return;const m=normalizeMockScore(raw);
   mockEditId.value=m.id;mockYear.value=m.year||2026;mockExam.value=m.exam;mockKor.value=m.kor;mockMat.value=m.mat;mockEng.value=m.eng;mockInq.value=m.inq;
+  mockKorStandard.value=m.korStandard??'';mockMatStandard.value=m.matStandard??'';mockMathSelection.value=m.mathSelection||'';mockHistoryGrade.value=m.koreanHistoryGrade??'';
+  m.inquirySubjects.forEach((item,index)=>{const n=index+1;document.getElementById(`mockInq${n}Name`).value=item.name;document.getElementById(`mockInq${n}Category`).value=item.category;document.getElementById(`mockInq${n}Standard`).value=item.standardScore??'';document.getElementById(`mockInq${n}Percentile`).value=item.percentile??''});
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function deleteMockScore(id){
@@ -839,8 +898,15 @@ function officialScoreRequirements(rule){
       if(subject==='inquiry'&&Number(config.count)===2)addScoreRequirement(requirements,{key:'inquiryStandardScores',label:'탐구 2과목 표준점수',count:2});
       else addScoreRequirement(requirements,{key:`${subject}StandardScore`,label:`${label} 표준점수`});
     }
-    if(config.metric==='converted-standard-score')addScoreRequirement(requirements,{key:'inquiryConvertedScores',label:`탐구 ${Number(config.count)||2}과목 변환표준점수`,count:Number(config.count)||2});
-    if(config.metric==='percentile')addScoreRequirement(requirements,{key:`${subject}Percentile`,label:`${label} 백분위`});
+    if(config.metric==='converted-standard-score'){
+      const count=Number(config.count)||2;
+      addScoreRequirement(requirements,{key:'inquirySubjectNames',label:`탐구 ${count}과목 과목명`,count,numeric:false});
+      addScoreRequirement(requirements,{key:'inquiryStandardScores',label:`탐구 ${count}과목 표준점수`,count});
+    }
+    if(config.metric==='percentile'){
+      if(subject==='inquiry'&&Number(config.count)>1)addScoreRequirement(requirements,{key:'inquiryPercentiles',label:`탐구 ${Number(config.count)}과목 백분위`,count:Number(config.count)});
+      else addScoreRequirement(requirements,{key:`${subject}Percentile`,label:`${label} 백분위`});
+    }
     if(config.metric==='raw-score')addScoreRequirement(requirements,{key:`${subject}RawScore`,label:`${label} 원점수`});
     if(config.metric==='grade-table')addScoreRequirement(requirements,{key:subject==='koreanHistory'?'koreanHistoryGrade':`${subject}Grade`,label:`${label} 등급`});
   });
@@ -854,7 +920,10 @@ function currentOfficialScoreRecord(){
   const student=students.find(item=>String(item.id)===document.getElementById('simStudent')?.value)||students[0];
   const mock=student?.mockScores?.find(item=>String(item.id)===document.getElementById('simMockRecord')?.value)||representativeMock(student)||{};
   const sim=document.getElementById('simKor')?{kor:+document.getElementById('simKor').value,mat:+document.getElementById('simMat').value,eng:+document.getElementById('simEng').value,inq:+document.getElementById('simInq').value}:{kor:mock.kor,mat:mock.mat,eng:mock.eng,inq:mock.inq};
-  return {...mock,koreanPercentile:sim.kor,mathPercentile:sim.mat,englishGrade:sim.eng,inquiryPercentile:sim.inq};
+  const subjects=normalizeMockScore(mock).inquirySubjects;
+  return {...mock,koreanPercentile:sim.kor,mathPercentile:sim.mat,englishGrade:sim.eng,inquiryPercentile:sim.inq,
+    koreanStandardScore:mock.korStandard,mathStandardScore:mock.matStandard,mathSelection:mock.mathSelection,koreanHistoryGrade:mock.koreanHistoryGrade,
+    inquirySubjectNames:subjects.map(item=>item.name),inquiryCategories:subjects.map(item=>item.category),inquiryStandardScores:subjects.map(item=>item.standardScore),inquiryPercentiles:subjects.map(item=>item.percentile)};
 }
 function hasOfficialScoreValue(record,requirement){
   const value=record?.[requirement.key];
@@ -1421,8 +1490,8 @@ function importUniversityCSV(e){
 }
 
 function exportStudentsCSV(){
-  const header=['이름','학교','학년','계열','교과평균','교과국어','교과수학','교과영어','교과탐구','대표모고','모고국어','모고수학','모고영어','모고탐구','희망대학'];
-  const rows=students.map(s=>{const m=representativeMock(s),g=s.schoolGrades||{};return[s.name,s.school,s.grade,s.track,schoolAverage(s)||'',g.kor||'',g.mat||'',g.eng||'',g.inq||'',m?(m.year+' '+m.exam):'',m?.kor||'',m?.mat||'',m?.eng||'',m?.inq||'',s.target]});
+  const header=['이름','학교','학년','계열','교과평균','교과국어','교과수학','교과영어','교과탐구','대표모고','모고국어백분위','모고수학백분위','모고영어등급','모고탐구평균백분위','국어표준점수','수학표준점수','수학선택과목','한국사등급','탐구1과목','탐구1계열','탐구1표준점수','탐구1백분위','탐구2과목','탐구2계열','탐구2표준점수','탐구2백분위','희망대학'];
+  const rows=students.map(s=>{const raw=representativeMock(s),m=raw?normalizeMockScore(raw):null,g=s.schoolGrades||{},i1=m?.inquirySubjects?.[0]||{},i2=m?.inquirySubjects?.[1]||{};return[s.name,s.school,s.grade,s.track,schoolAverage(s)||'',g.kor||'',g.mat||'',g.eng||'',g.inq||'',m?(m.year+' '+m.exam):'',m?.kor??'',m?.mat??'',m?.eng??'',m?.inq??'',m?.korStandard??'',m?.matStandard??'',m?.mathSelection||'',m?.koreanHistoryGrade??'',i1.name||'',i1.category||'',i1.standardScore??'',i1.percentile??'',i2.name||'',i2.category||'',i2.standardScore??'',i2.percentile??'',s.target]});
   downloadText('\ufeff'+[header,...rows].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n'),'students.csv','text/csv;charset=utf-8');
 }
 function exportJSON(){downloadText(JSON.stringify({version:'0.3',students,universities,admissionRulePacks,admissionRuleArchive},null,2),'jungyul_admission_data.json','application/json')}
@@ -1437,7 +1506,7 @@ function importJSON(e){
   }catch(err){alert('올바른 데이터 파일이 아닙니다: '+(err.message||'형식을 확인하세요.'))}};r.readAsText(f);e.target.value='';
 }
 function downloadText(text,name,type){const blob=new Blob([text],{type}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
-function resetData(){if(confirm('학생·기존 대학 DB를 샘플로 초기화할까요? 불러온 대학별 환산 규칙 파일은 유지됩니다.')){students=structuredClone(SAMPLE_STUDENTS);universities=structuredClone(SAMPLE_UNIS);persist();renderAll()}}
+function resetData(){if(confirm('학생·기존 대학 DB를 샘플로 초기화할까요? 불러온 대학별 환산 규칙 파일은 유지됩니다.')){students=structuredClone(SAMPLE_STUDENTS).map(normalizeStudent);universities=structuredClone(SAMPLE_UNIS);persist();renderAll()}}
 function renderAll(){renderDashboard();renderStudents();renderScoreStudentOptions();renderUniversities();renderSimStudentOptions();renderRulePacks();if(document.getElementById('simType'))changeSimType();if(document.getElementById('scoreStudentSelect'))renderScoreInput()}
 renderAll();
 </script>
