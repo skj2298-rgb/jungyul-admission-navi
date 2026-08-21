@@ -98,6 +98,13 @@ tbody tr:hover{background:#fafbff}
 .rule-mini{font-size:11px;line-height:1.55;color:#667085;margin-top:5px}
 .rule-quota-panel{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
 .rule-table-actions{display:flex;gap:6px;flex-wrap:wrap}
+.audit-banner{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;padding:12px 14px;border:1px solid #dfe3ff;background:#f8f9ff;border-radius:12px}
+.audit-banner p{margin:0;font-size:12px;line-height:1.55;color:#4b5563}.audit-banner .data-actions{flex:0 0 auto}
+.audit-issues{display:grid;gap:8px;margin-top:10px}
+.audit-issue{display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:start;border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff}
+.audit-issue b{display:block;font-size:12px}.audit-issue div:last-child div{font-size:11px;color:#667085;margin-top:3px;line-height:1.5}
+.audit-pass{background:#ecfdf5;border:1px solid #bbf7d0;color:#065f46;border-radius:12px;padding:12px 14px;font-size:12px;line-height:1.55}
+.import-report{display:none;margin-top:12px}.import-report.show{display:block}
 .score-entry-grid{display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:start}
 .score-entry-card{min-width:0}
 .subsection{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fbfcff;margin-top:12px}
@@ -113,7 +120,7 @@ tbody tr:hover{background:#fafbff}
 .footer{padding:28px 0 12px;text-align:center;color:#98a2b3;font-size:11px}
 @media(max-width:1220px){.split{grid-template-columns:360px minmax(0,1fr)}.score-grid{grid-template-columns:1fr}}
 @media(max-width:1050px){.grid.cols-4{grid-template-columns:repeat(2,1fr)}.split,.score-entry-grid{grid-template-columns:1fr}.sticky{position:static}.hero{grid-template-columns:1fr}.result-card{grid-template-columns:1fr 90px 90px}.result-card .delta{display:none}.top-nav{overflow:auto}.brand{min-width:200px}}
-@media(max-width:720px){.app-header{padding:0 12px}.brand{min-width:auto}.brand div:last-child{display:none}.header-actions{display:none}.shell{padding:16px}.grid.cols-4,.grid.cols-2{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.result-card{grid-template-columns:1fr 85px}.result-card .cutoff{display:none}.score-grid,.form-row,.goal-cards,.detail-years,.kpi-strip,.rule-detail-head{grid-template-columns:1fr}.top-nav{margin-left:12px}.nav-btn{white-space:nowrap}}
+@media(max-width:720px){.app-header{padding:0 12px}.brand{min-width:auto}.brand div:last-child{display:none}.header-actions{display:none}.shell{padding:16px}.grid.cols-4,.grid.cols-2{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.result-card{grid-template-columns:1fr 85px}.result-card .cutoff{display:none}.score-grid,.form-row,.goal-cards,.detail-years,.kpi-strip,.rule-detail-head{grid-template-columns:1fr}.audit-banner{align-items:flex-start;flex-direction:column}.top-nav{margin-left:12px}.nav-btn{white-space:nowrap}}
 </style>
 </head>
 <body>
@@ -332,9 +339,14 @@ tbody tr:hover{background:#fafbff}
         <label class="btn primary file-label">통합 규칙 파일 불러오기<input id="rulePackImport" type="file" accept=".json,application/json" multiple hidden onchange="importRulePackFiles(event)"></label>
       </div>
       <div class="notice" style="margin-top:12px">불러오기 전에 파일 구조와 필수값을 자동 검사합니다. 같은 대학·학년 파일을 다시 올리면 확인 후 새 버전으로 교체하고 기존 버전은 백업 안에 보관합니다. 검수완료 전 데이터는 추후 실제 환산 계산에 사용하지 않습니다.</div>
+      <div class="audit-banner">
+        <p><b>자동 검수 센터</b><br>누락 항목, 수시 모집인원 합계, 정시 계산 가능 여부를 대학별로 다시 확인합니다.</p>
+        <div class="data-actions"><span id="ruleAuditLastRun" class="muted" style="font-size:11px">화면을 열 때 자동검수</span><button class="btn soft" onclick="runAllRulePackAudits()">전체 파일 다시 검수</button></div>
+      </div>
+      <div id="ruleImportReport" class="import-report"></div>
       <div id="rulePackSummary" class="rule-summary"></div>
       <div class="table-wrap"><table>
-        <thead><tr><th>대학</th><th>학년도</th><th>자료 상태</th><th>검수 상태</th><th>계산 준비</th><th>공식 자료</th><th>등록일</th><th>파일</th></tr></thead>
+        <thead><tr><th>대학</th><th>학년도</th><th>자료 상태</th><th>자동검수</th><th>계산 준비</th><th>공식 자료</th><th>등록일</th><th>관리</th></tr></thead>
         <tbody id="rulePackTbody"></tbody>
       </table></div>
     </div>
@@ -345,7 +357,7 @@ tbody tr:hover{background:#fafbff}
         <tbody>
           <tr><td>01</td><td>학생 성적 DB</td><td><span class="badge green">교과+모고 구현</span></td><td>대학별 실제 반영 항목 확정</td></tr>
           <tr><td>02</td><td>대학 3개년 입결·충원 DB</td><td><span class="badge blue">틀 구현</span></td><td>공식 데이터 입력</td></tr>
-          <tr><td>03</td><td>대학별 2027 수시·정시 통합 규칙</td><td><span class="badge green">구조·상세조회 구현</span></td><td>일반전형 중심 대학 추가·교차 검수</td></tr>
+          <tr><td>03</td><td>대학별 2027 수시·정시 통합 규칙</td><td><span class="badge green">상세조회·자동검수 구현</span></td><td>일반전형 중심 대학 파일 추가</td></tr>
           <tr><td>04</td><td>검수완료 규칙 계산기 연결</td><td><span class="badge amber">대기</span></td><td>정시 최종요강·탐구 변환표 발표 후 연결</td></tr>
           <tr><td>05</td><td>안정/적정/추합/소신 판정</td><td><span class="badge amber">샘플</span></td><td>판정 기준 확정</td></tr>
           <tr><td>06</td><td>목표 성적 자동 탐색</td><td><span class="badge green">기본 구현</span></td><td>검수완료 환산식으로 교체</td></tr>
@@ -424,6 +436,7 @@ tbody tr:hover{background:#fafbff}
     <div class="rule-tabs" role="tablist" aria-label="전형 구분">
       <button id="ruleTabEarly" class="rule-tab active" role="tab" onclick="setRulePackDetailTab('early')">수시 전형</button>
       <button id="ruleTabRegular" class="rule-tab" role="tab" onclick="setRulePackDetailTab('regular')">정시 반영</button>
+      <button id="ruleTabAudit" class="rule-tab" role="tab" onclick="setRulePackDetailTab('audit')">자동 검수</button>
     </div>
     <div id="rulePackDetailContent"></div>
   </div>
@@ -1023,18 +1036,27 @@ function downloadRulePackTemplate(){
 async function importRulePackFiles(event){
   const files=Array.from(event.target.files||[]);if(!files.length)return;
   try{
-    const incoming=[];
+    const incoming=[],reports=[];
     for(const file of files){
       let parsed;
-      try{parsed=JSON.parse(await file.text())}catch{throw new Error(`${file.name}: JSON 문법이 올바르지 않습니다.`)}
-      validateRulePack(parsed,file.name);
-      const pack=structuredClone(parsed);
-      pack._meta={...(pack._meta||{}),fileName:file.name,importedAt:new Date().toISOString()};
-      incoming.push(pack);
+      try{
+        try{parsed=JSON.parse(await file.text())}catch{throw new Error(`${file.name}: JSON 문법이 올바르지 않습니다.`)}
+        validateRulePack(parsed,file.name);
+        const pack=structuredClone(parsed);
+        pack._meta={...(pack._meta||{}),fileName:file.name,importedAt:new Date().toISOString()};
+        incoming.push(pack);reports.push({fileName:file.name,status:'accepted',message:'구조 검사 통과',pack});
+      }catch(err){reports.push({fileName:file.name,status:'rejected',message:err.message||'파일을 확인하세요.'});}
     }
-    const selectedKeys=incoming.map(rulePackKey);
-    if(new Set(selectedKeys).size!==selectedKeys.length)throw new Error('선택한 파일 안에 같은 대학·학년도 자료가 중복되어 있습니다.');
-    const duplicateCount=selectedKeys.filter(key=>admissionRulePacks.some(pack=>rulePackKey(pack)===key)).length;
+    lastRulePackImportReport=reports;renderRuleImportReport();
+    if(!incoming.length){alert(`선택한 ${files.length}개 파일을 저장하지 못했습니다. 최근 업로드 검사에서 누락 항목을 확인하세요.`);return;}
+    const selectedKeys=incoming.map(rulePackKey),seenKeys=new Set(),duplicateKeys=new Set();
+    selectedKeys.forEach(key=>{if(seenKeys.has(key))duplicateKeys.add(key);seenKeys.add(key)});
+    if(duplicateKeys.size){
+      incoming.slice().forEach(pack=>{if(!duplicateKeys.has(rulePackKey(pack)))return;const report=reports.find(item=>item.pack===pack);if(report){report.status='rejected';report.message='선택한 파일 안에 같은 대학·학년 자료가 중복되어 저장하지 않았습니다.';}incoming.splice(incoming.indexOf(pack),1)});
+      renderRuleImportReport();
+    }
+    if(!incoming.length){alert('선택한 파일에 같은 대학·학년도 자료가 중복되어 저장하지 않았습니다.');return;}
+    const duplicateCount=incoming.map(rulePackKey).filter(key=>admissionRulePacks.some(pack=>rulePackKey(pack)===key)).length;
     if(duplicateCount&&!confirm(`같은 대학·학년도 파일 ${duplicateCount}개가 이미 있습니다. 기존 버전을 보관하고 새 파일로 교체할까요?`))return;
     let added=0,replaced=0;
     incoming.forEach(pack=>{
@@ -1046,7 +1068,8 @@ async function importRulePackFiles(event){
     });
     admissionRulePacks.sort((a,b)=>b.academicYear-a.academicYear||a.university.name.localeCompare(b.university.name,'ko'));
     persist();renderRulePacks();renderDashboard();
-    alert(`수시·정시 통합 규칙 파일 검사가 완료되었습니다. 신규 ${added}개, 교체 ${replaced}개를 저장했습니다.`);
+    const rejected=reports.filter(report=>report.status==='rejected').length;
+    alert(`파일 검사가 완료되었습니다. 신규 ${added}개, 교체 ${replaced}개를 저장했고 오류 ${rejected}개는 저장하지 않았습니다.`);
   }catch(err){alert('통합 규칙 파일 불러오기 실패: '+(err.message||'파일을 확인하세요.'));}
   finally{event.target.value='';}
 }
@@ -1076,6 +1099,7 @@ const metricLabels={'standard-score':'표준점수',percentile:'백분위','conv
 let activeRulePackKey='';
 let activeRulePackTab='early';
 let activeQuotaAdmissionId='';
+let lastRulePackImportReport=[];
 
 function rulePackByKey(key){return admissionRulePacks.find(item=>rulePackKey(item)===key)}
 function isOutOfCurrentScopeAdmission(admission){
@@ -1100,11 +1124,66 @@ function getDepartmentQuotas(pack,admissionId){
   };
   return [...collect(quota.columns,quota.rows),...collect(quota.autonomousPeriodColumns,quota.autonomousPeriodRows)];
 }
-function showRulePackDetail(key){
+function auditAdmissionQuota(pack,admission){
+  const quotaTable=pack.sharedTables?.earlyDepartmentQuotas;
+  const rows=getDepartmentQuotas(pack,admission.admissionId);
+  const special=quotaTable?.specialSelections?.[admission.admissionId];
+  const actual=special?Object.values(special.trackTotals||{}).reduce((sum,value)=>sum+Number(value||0),0):rows.reduce((sum,row)=>sum+row.quota,0);
+  const expected=Number(admission.totalQuota||0),hasColumn=[...(quotaTable?.columns||[]),...(quotaTable?.autonomousPeriodColumns||[])].includes(admission.admissionId);
+  let reason='모집단위별 합계가 전형 총원과 일치합니다.';
+  if(!hasColumn)reason='모집단위별 인원 열이 없습니다.';
+  else if(!rows.length)reason='모집인원이 입력된 모집단위가 없습니다.';
+  else if(actual!==expected)reason=`모집단위 합계 ${actual}명과 전형 총원 ${expected}명이 다릅니다.`;
+  return {admissionId:admission.admissionId,name:admission.admissionName,expected,actual,rowCount:rows.length,special:Boolean(special),ok:hasColumn&&rows.length>0&&actual===expected,reason};
+}
+function auditRegularRule(pack,rule){
+  const reasons=[];
+  if(pack.validation?.status!=='verified')reasons.push('대학 파일 최종 검수 미완료');
+  const regularSources=(pack.sources||[]).filter(source=>['regular-guide','implementation-plan'].includes(source.documentType));
+  if(!regularSources.length)reasons.push('정시 공식 출처 연결 없음');
+  else if(regularSources.some(source=>source.status!=='final'))reasons.push('정시 최종 모집요강 미확정');
+  if(rule.calculation?.formulaStatus!=='verified')reasons.push('최종 환산식 미검수');
+  if(rule.calculation?.roundingStatus!=='verified')reasons.push('반올림 순서 미검수');
+  if(Object.values(rule.subjects||{}).some(subject=>subject.conversionTableStatus==='waiting'))reasons.push('탐구 변환표 미발표');
+  return {ruleId:rule.ruleId,label:`${rule.admissionMethod||'수능'} · ${rule.group}`,departments:rule.departments||[],ready:reasons.length===0,reasons};
+}
+function auditRulePack(pack){
+  const errors=[],warnings=[];
+  try{validateRulePack(pack,pack._meta?.fileName||`${pack.university?.name||'대학'} 파일`)}catch(err){errors.push({title:'파일 구조 오류',detail:err.message||'필수 구조를 확인하세요.'});}
+  if(pack.validation?.status!=='verified')warnings.push({title:'최종 검수 미완료',detail:`현재 상태: ${ruleValidationLabels[pack.validation?.status]?.[0]||'확인필요'}`});
+  (pack.sources||[]).filter(source=>source.status!=='final').forEach(source=>warnings.push({title:'공식 자료 확정 전',detail:`${source.documentTitle} · ${source.status}` }));
+  (pack.coverage?.pending||[]).forEach(item=>warnings.push({title:'추가 발표 대기',detail:item}));
+  const quotaResults=(pack.earlyAdmissions||[]).map(admission=>auditAdmissionQuota(pack,admission));
+  quotaResults.filter(result=>!result.ok).forEach(result=>errors.push({title:`${result.name} 모집인원`,detail:result.reason}));
+  const regularResults=(pack.regularAdmissions||[]).map(rule=>auditRegularRule(pack,rule));
+  return {errors,warnings,quotaResults,regularResults,quotaMatched:quotaResults.filter(result=>result.ok).length,readyRules:regularResults.filter(result=>result.ready).length,blockedRules:regularResults.filter(result=>!result.ready).length};
+}
+function auditBadge(audit){
+  if(audit.errors.length)return [`오류 ${audit.errors.length}`,'red'];
+  if(audit.warnings.length)return [`확인 ${audit.warnings.length}`,'amber'];
+  return ['검수 통과','green'];
+}
+function renderRuleImportReport(){
+  const target=document.getElementById('ruleImportReport');if(!target)return;
+  if(!lastRulePackImportReport.length){target.classList.remove('show');target.innerHTML='';return;}
+  target.classList.add('show');
+  target.innerHTML=`<div class="panel-title"><h3>최근 업로드 검사</h3><span class="badge gray">오류 파일은 저장하지 않음</span></div><div class="table-wrap"><table><thead><tr><th>파일</th><th>검사 결과</th><th>확인 내용</th></tr></thead><tbody>${lastRulePackImportReport.map(report=>{
+    if(report.status==='rejected')return `<tr><td><b>${escapeHTML(report.fileName)}</b></td><td><span class="badge red">저장 안 됨</span></td><td>${escapeHTML(report.message)}</td></tr>`;
+    const audit=auditRulePack(report.pack),badge=auditBadge(audit);
+    return `<tr><td><b>${escapeHTML(report.fileName)}</b></td><td><span class="badge ${badge[1]}">${badge[0]}</span></td><td>구조 통과 · 인원합계 ${audit.quotaMatched}/${audit.quotaResults.length} · 계산 가능 ${audit.readyRules}/${audit.regularResults.length}</td></tr>`;
+  }).join('')}</tbody></table></div>`;
+}
+function runAllRulePackAudits(){
+  renderRulePacks();
+  const audits=admissionRulePacks.map(auditRulePack),errors=audits.reduce((sum,audit)=>sum+audit.errors.length,0),warnings=audits.reduce((sum,audit)=>sum+audit.warnings.length,0);
+  const stamp=new Date().toLocaleString('ko-KR');document.getElementById('ruleAuditLastRun').textContent=`마지막 검수 ${stamp}`;
+  alert(`전체 ${admissionRulePacks.length}개 대학 파일 검수 완료: 오류 ${errors}건, 확인 필요 ${warnings}건입니다.`);
+}
+function showRulePackDetail(key,tab='early'){
   const pack=rulePackByKey(key);if(!pack)return;
-  activeRulePackKey=key;activeRulePackTab='early';activeQuotaAdmissionId=pack.earlyAdmissions?.[0]?.admissionId||'';
+  activeRulePackKey=key;activeRulePackTab=tab;activeQuotaAdmissionId=pack.earlyAdmissions?.[0]?.admissionId||'';
   document.getElementById('rulePackDetailTitle').textContent=`${pack.university.name} ${pack.academicYear}학년도 전형 상세조회`;
-  renderRulePackDetailOverview(pack);setRulePackDetailTab('early');showModal('rulePackDetailModal');
+  renderRulePackDetailOverview(pack);setRulePackDetailTab(tab);showModal('rulePackDetailModal');
 }
 function renderRulePackDetailOverview(pack){
   const source=rulePackSourceBadge(pack),validation=ruleValidationLabels[pack.validation?.status]||['확인필요','red'],ready=rulePackReadiness(pack);
@@ -1121,13 +1200,15 @@ function renderRulePackDetailOverview(pack){
     </div>`;
 }
 function setRulePackDetailTab(tab){
-  activeRulePackTab=tab==='regular'?'regular':'early';
+  activeRulePackTab=['early','regular','audit'].includes(tab)?tab:'early';
   document.getElementById('ruleTabEarly').classList.toggle('active',activeRulePackTab==='early');
   document.getElementById('ruleTabRegular').classList.toggle('active',activeRulePackTab==='regular');
+  document.getElementById('ruleTabAudit').classList.toggle('active',activeRulePackTab==='audit');
   renderRulePackDetail();
 }
 function renderRulePackDetail(){
   const pack=rulePackByKey(activeRulePackKey),content=document.getElementById('rulePackDetailContent');if(!pack||!content)return;
+  if(activeRulePackTab==='audit'){content.innerHTML=renderRulePackAuditDetails(pack);return;}
   if(activeRulePackTab==='regular'){content.innerHTML=renderRegularRuleDetails(pack);return;}
   const categories=[...new Set((pack.earlyAdmissions||[]).map(item=>item.category))];
   content.innerHTML=`<div class="toolbar"><input id="ruleEarlySearch" class="input search" placeholder="전형명 검색" oninput="renderEarlyRuleRows()"><select id="ruleEarlyCategory" class="select" onchange="renderEarlyRuleRows()"><option value="">전체 전형유형</option>${categories.map(category=>`<option>${escapeHTML(category)}</option>`).join('')}</select></div><div id="ruleEarlyRows"></div><div id="ruleQuotaPanel" class="rule-quota-panel"></div>`;
@@ -1174,23 +1255,29 @@ function renderRegularRuleDetails(pack){
   }).join('');
   return `<div class="notice"><b>현재 범위:</b> 정시 일반전형의 반영비율·점수 기준·영어·한국사·가산점 확인용입니다. 예체능·특성화고 전형은 제외했고, 탐구 변환표와 최종 산식이 확정될 때까지 환산 계산은 실행하지 않습니다.</div>${cards||'<div class="empty">등록된 정시 규칙이 없습니다.</div>'}`;
 }
+function renderRulePackAuditDetails(pack){
+  const audit=auditRulePack(pack),badge=auditBadge(audit),issues=[...audit.errors.map(item=>({...item,severity:'error'})),...audit.warnings.map(item=>({...item,severity:'warning'}))];
+  const issueHTML=issues.length?`<div class="audit-issues">${issues.map(issue=>`<div class="audit-issue"><span class="badge ${issue.severity==='error'?'red':'amber'}">${issue.severity==='error'?'오류':'확인'}</span><div><b>${escapeHTML(issue.title)}</b><div>${escapeHTML(issue.detail)}</div></div></div>`).join('')}</div>`:'<div class="audit-pass">파일 구조, 모집인원 합계, 공식 자료 상태에 확인할 문제가 없습니다.</div>';
+  const quotaRows=audit.quotaResults.map(result=>`<tr><td><b>${escapeHTML(result.name)}</b>${result.special?'<div class="rule-mini">계열 총원 기준</div>':''}</td><td>${result.expected}명</td><td>${result.actual}명</td><td>${result.rowCount}개</td><td><span class="badge ${result.ok?'green':'red'}">${result.ok?'일치':'불일치'}</span>${result.ok?'':`<div class="rule-mini">${escapeHTML(result.reason)}</div>`}</td></tr>`).join('');
+  const regularRows=audit.regularResults.map(result=>`<tr><td><b>${escapeHTML(result.label)}</b><div class="rule-mini">${result.departments.map(escapeHTML).join(' · ')}</div></td><td><span class="badge ${result.ready?'green':'amber'}">${result.ready?'계산 가능':'계산 보류'}</span></td><td>${result.ready?'모든 계산 조건 확인 완료':result.reasons.map(escapeHTML).join(' · ')}</td></tr>`).join('');
+  return `<div class="panel-title"><h3>자동 검수 결과</h3><span class="badge ${badge[1]}">${badge[0]}</span></div><div class="rule-summary">${[['구조·합계 오류',audit.errors.length+'건'],['확인 필요',audit.warnings.length+'건'],['인원 합계',`${audit.quotaMatched}/${audit.quotaResults.length}`],['계산 가능',`${audit.readyRules}/${audit.regularResults.length}`],['계산 보류',audit.blockedRules+'개']].map(item=>`<div class="kpi-pill"><strong>${escapeHTML(item[1])}</strong><span>${escapeHTML(item[0])}</span></div>`).join('')}</div><div class="rule-detail-card"><h4>누락·확인 필요 항목</h4>${issueHTML}</div><div class="rule-detail-card"><div class="panel-title"><h3>수시 모집인원 합계</h3><span class="badge ${audit.quotaMatched===audit.quotaResults.length?'green':'red'}">${audit.quotaMatched}/${audit.quotaResults.length} 일치</span></div><div class="table-wrap"><table><thead><tr><th>전형</th><th>전형 총원</th><th>세부 합계</th><th>모집단위</th><th>판정</th></tr></thead><tbody>${quotaRows||'<tr><td colspan="5" class="empty">수시 전형이 없습니다.</td></tr>'}</tbody></table></div></div><div class="rule-detail-card"><div class="panel-title"><h3>정시 계산 가능 여부</h3><span class="badge ${audit.readyRules===audit.regularResults.length?'green':'amber'}">${audit.readyRules}/${audit.regularResults.length} 가능</span></div><div class="table-wrap"><table><thead><tr><th>규칙</th><th>판정</th><th>보류 사유</th></tr></thead><tbody>${regularRows||'<tr><td colspan="3" class="empty">정시 규칙이 없습니다.</td></tr>'}</tbody></table></div></div>`;
+}
 function renderRulePacks(){
   const body=document.getElementById('rulePackTbody'),summary=document.getElementById('rulePackSummary');if(!body||!summary)return;
-  const verified=admissionRulePacks.filter(pack=>pack.validation?.status==='verified').length;
-  const earlyCount=admissionRulePacks.reduce((sum,pack)=>sum+(pack.earlyAdmissions?.length||0),0);
-  const regularCount=admissionRulePacks.reduce((sum,pack)=>sum+(pack.regularAdmissions?.length||0),0);
-  const quotaRows=admissionRulePacks.reduce((sum,pack)=>sum+(pack.sharedTables?.earlyDepartmentQuotas?.rows?.length||0)+(pack.sharedTables?.earlyDepartmentQuotas?.autonomousPeriodRows?.length||0),0);
-  const waiting=admissionRulePacks.filter(pack=>rulePackReadiness(pack)[0]==='변환표 대기').length;
-  summary.innerHTML=[['등록 대학',admissionRulePacks.length+'개'],['수시 전형',earlyCount+'개'],['세부인원',quotaRows+'행'],['정시 규칙',regularCount+'개'],['변환표 대기',waiting+'개'],['검수완료',verified+'개']].map(item=>`<div class="kpi-pill"><strong>${item[1]}</strong><span>${item[0]}</span></div>`).join('');
+  const audits=admissionRulePacks.map(auditRulePack);
+  const errorFiles=audits.filter(audit=>audit.errors.length).length,warningFiles=audits.filter(audit=>!audit.errors.length&&audit.warnings.length).length;
+  const quotaMatched=audits.reduce((sum,audit)=>sum+audit.quotaMatched,0),quotaTotal=audits.reduce((sum,audit)=>sum+audit.quotaResults.length,0);
+  const readyRules=audits.reduce((sum,audit)=>sum+audit.readyRules,0),regularTotal=audits.reduce((sum,audit)=>sum+audit.regularResults.length,0);
+  summary.innerHTML=[['등록 대학',admissionRulePacks.length+'개'],['오류 파일',errorFiles+'개'],['확인 필요',warningFiles+'개'],['인원 합계',`${quotaMatched}/${quotaTotal}`],['계산 가능',`${readyRules}/${regularTotal}`],['계산 보류',(regularTotal-readyRules)+'개']].map(item=>`<div class="kpi-pill"><strong>${item[1]}</strong><span>${item[0]}</span></div>`).join('');
   body.innerHTML=admissionRulePacks.map(pack=>{
     const source=rulePackSourceBadge(pack);
     const validation=ruleValidationLabels[pack.validation.status]||['확인필요','red'];
-    const ready=rulePackReadiness(pack),key=rulePackKey(pack);
+    const ready=rulePackReadiness(pack),key=rulePackKey(pack),audit=auditRulePack(pack),auditState=auditBadge(audit);
     const imported=pack._meta?.importedAt?new Date(pack._meta.importedAt).toLocaleDateString('ko-KR'):'-';
     const packQuotaRows=(pack.sharedTables?.earlyDepartmentQuotas?.rows?.length||0)+(pack.sharedTables?.earlyDepartmentQuotas?.autonomousPeriodRows?.length||0);
     const counts=`수시 ${pack.earlyAdmissions?.length||0} · 정시 ${pack.regularAdmissions?.length||0} · 모집단위 ${packQuotaRows}`;
     const links=(pack.sources||[]).map(item=>`<a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.documentTitle)}</a>`).join('<br>');
-    return `<tr><td><b>${escapeHTML(pack.university.name)}</b><div class="muted" style="font-size:10px;margin-top:3px">${escapeHTML(pack.university.code)} · ${counts}</div></td><td>${pack.academicYear}</td><td><span class="badge ${source[1]}">${source[0]}</span></td><td><span class="badge ${validation[1]}">${validation[0]}</span></td><td><span class="badge ${ready[1]}">${ready[0]}</span></td><td>${links}</td><td>${imported}</td><td><div class="rule-table-actions"><button class="small-btn" onclick="showRulePackDetail('${key}')">상세조회</button><button class="small-btn" onclick="downloadRulePack('${key}')">내보내기</button></div></td></tr>`;
+    return `<tr><td><b>${escapeHTML(pack.university.name)}</b><div class="muted" style="font-size:10px;margin-top:3px">${escapeHTML(pack.university.code)} · ${counts}</div></td><td>${pack.academicYear}</td><td><span class="badge ${source[1]}">${source[0]}</span></td><td><span class="badge ${auditState[1]}">${auditState[0]}</span><div class="rule-mini">${validation[0]} · 인원 ${audit.quotaMatched}/${audit.quotaResults.length}</div></td><td><span class="badge ${ready[1]}">${ready[0]}</span><div class="rule-mini">계산 ${audit.readyRules}/${audit.regularResults.length}</div></td><td>${links}</td><td>${imported}</td><td><div class="rule-table-actions"><button class="small-btn" onclick="showRulePackDetail('${key}','audit')">검수보기</button><button class="small-btn" onclick="showRulePackDetail('${key}')">상세조회</button><button class="small-btn" onclick="downloadRulePack('${key}')">내보내기</button></div></td></tr>`;
   }).join('')||'<tr><td colspan="8" class="empty">등록된 통합 규칙 파일이 없습니다. 대학별 파일을 추가하면 여기에 표시됩니다.</td></tr>';
 }
 function downloadRulePack(key){
