@@ -1,0 +1,699 @@
+{
+  "schema": "jungyul-admission-rule-pack",
+  "schemaVersion": "2.0",
+  "academicYear": 2027,
+  "university": {
+    "code": "inha",
+    "name": "인하대학교",
+    "aliases": ["인하대"],
+    "region": "인천"
+  },
+  "sources": [
+    {
+      "sourceId": "inha-2027-early-guide",
+      "documentTitle": "2027학년도 인하대학교 수시모집요강",
+      "documentType": "early-guide",
+      "url": "https://admission.inha.ac.kr/cms/FR_CON/index.do?MENU_ID=80",
+      "publishedDate": "2026-06-04",
+      "checkedDate": "2026-08-21",
+      "pages": ["6쪽 전형별 모집인원", "10~41쪽 전형별 안내", "42~46쪽 학생부·수능최저 반영방법"],
+      "status": "final"
+    },
+    {
+      "sourceId": "inha-2027-regular-plan",
+      "documentTitle": "2027학년도 인하대학교 대학입학전형 시행계획(변경사항 반영)",
+      "documentType": "implementation-plan",
+      "url": "https://admission.inha.ac.kr/cms/FR_CON/index.do?MENU_ID=130",
+      "publishedDate": "2026-06-12",
+      "checkedDate": "2026-08-21",
+      "pages": ["32쪽 수능(일반) 전형방법", "37~39쪽 수능 반영방법"],
+      "status": "provisional"
+    }
+  ],
+  "sharedTables": {
+    "englishHumanitiesArts": [
+      {"grade": 1, "value": 150}, {"grade": 2, "value": 148}, {"grade": 3, "value": 145},
+      {"grade": 4, "value": 135}, {"grade": 5, "value": 120}, {"grade": 6, "value": 100},
+      {"grade": 7, "value": 80}, {"grade": 8, "value": 40}, {"grade": 9, "value": 0}
+    ],
+    "englishNatural": [
+      {"grade": 1, "value": 100}, {"grade": 2, "value": 98}, {"grade": 3, "value": 96},
+      {"grade": 4, "value": 90}, {"grade": 5, "value": 80}, {"grade": 6, "value": 60},
+      {"grade": 7, "value": 40}, {"grade": 8, "value": 20}, {"grade": 9, "value": 0}
+    ],
+    "koreanHistoryDeduction": [
+      {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+      {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+      {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+    ],
+    "earlySchoolRecord": {
+      "standardGradeTable": [
+        {"grade": 1, "value": 10.0}, {"grade": 2, "value": 9.8}, {"grade": 3, "value": 9.6},
+        {"grade": 4, "value": 9.4}, {"grade": 5, "value": 9.0}, {"grade": 6, "value": 8.0},
+        {"grade": 7, "value": 4.0}, {"grade": 8, "value": 2.0}, {"grade": 9, "value": 0}
+      ],
+      "essayGradeTable": [
+        {"grade": 1, "value": 10.0}, {"grade": 2, "value": 9.6}, {"grade": 3, "value": 9.5},
+        {"grade": 4, "value": 9.5}, {"grade": 5, "value": 9.4}, {"grade": 6, "value": 9.4},
+        {"grade": 7, "value": 7.2}, {"grade": 8, "value": 3.6}, {"grade": 9, "value": 0}
+      ],
+      "sportsGradeTable": [
+        {"grade": 1, "value": 10.0}, {"grade": 2, "value": 9.5}, {"grade": 3, "value": 9.0},
+        {"grade": 4, "value": 8.0}, {"grade": 5, "value": 7.0}, {"grade": 6, "value": 6.0},
+        {"grade": 7, "value": 5.6}, {"grade": 8, "value": 5.3}, {"grade": 9, "value": 5.0}
+      ],
+      "attendanceTable": [
+        {"unexcusedAbsenceRange": "0~4", "value": 10.0}, {"unexcusedAbsenceRange": "5~7", "value": 9.5},
+        {"unexcusedAbsenceRange": "8~10", "value": 9.0}, {"unexcusedAbsenceRange": "11~13", "value": 8.0},
+        {"unexcusedAbsenceRange": "14~16", "value": 7.0}, {"unexcusedAbsenceRange": "17~19", "value": 6.0},
+        {"unexcusedAbsenceRange": "20~22", "value": 5.6}, {"unexcusedAbsenceRange": "23~30", "value": 5.3},
+        {"unexcusedAbsenceRange": "31+", "value": 5.0}
+      ],
+      "semesterRange": {"expectedGraduate": "1학년 1학기~3학년 1학기(5학기)", "graduate": "1학년 1학기~3학년 2학기(6학기)", "semesterWeight": "없음"},
+      "subjectsByTrack": {
+        "humanities": ["국어", "수학", "영어", "사회(한국사 포함)"],
+        "natural": ["국어", "수학", "영어", "과학"],
+        "freeMajor": ["국어", "수학", "영어", "사회", "과학"],
+        "arts": ["국어", "영어", "사회"],
+        "sports": ["국어", "수학", "영어"]
+      },
+      "careerSubjects": {"maxCount": 3, "conversion": {"A": 1, "B": 2, "C": 4}, "tieBreak": "이수단위(학점)가 높은 과목"},
+      "baseFormula": "sum(과목별 등급환산점수 × 이수단위 × 10) / sum(반영과목 이수단위)",
+      "rounding": "매 단계별 곱셈 시 소수 셋째 자리에서 반올림"
+    },
+    "earlyDepartmentQuotas": {
+      "sourceRef": "inha-2027-early-guide",
+      "pages": ["5~6쪽 전형별 모집인원", "7쪽 전형기간 자율화 전형"],
+      "columns": ["college","department","inha-2027-early-future-interview","inha-2027-early-future-document","inha-2027-early-regional-doctor","inha-2027-early-equal-opportunity","inha-2027-early-rural","inha-2027-early-west-sea-five-islands","inha-2027-early-regional-balance","inha-2027-early-essay","inha-2027-early-fine-art-watercolor","inha-2027-early-design","inha-2027-early-acting","inha-2027-early-clothing-practical","inha-2027-early-sports-specialist"],
+      "rows": [
+        ["공과대학","기계공학과",34,9,0,5,4,1,17,23,0,0,0,0,0],
+        ["공과대학","항공우주공학과",18,6,0,2,3,1,7,9,0,0,0,0,0],
+        ["공과대학","조선해양공학과",15,4,0,3,3,1,7,10,0,0,0,0,0],
+        ["공과대학","산업경영공학과",11,4,0,2,3,1,6,7,0,0,0,0,0],
+        ["공과대학","화공에너지공학부(화학공학전공)",27,7,0,4,4,1,12,14,0,0,0,0,0],
+        ["공과대학","화공에너지공학부(이차전지공학전공)",9,4,0,2,1,0,4,6,0,0,0,0,0],
+        ["공과대학","고분자공학과",11,4,0,2,2,1,5,6,0,0,0,0,0],
+        ["공과대학","신소재공학과",28,8,0,4,4,1,11,14,0,0,0,0,0],
+        ["공과대학","사회인프라공학과",17,5,0,3,3,1,8,10,0,0,0,0,0],
+        ["공과대학","환경공학과",11,4,0,2,2,1,5,6,0,0,0,0,0],
+        ["공과대학","공간정보공학과",11,0,0,2,3,1,4,7,0,0,0,0,0],
+        ["공과대학","건축학부",23,7,0,4,4,1,9,12,0,0,0,0,0],
+        ["공과대학","에너지자원공학과",9,0,0,2,0,1,4,4,0,0,0,0,0],
+        ["공과대학","전기전자공학부",60,18,0,7,12,1,28,34,0,0,0,0,0],
+        ["공과대학","반도체시스템공학과",17,5,0,4,2,0,8,13,0,0,0,0,0],
+        ["자연과학대학","수학과",9,5,0,2,2,1,5,7,0,0,0,0,0],
+        ["자연과학대학","통계학과",9,4,0,2,2,1,6,4,0,0,0,0,0],
+        ["자연과학대학","물리학과",14,4,0,2,2,1,9,5,0,0,0,0,0],
+        ["자연과학대학","화학과",16,7,0,2,2,1,8,8,0,0,0,0,0],
+        ["자연과학대학","해양과학과",12,5,0,2,3,1,6,5,0,0,0,0,0],
+        ["자연과학대학","식품영양학과",12,4,0,2,2,1,4,3,0,0,0,0,0],
+        ["경영대학","경영학부(경영학과)",32,11,0,4,4,1,15,22,0,0,0,0,0],
+        ["경영대학","경영학부(파이낸스경영학과)",12,0,0,2,3,1,4,5,0,0,0,0,0],
+        ["경영대학","아태물류학부",16,5,0,3,0,1,9,10,0,0,0,0,0],
+        ["경영대학","국제통상학과",16,6,0,3,3,1,8,9,0,0,0,0,0],
+        ["사범대학","국어교육과",8,0,0,2,2,0,5,0,0,0,0,0,0],
+        ["사범대학","영어교육과",7,0,0,2,2,0,5,0,0,0,0,0,0],
+        ["사범대학","사회교육과",6,0,0,2,2,0,5,3,0,0,0,0,0],
+        ["사범대학","체육교육과",17,0,0,0,3,0,0,0,0,0,0,0,10],
+        ["사범대학","교육학과",7,0,0,2,2,0,5,0,0,0,0,0,0],
+        ["사범대학","수학교육과",6,0,0,2,2,0,4,4,0,0,0,0,0],
+        ["사회과학대학","행정학과",21,8,0,3,2,1,10,10,0,0,0,0,0],
+        ["사회과학대학","정치외교학과",16,7,0,2,2,1,8,7,0,0,0,0,0],
+        ["사회과학대학","미디어커뮤니케이션학과",15,6,0,2,2,1,7,8,0,0,0,0,0],
+        ["사회과학대학","경제학과",18,9,0,3,3,1,10,11,0,0,0,0,0],
+        ["사회과학대학","소비자학과",10,5,0,2,2,1,5,0,0,0,0,0,0],
+        ["사회과학대학","아동심리학과",10,5,0,2,2,1,5,0,0,0,0,0,0],
+        ["사회과학대학","사회복지학과",12,0,0,2,2,1,4,4,0,0,0,0,0],
+        ["문과대학","한국어문학과",13,5,0,2,2,1,7,6,0,0,0,0,0],
+        ["문과대학","사학과",10,4,0,2,2,1,5,5,0,0,0,0,0],
+        ["문과대학","철학과",10,4,0,2,2,1,5,4,0,0,0,0,0],
+        ["문과대학","중국학과",17,7,0,2,2,1,10,7,0,0,0,0,0],
+        ["문과대학","일본언어문화학과",16,6,0,2,2,1,8,8,0,0,0,0,0],
+        ["문과대학","영미유럽인문융합학부",26,8,0,3,4,1,9,14,0,0,0,0,0],
+        ["문과대학","문화콘텐츠문화경영학과",23,7,0,3,3,1,9,10,0,0,0,0,0],
+        ["의과대학","의예과",16,0,6,0,2,0,9,8,0,0,0,0,0],
+        ["간호대학","간호학과",28,0,0,2,1,0,17,19,0,0,0,0,0],
+        ["예술체육대학","조형예술학과(인물수채화)",0,0,0,0,0,0,0,0,15,0,0,0,0],
+        ["예술체육대학","디자인융합학과",0,0,0,0,1,0,0,0,0,23,0,0,0],
+        ["예술체육대학","스포츠과학과",23,0,0,0,1,0,0,0,0,0,0,0,16],
+        ["예술체육대학","연극영화학과(연기)",0,0,0,0,0,0,0,0,0,0,9,0,0],
+        ["예술체육대학","의류디자인학과(일반)",12,5,0,2,2,0,5,0,0,0,0,0,0],
+        ["예술체육대학","의류디자인학과(실기)",0,0,0,0,0,0,0,0,0,0,0,10,0],
+        ["소프트웨어융합대학","인공지능공학과",23,8,0,4,2,0,11,16,0,0,0,0,0],
+        ["소프트웨어융합대학","데이터사이언스학과",13,5,0,3,2,0,6,7,0,0,0,0,0],
+        ["소프트웨어융합대학","스마트모빌리티공학과",10,5,0,2,2,0,5,6,0,0,0,0,0],
+        ["소프트웨어융합대학","디자인테크놀로지학과",15,5,0,0,0,0,0,0,0,0,0,0,0],
+        ["소프트웨어융합대학","컴퓨터공학과",32,12,0,6,4,1,17,29,0,0,0,0,0],
+        ["프런티어창의대학","자유전공융합학부",0,0,0,0,0,0,20,0,0,0,0,0,0],
+        ["바이오시스템융합학부","생명공학과",13,0,0,2,3,1,5,8,0,0,0,0,0],
+        ["바이오시스템융합학부","생명과학과",10,0,0,2,2,1,4,6,0,0,0,0,0],
+        ["바이오시스템융합학부","첨단바이오의약학과",12,4,0,0,0,0,4,4,0,0,0,0,0],
+        ["바이오시스템융합학부","바이오식품공학과",15,0,0,0,0,0,0,0,0,0,0,0,0]
+      ],
+      "columnModes": {"inha-2027-early-west-sea-five-islands": "모집단위별 최대모집가능인원"},
+      "specialSelections": {
+        "inha-2027-early-west-sea-five-islands": {"totalQuota": 3, "trackTotals": {"humanities": 2, "natural": 1}, "maximumPerDepartment": 1, "note": "한 계열에서 미선발 인원이 발생하면 다른 계열에서 선발 가능"}
+      },
+      "autonomousPeriodColumns": ["college","department","inha-2027-early-lifelong-learner","inha-2027-early-employed-graduate"],
+      "autonomousPeriodRows": [
+        ["미래융합대학","메카트로닉스공학과",0,39],
+        ["미래융합대학","메카트로닉스공학과(야간)",1,0],
+        ["미래융합대학","소프트웨어융합공학과",1,40],
+        ["미래융합대학","산업경영학과",1,41],
+        ["미래융합대학","금융투자학과",1,40],
+        ["미래융합대학","반도체산업융합학과",1,33]
+      ]
+    }
+  },
+  "earlyAdmissions": [
+    {
+      "admissionId": "inha-2027-early-future-interview", "admissionType": "수시", "category": "학생부종합", "admissionName": "인하미래인재(면접형)", "quotaType": "정원내", "totalQuota": 939,
+      "departments": ["모집단위별 선발(모집요강 6쪽)"], "eligibility": {"summary": "고교 졸업학력 인정 고등학교 졸업(예정)자 또는 동등 학력 인정자", "schoolTypes": ["일반고", "자율고", "특목고", "특성화고", "해외고", "검정고시"]},
+      "selection": {"stages": [
+        {"stage": "1단계", "multiplier": "3.5배수(의예과 3배수)", "elements": [{"name": "서류종합평가", "weight": 100, "maxScore": 700, "minScore": 250}]},
+        {"stage": "2단계", "multiplier": "1배수", "elements": [{"name": "1단계 성적", "weight": 70, "maxScore": 700, "minScore": 250}, {"name": "면접평가", "weight": 30, "maxScore": 300, "minScore": 100}]}
+      ]},
+      "csatMinimum": {"applied": false, "rules": []},
+      "interview": {"applied": true, "dates": ["2026-11-21 인문·경영·사회·문과·예체능 일부·소프트웨어융합", "2026-11-22 자연·수학교육·의예·간호·바이오"], "format": "제출서류 기반 블라인드 개별면접", "general": "면접위원 2인·지원자 1인, 8~10분", "medicine": "2개 면접실 이동, 총 15분 내외"},
+      "schoolRecord": {"applied": false, "mode": "정성적 서류종합평가"}, "documents": ["학교생활기록부", "지원자 유형별 추가서류"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-future-document", "admissionType": "수시", "category": "학생부종합", "admissionName": "인하미래인재(서류형)", "quotaType": "정원내", "totalQuota": 261,
+      "departments": ["모집단위별 선발(모집요강 6쪽)"], "eligibility": {"summary": "고교 졸업학력 인정 고등학교 졸업(예정)자 또는 동등 학력 인정자", "schoolTypes": ["일반고", "자율고", "특목고", "특성화고", "해외고", "검정고시"]},
+      "selection": {"stages": [{"stage": "일괄합산", "multiplier": "1배수", "elements": [{"name": "서류종합평가", "weight": 100, "maxScore": 1000, "minScore": 900}]}]},
+      "csatMinimum": {"applied": false, "rules": []}, "interview": {"applied": false}, "schoolRecord": {"applied": false, "mode": "정성적 서류종합평가"}, "documents": ["학교생활기록부", "지원자 유형별 추가서류"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-regional-doctor", "admissionType": "수시", "category": "학생부종합", "admissionName": "지역의사선발", "quotaType": "정원내", "totalQuota": 6,
+      "departments": ["의예과"], "eligibility": {"summary": "지정 진료권의 중·고 전 교육과정 이수 및 같은 진료권 거주, 복무형 지역의사 지원 의사", "obligation": "의사면허 발급 조건으로 대통령령상 지역에서 10년 의무복무"},
+      "selection": {"stages": [
+        {"stage": "1단계", "multiplier": "진료권별 3배수", "elements": [{"name": "서류종합평가", "weight": 100, "maxScore": 700, "minScore": 250}]},
+        {"stage": "2단계", "multiplier": "1배수", "elements": [{"name": "1단계 성적", "weight": 70, "maxScore": 700, "minScore": 250}, {"name": "면접평가", "weight": 30, "maxScore": 300, "minScore": 100}]}
+      ]},
+      "csatMinimum": {"applied": false, "rules": []}, "interview": {"applied": true, "dates": ["2026-11-21"], "format": "2개 면접실 이동, 면접위원 2인·지원자 1인, 총 15분 내외"}, "schoolRecord": {"applied": false, "mode": "정성적 서류종합평가"}, "documents": ["중·고 학교생활기록부", "주민등록표 초본", "입학원서"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-equal-opportunity", "admissionType": "수시", "category": "학생부종합", "admissionName": "고른기회", "quotaType": "정원내", "totalQuota": 137,
+      "departments": ["모집단위별 선발(모집요강 6쪽)"], "eligibility": {"summary": "국가보훈 교육지원대상자, 기초생활·차상위·한부모가족 지원대상자, 자립지원 대상 아동 중 하나"},
+      "selection": {"stages": [{"stage": "일괄합산", "multiplier": "1배수", "elements": [{"name": "서류종합평가", "weight": 100, "maxScore": 1000, "minScore": 900}]}]},
+      "csatMinimum": {"applied": false, "rules": []}, "interview": {"applied": false}, "schoolRecord": {"applied": false, "mode": "정성적 서류종합평가"}, "documents": ["학교생활기록부", "자격 증빙서류"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-rural", "admissionType": "수시", "category": "학생부종합", "admissionName": "농어촌학생", "quotaType": "정원외", "totalQuota": 140,
+      "departments": ["모집단위별 선발(모집요강 6쪽)"], "eligibility": {"summary": "유형Ⅰ(중·고 6년 및 부모·학생 거주) 또는 유형Ⅱ(초·중·고 12년 및 학생 거주)"},
+      "selection": {"stages": [{"stage": "일괄합산", "multiplier": "1배수", "elements": [{"name": "서류종합평가", "weight": 100, "maxScore": 1000, "minScore": 900}]}]},
+      "csatMinimum": {"applied": false, "rules": []}, "interview": {"applied": false}, "schoolRecord": {"applied": false, "mode": "정성적 서류종합평가"}, "documents": ["학교생활기록부", "농어촌학생 지원자격 확인서", "가족관계·거주 증빙"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-west-sea-five-islands", "admissionType": "수시", "category": "학생부종합", "admissionName": "서해5도지역출신자", "quotaType": "정원외", "totalQuota": 3,
+      "departments": ["인문계열 2명", "자연계열 1명"], "eligibility": {"summary": "유형Ⅰ(서해5도 중·고 6년 및 친권자/후견인과 거주) 또는 유형Ⅱ(서해5도 초·중·고 12년 및 본인 거주)"},
+      "selection": {"stages": [{"stage": "일괄합산", "multiplier": "1배수", "elements": [{"name": "서류종합평가", "weight": 100, "maxScore": 1000, "minScore": 900}]}]},
+      "csatMinimum": {"applied": false, "rules": []}, "interview": {"applied": false}, "schoolRecord": {"applied": false, "mode": "정성적 서류종합평가"}, "documents": ["학교생활기록부", "가족관계·거주 증빙"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-lifelong-learner", "admissionType": "수시", "category": "학생부종합", "admissionName": "평생학습자", "quotaType": "정원내", "totalQuota": 5,
+      "departments": ["모집단위별 선발(모집요강 6쪽)"], "eligibility": {"summary": "고교 졸업 이상 학력 인정자로서 2027-03-01 기준 만 30세 이상"},
+      "selection": {"stages": [{"stage": "일괄합산", "multiplier": "1배수", "elements": [{"name": "서류종합평가", "weight": 100, "maxScore": 1000, "minScore": 900}]}]},
+      "csatMinimum": {"applied": false, "rules": []}, "interview": {"applied": false}, "schoolRecord": {"applied": false, "mode": "정성적 서류종합평가"}, "documents": ["학교생활기록부 또는 대체서식", "학력 증빙"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-employed-graduate", "admissionType": "수시", "category": "학생부종합", "admissionName": "특성화고 등을 졸업한 재직자", "quotaType": "정원외", "totalQuota": 193,
+      "departments": ["미래융합대학 모집단위(모집요강 6쪽)"], "eligibility": {"summary": "법정 대상 고교·교육과정 졸업자이며 2027-03-01 기준 산업체 재직기간 합계 3년(1,095일) 이상"},
+      "selection": {"stages": [{"stage": "일괄합산", "multiplier": "1배수", "elements": [{"name": "서류종합평가", "weight": 100, "maxScore": 1000, "minScore": 900}]}]},
+      "csatMinimum": {"applied": false, "rules": []}, "interview": {"applied": false}, "schoolRecord": {"applied": false, "mode": "정성적 서류종합평가"}, "documents": ["학교생활기록부", "재직증명서", "건강보험자격득실확인서 등 경력 증빙"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-regional-balance", "admissionType": "수시", "category": "학생부교과", "admissionName": "지역균형", "quotaType": "정원내", "totalQuota": 438,
+      "departments": ["모집단위별 선발(모집요강 6쪽)"], "eligibility": {"summary": "국내고 2025년 이후 졸업(예정), 5학기 이상 이수, 고교장 추천", "recommendationLimit": "없음"},
+      "selection": {"stages": [{"stage": "일괄합산", "multiplier": "1배수", "elements": [{"name": "학생부교과", "weight": 100, "maxScore": 1000, "minScore": 0}]}]},
+      "csatMinimum": {"applied": true, "rules": [
+        {"target": "인문 및 의류디자인학과(일반)·자유전공융합학부", "condition": "국어·수학·영어·사회/과학탐구(상위 1과목) 중 2개 영역 등급 합 6 이내"},
+        {"target": "자연(의예과 제외)", "condition": "국어·수학·영어·사회/과학탐구(상위 1과목) 중 2개 영역 등급 합 5 이내"},
+        {"target": "의예과", "condition": "국어·수학·영어·과학탐구(2과목 평균, 소수점 절사) 중 3개 영역 등급 합 4 이내"}
+      ], "required": ["한국사 응시"]},
+      "interview": {"applied": false}, "schoolRecord": {"applied": true, "tableRef": "sharedTables.earlySchoolRecord.standardGradeTable", "formula": "학생부교과 반영점수 × 10", "subjectsRef": "sharedTables.earlySchoolRecord.subjectsByTrack", "careerSubjectsRef": "sharedTables.earlySchoolRecord.careerSubjects"},
+      "documents": ["학교생활기록부", "고교장 추천 입력"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-essay", "admissionType": "수시", "category": "논술", "admissionName": "논술우수자", "quotaType": "정원내", "totalQuota": 457,
+      "departments": ["모집단위별 선발(모집요강 6쪽)"], "eligibility": {"summary": "고교 졸업학력 인정 고등학교 졸업(예정)자 또는 동등 학력 인정자"},
+      "selection": {"stages": [{"stage": "일괄합산", "multiplier": "1배수", "elements": [{"name": "논술", "weight": 80, "maxScore": 800, "minScore": 400}, {"name": "학생부교과", "weight": 20, "maxScore": 200, "minScore": 100}]}]},
+      "csatMinimum": {"applied": true, "rules": [{"target": "의예과만 적용", "condition": "국어·수학·영어·과학탐구(2과목 평균, 소수점 첫째자리 올림) 중 3개 영역 각각 1등급 이내"}], "required": ["한국사 응시"]},
+      "interview": {"applied": false}, "test": {"humanities": "언어논술(인문학+사회과학), 100분", "natural": "수리논술(수학·수학Ⅰ·Ⅱ·미적분), 100분"},
+      "schoolRecord": {"applied": true, "tableRef": "sharedTables.earlySchoolRecord.essayGradeTable", "formula": "학생부교과 반영점수 + 기본점수 100", "comparisonRecord": "검정고시·해외고·2024년 2월 이전 졸업자·반영과목 10개 이하 등은 논술 석차백분위 비교내신"},
+      "documents": ["학교생활기록부 또는 비교내신 대상 증빙"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-fine-art-watercolor", "admissionType": "수시", "category": "실기/실적", "admissionName": "조형예술학과-인물수채화", "quotaType": "정원내", "totalQuota": 15,
+      "departments": ["조형예술학과"], "eligibility": {"summary": "국내 고교 졸업학력 인정 고등학교 졸업(예정), 학생부 반영점수 산출 가능"},
+      "selection": {"stages": [{"stage": "일괄합산", "multiplier": "1배수", "elements": [{"name": "실기", "weight": 70, "maxScore": 700, "minScore": 250}, {"name": "학생부교과", "weight": 30, "maxScore": 300, "minScore": 100}]}]},
+      "csatMinimum": {"applied": false, "rules": []}, "interview": {"applied": false}, "test": {"type": "인물수채화", "duration": "4시간", "paper": "3절지"}, "schoolRecord": {"applied": true, "tableRef": "sharedTables.earlySchoolRecord.standardGradeTable", "formula": "학생부교과 반영점수 × 2 + 기본점수 100", "subjects": ["국어", "영어", "사회"]}, "documents": ["학교생활기록부"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-design", "admissionType": "수시", "category": "실기/실적", "admissionName": "디자인융합학과", "quotaType": "정원내", "totalQuota": 23,
+      "departments": ["디자인융합학과"], "eligibility": {"summary": "국내 고교 졸업학력 인정 고등학교 졸업(예정), 학생부 반영점수 산출 가능"},
+      "selection": {"stages": [{"stage": "일괄합산", "multiplier": "1배수", "elements": [{"name": "실기", "weight": 70, "maxScore": 700, "minScore": 250}, {"name": "학생부교과", "weight": 30, "maxScore": 300, "minScore": 100}]}]},
+      "csatMinimum": {"applied": false, "rules": []}, "interview": {"applied": false}, "test": {"type": "기초디자인", "duration": "5시간", "paper": "3절지"}, "schoolRecord": {"applied": true, "tableRef": "sharedTables.earlySchoolRecord.standardGradeTable", "formula": "학생부교과 반영점수 × 2 + 기본점수 100", "subjects": ["국어", "영어", "사회"]}, "documents": ["학교생활기록부"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-acting", "admissionType": "수시", "category": "실기/실적", "admissionName": "연극영화학과-연기", "quotaType": "정원내", "totalQuota": 9,
+      "departments": ["연극영화학과"], "eligibility": {"summary": "국내 고교 졸업학력 인정 고등학교 졸업(예정), 학생부 반영점수 산출 가능"},
+      "selection": {"stages": [{"stage": "일괄합산", "multiplier": "1배수", "elements": [{"name": "실기", "weight": 70, "maxScore": 700, "minScore": 250}, {"name": "학생부교과", "weight": 30, "maxScore": 300, "minScore": 100}]}]},
+      "csatMinimum": {"applied": false, "rules": []}, "interview": {"applied": false}, "test": {"type": "지정연기 및 자유연기", "details": "고사 세부 안내는 입학처 공지 확인"}, "schoolRecord": {"applied": true, "tableRef": "sharedTables.earlySchoolRecord.standardGradeTable", "formula": "학생부교과 반영점수 × 2 + 기본점수 100", "subjects": ["국어", "영어", "사회"]}, "documents": ["학교생활기록부"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-clothing-practical", "admissionType": "수시", "category": "실기/실적", "admissionName": "의류디자인학과-실기", "quotaType": "정원내", "totalQuota": 10,
+      "departments": ["의류디자인학과"], "eligibility": {"summary": "국내 고교 졸업학력 인정 고등학교 졸업(예정), 학생부 반영점수 산출 가능"},
+      "selection": {"stages": [{"stage": "일괄합산", "multiplier": "1배수", "elements": [{"name": "실기", "weight": 70, "maxScore": 700, "minScore": 250}, {"name": "학생부교과", "weight": 30, "maxScore": 300, "minScore": 100}]}]},
+      "csatMinimum": {"applied": false, "rules": []}, "interview": {"applied": false}, "test": {"type": "기초디자인", "duration": "5시간", "paper": "3절지"}, "schoolRecord": {"applied": true, "tableRef": "sharedTables.earlySchoolRecord.standardGradeTable", "formula": "학생부교과 반영점수 × 2 + 기본점수 100", "subjects": ["국어", "영어", "사회"]}, "documents": ["학교생활기록부"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    },
+    {
+      "admissionId": "inha-2027-early-sports-specialist", "admissionType": "수시", "category": "실기/실적", "admissionName": "체육특기자", "quotaType": "정원내", "totalQuota": 26,
+      "departments": ["체육교육과 10명", "스포츠과학과 16명"], "eligibility": {"summary": "국내고 졸업(예정)자 중 지정 종목 등록선수이며 인정 대회 실적 보유, 2025년 이후 졸업자"},
+      "selection": {"stages": [{"stage": "일괄합산", "multiplier": "1배수", "elements": [{"name": "특기실적", "weight": 80, "maxScore": 800, "minScore": 400}, {"name": "학생부교과", "weight": 10, "maxScore": 100, "minScore": 50}, {"name": "출결", "weight": 10, "maxScore": 100, "minScore": 50}]}]},
+      "csatMinimum": {"applied": false, "rules": []}, "interview": {"applied": false}, "performance": {"formula": "기본점수 400 + 특기실적 환산점수 합 + 특별실적", "cap": 800, "recognizedPeriod": "야구 2025-03-01 이후, 그 외 2024-03-01 이후"},
+      "schoolRecord": {"applied": true, "tableRef": "sharedTables.earlySchoolRecord.sportsGradeTable", "formula": "학생부교과 반영점수 × 0.5 + 기본점수 50", "subjects": ["국어", "수학", "영어"], "attendanceRef": "sharedTables.earlySchoolRecord.attendanceTable", "attendanceFormula": "환산점수 × 5 + 기본점수 50"},
+      "documents": ["학교생활기록부", "경기실적증명서", "종목별 추가 증빙"], "sourceRefs": ["inha-2027-early-guide"], "dataStatus": "final"
+    }
+  ],
+  "regularAdmissions": [
+    {
+      "ruleId": "inha-2027-humanities-general",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "모집단위별 가군·나군·다군",
+      "departments": ["인문 전 모집단위(경영융합학부·사회과학융합학부·인문융합학부 제외)"],
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 35},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 25, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 15, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 150, "maxContribution": 150,
+          "table": [
+            {"grade": 1, "value": 150}, {"grade": 2, "value": 148}, {"grade": 3, "value": 145},
+            {"grade": 4, "value": 135}, {"grade": 5, "value": 120}, {"grade": 6, "value": 100},
+            {"grade": 7, "value": 80}, {"grade": 8, "value": 40}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 25, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [{"id": "social-inquiry-3pct", "basis": "each-inquiry-converted-standard-score", "ratePercent": 3, "when": {"inquiryCategory": "사회탐구"}, "timing": "before-two-subject-average"}],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["탐구는 2개 과목 평균 반영", "탐구 자체변환표준점수는 2027학년도 표 발표 후 추가"]
+    },
+    {
+      "ruleId": "inha-2027-humanities-fusion-a",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "나군",
+      "departments": ["경영융합학부", "사회과학융합학부", "인문융합학부"],
+      "comparisonGroup": "inha-2027-humanities-fusion",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 35},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 30, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 150, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 150}, {"grade": 2, "value": 148}, {"grade": 3, "value": 145},
+            {"grade": 4, "value": 135}, {"grade": 5, "value": 120}, {"grade": 6, "value": 100},
+            {"grade": 7, "value": 80}, {"grade": 8, "value": 40}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 25, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [{"id": "social-inquiry-3pct", "basis": "each-inquiry-converted-standard-score", "ratePercent": 3, "when": {"inquiryCategory": "사회탐구"}, "timing": "before-two-subject-average"}],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["B형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-humanities-fusion-b",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "나군",
+      "departments": ["경영융합학부", "사회과학융합학부", "인문융합학부"],
+      "comparisonGroup": "inha-2027-humanities-fusion",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 30},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 30, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 150, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 150}, {"grade": 2, "value": 148}, {"grade": 3, "value": 145},
+            {"grade": 4, "value": 135}, {"grade": 5, "value": 120}, {"grade": 6, "value": 100},
+            {"grade": 7, "value": 80}, {"grade": 8, "value": 40}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 30, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["A형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-natural-general",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "모집단위별 가군·나군·다군",
+      "departments": ["자연 전 모집단위(공학융합학부·자연과학융합학부 제외)"],
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 25},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 35, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 100, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 100}, {"grade": 2, "value": 98}, {"grade": 3, "value": 96},
+            {"grade": 4, "value": 90}, {"grade": 5, "value": 80}, {"grade": 6, "value": 60},
+            {"grade": 7, "value": 40}, {"grade": 8, "value": 20}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 30, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [
+        {"id": "calculus-geometry-3pct", "basis": "math-standard-score", "ratePercent": 3, "when": {"mathSelection": ["미적분", "기하"]}},
+        {"id": "science-inquiry-3pct", "basis": "each-inquiry-converted-standard-score", "ratePercent": 3, "when": {"inquiryCategory": "과학탐구"}, "timing": "before-two-subject-average"}
+      ],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["탐구는 2개 과목 평균 반영"]
+    },
+    {
+      "ruleId": "inha-2027-natural-fusion-a",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "나군",
+      "departments": ["공학융합학부", "자연과학융합학부"],
+      "comparisonGroup": "inha-2027-natural-fusion",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 25},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 40, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 100, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 100}, {"grade": 2, "value": 98}, {"grade": 3, "value": 96},
+            {"grade": 4, "value": 90}, {"grade": 5, "value": 80}, {"grade": 6, "value": 60},
+            {"grade": 7, "value": 40}, {"grade": 8, "value": 20}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 25, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [{"id": "science-inquiry-3pct", "basis": "each-inquiry-converted-standard-score", "ratePercent": 3, "when": {"inquiryCategory": "과학탐구"}, "timing": "before-two-subject-average"}],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["B형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-natural-fusion-b",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "나군",
+      "departments": ["공학융합학부", "자연과학융합학부"],
+      "comparisonGroup": "inha-2027-natural-fusion",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 25},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 35, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 100, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 100}, {"grade": 2, "value": 98}, {"grade": 3, "value": 96},
+            {"grade": 4, "value": 90}, {"grade": 5, "value": 80}, {"grade": 6, "value": 60},
+            {"grade": 7, "value": 40}, {"grade": 8, "value": 20}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 30, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [{"id": "science-inquiry-3pct", "basis": "each-inquiry-converted-standard-score", "ratePercent": 3, "when": {"inquiryCategory": "과학탐구"}, "timing": "before-two-subject-average"}],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["A형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-free-humanities-a",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "가군",
+      "departments": ["자유전공융합학부(인문)"],
+      "comparisonGroup": "inha-2027-free-humanities",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 35},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 30, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 150, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 150}, {"grade": 2, "value": 148}, {"grade": 3, "value": 145},
+            {"grade": 4, "value": 135}, {"grade": 5, "value": 120}, {"grade": 6, "value": 100},
+            {"grade": 7, "value": 80}, {"grade": 8, "value": 40}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 25, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["B형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-free-humanities-b",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "가군",
+      "departments": ["자유전공융합학부(인문)"],
+      "comparisonGroup": "inha-2027-free-humanities",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 30},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 30, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 150, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 150}, {"grade": 2, "value": 148}, {"grade": 3, "value": 145},
+            {"grade": 4, "value": 135}, {"grade": 5, "value": 120}, {"grade": 6, "value": 100},
+            {"grade": 7, "value": 80}, {"grade": 8, "value": 40}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 30, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["A형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-free-natural-a",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "가군",
+      "departments": ["자유전공융합학부(자연)"],
+      "comparisonGroup": "inha-2027-free-natural",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 25},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 40, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 100, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 100}, {"grade": 2, "value": 98}, {"grade": 3, "value": 96},
+            {"grade": 4, "value": 90}, {"grade": 5, "value": 80}, {"grade": 6, "value": 60},
+            {"grade": 7, "value": 40}, {"grade": 8, "value": 20}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 25, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["B형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-free-natural-b",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "가군",
+      "departments": ["자유전공융합학부(자연)"],
+      "comparisonGroup": "inha-2027-free-natural",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 25},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 35, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 100, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 100}, {"grade": 2, "value": 98}, {"grade": 3, "value": 96},
+            {"grade": 4, "value": 90}, {"grade": 5, "value": 80}, {"grade": 6, "value": 60},
+            {"grade": 7, "value": 40}, {"grade": 8, "value": 20}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 30, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["A형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    }
+  ],
+  "coverage": {
+    "included": [
+      "수시 학생부종합 8개 전형의 모집인원·지원자격·선발방법",
+      "수시 지역균형·논술우수자·실기/실적 5개 전형의 모집인원·반영비율·학생부 환산·수능최저",
+      "수시 일반 모집 63개 모집단위와 전형기간 자율화 6개 모집단위의 전형별 세부 인원",
+      "정시 수능(일반) 인문·자연 일반 모집단위",
+      "정시 경영·사회과학·인문·공학·자연과학융합학부와 자유전공융합학부 A/B형"
+    ],
+    "pending": [
+      "2027학년도 탐구 자체변환표준점수",
+      "정시 최종모집요강의 영역별 표준점수 환산식과 반올림 순서"
+    ],
+    "excluded": [
+      "정시 예체능·실기 모집단위 세부 산출식",
+      "정시 수능(특성화고교졸업자)"
+    ]
+  },
+  "validation": {
+    "status": "reviewed",
+    "checkedAt": "2026-08-21",
+    "notes": [
+      "인하대학교 입학처 공식 공지의 자료명과 게시일을 확인함",
+      "수시 최종 모집요강 10~46쪽의 15개 전형과 학생부·수능최저 규칙을 구조화함",
+      "수시 모집요강 5~7쪽의 모집단위별 인원을 입력하고 15개 전형 총원과 일치함을 확인함",
+      "시행계획 37~39쪽의 반영비율·가산점·영어·한국사 표를 교차 대조함",
+      "최종 정시모집요강 및 2027 탐구 자체변환표 발표 후 재검수 필요",
+      "미확정 산출식은 계산 엔진에 연결하지 않음"
+    ]
+  }
+}
