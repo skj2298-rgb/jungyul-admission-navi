@@ -105,6 +105,10 @@ tbody tr:hover{background:#fafbff}
 .audit-issue b{display:block;font-size:12px}.audit-issue div:last-child div{font-size:11px;color:#667085;margin-top:3px;line-height:1.5}
 .audit-pass{background:#ecfdf5;border:1px solid #bbf7d0;color:#065f46;border-radius:12px;padding:12px 14px;font-size:12px;line-height:1.55}
 .import-report{display:none;margin-top:12px}.import-report.show{display:block}
+.official-gate{margin-bottom:16px;border-color:#dfe3ff}
+.official-gate-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.gate-checks{display:grid;gap:8px;margin-top:10px}.gate-check{display:flex;gap:9px;align-items:flex-start;padding:10px 11px;border:1px solid var(--line);border-radius:11px;background:#fff}
+.gate-check div{font-size:12px;line-height:1.5}.gate-check small{display:block;color:#667085;margin-top:2px}
 .score-entry-grid{display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:start}
 .score-entry-card{min-width:0}
 .subsection{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fbfcff;margin-top:12px}
@@ -120,7 +124,7 @@ tbody tr:hover{background:#fafbff}
 .footer{padding:28px 0 12px;text-align:center;color:#98a2b3;font-size:11px}
 @media(max-width:1220px){.split{grid-template-columns:360px minmax(0,1fr)}.score-grid{grid-template-columns:1fr}}
 @media(max-width:1050px){.grid.cols-4{grid-template-columns:repeat(2,1fr)}.split,.score-entry-grid{grid-template-columns:1fr}.sticky{position:static}.hero{grid-template-columns:1fr}.result-card{grid-template-columns:1fr 90px 90px}.result-card .delta{display:none}.top-nav{overflow:auto}.brand{min-width:200px}}
-@media(max-width:720px){.app-header{padding:0 12px}.brand{min-width:auto}.brand div:last-child{display:none}.header-actions{display:none}.shell{padding:16px}.grid.cols-4,.grid.cols-2{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.result-card{grid-template-columns:1fr 85px}.result-card .cutoff{display:none}.score-grid,.form-row,.goal-cards,.detail-years,.kpi-strip,.rule-detail-head{grid-template-columns:1fr}.audit-banner{align-items:flex-start;flex-direction:column}.top-nav{margin-left:12px}.nav-btn{white-space:nowrap}}
+@media(max-width:720px){.app-header{padding:0 12px}.brand{min-width:auto}.brand div:last-child{display:none}.header-actions{display:none}.shell{padding:16px}.grid.cols-4,.grid.cols-2{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.result-card{grid-template-columns:1fr 85px}.result-card .cutoff{display:none}.score-grid,.form-row,.goal-cards,.detail-years,.kpi-strip,.rule-detail-head,.official-gate-grid{grid-template-columns:1fr}.audit-banner{align-items:flex-start;flex-direction:column}.top-nav{margin-left:12px}.nav-btn{white-space:nowrap}}
 </style>
 </head>
 <body>
@@ -290,6 +294,14 @@ tbody tr:hover{background:#fafbff}
         <div id="goalSummary" class="sim-summary" style="display:none"></div>
       </div>
       <div>
+        <div id="officialRuleGate" class="card official-gate">
+          <div class="panel-title"><div><h3>공식 환산 규칙 연결</h3><div class="muted" style="font-size:11px;margin-top:4px">검수완료 규칙과 필요한 성적값이 모두 준비된 경우에만 계산 연결이 열립니다.</div></div><span id="officialGateBadge" class="badge gray">확인 중</span></div>
+          <div class="official-gate-grid">
+            <div class="form-group" style="margin:0"><label>대학 규칙 파일</label><select id="officialPackSelect" class="select" onchange="renderOfficialRuleOptions()"></select></div>
+            <div class="form-group" style="margin:0"><label>정시 계산 규칙</label><select id="officialRuleSelect" class="select" onchange="renderOfficialRuleGate()"></select></div>
+          </div>
+          <div id="officialGateResult"></div>
+        </div>
         <div class="kpi-strip" id="simKpis"></div>
         <div class="card">
           <div class="result-toolbar"><div><b>대학별 분석 결과</b><div id="resultSubtitle" class="muted" style="font-size:12px;margin-top:3px">모의고사 환산지수와 최근 3개년 정시 샘플 컷 비교</div></div>
@@ -358,7 +370,7 @@ tbody tr:hover{background:#fafbff}
           <tr><td>01</td><td>학생 성적 DB</td><td><span class="badge green">교과+모고 구현</span></td><td>대학별 실제 반영 항목 확정</td></tr>
           <tr><td>02</td><td>대학 3개년 입결·충원 DB</td><td><span class="badge blue">틀 구현</span></td><td>공식 데이터 입력</td></tr>
           <tr><td>03</td><td>대학별 2027 수시·정시 통합 규칙</td><td><span class="badge green">상세조회·자동검수 구현</span></td><td>일반전형 중심 대학 파일 추가</td></tr>
-          <tr><td>04</td><td>검수완료 규칙 계산기 연결</td><td><span class="badge amber">대기</span></td><td>정시 최종요강·탐구 변환표 발표 후 연결</td></tr>
+          <tr><td>04</td><td>검수완료 규칙 계산기 연결</td><td><span class="badge blue">안전 연결 게이트 구현</span></td><td>정시 최종요강·탐구 변환표 발표 후 실행</td></tr>
           <tr><td>05</td><td>안정/적정/추합/소신 판정</td><td><span class="badge amber">샘플</span></td><td>판정 기준 확정</td></tr>
           <tr><td>06</td><td>목표 성적 자동 탐색</td><td><span class="badge green">기본 구현</span></td><td>검수완료 환산식으로 교체</td></tr>
           <tr><td>07</td><td>상담 보고서 PDF 자동 생성</td><td><span class="badge gray">예정</span></td><td>최종 DB 이후 연결</td></tr>
@@ -498,7 +510,7 @@ const RULE_PACK_TEMPLATE={
   }],
   regularAdmissions:[{
     ruleId:'change-me-2027-regular-01',admissionType:'정시',group:'가군',departments:['모집단위명'],scoreScale:1000,
-    calculation:{method:'weighted-sum',weightTotal:100,formulaStatus:'pending-final-guide',roundingStatus:'waiting',rounding:{stage:'final',mode:'none',digits:0}},
+    calculation:{method:'weighted-sum',weightTotal:100,formulaStatus:'pending-final-guide',roundingStatus:'waiting',engineStatus:'blocked',rounding:{stage:'final',mode:'none',digits:0}},
     subjects:{
       korean:{application:'weighted',metric:'standard-score',weight:35},
       math:{application:'weighted',metric:'standard-score',weight:35,allowedSelections:['확률과통계','미적분','기하']},
@@ -738,6 +750,7 @@ function renderSimStudentOptions(){
   if(students.some(s=>String(s.id)===current))el.value=current;
   renderTargetOptions();
   renderSimMockOptions();
+  renderOfficialPackOptions();
 }
 function renderTargetOptions(){
   const el=document.getElementById('targetUni');if(!el)return;
@@ -764,6 +777,7 @@ function changeSimType(){
   simModeBanner.className='mode-banner'+(school?' school':'');
   simModeBanner.innerHTML=school?'<b>수시 · 학생부교과 기준</b><br>저장한 교과 영역별 평균등급을 대학 반영비율에 대입합니다. 낮은 등급이 유리합니다.':'<b>정시 · 모의고사 기준</b><br>선택한 모의고사 백분위와 영어 등급을 대학별 반영비율에 대입합니다.';
   resultSubtitle.textContent=school?'교과 환산등급과 최근 3개년 학생부교과 샘플 등급컷 비교':'모의고사 환산지수와 최근 3개년 정시 샘플 컷 비교';
+  document.getElementById('officialRuleGate').style.display=school?'none':'block';
   loadStudentToSimulator();
 }
 function loadStudentToSimulator(){
@@ -799,6 +813,76 @@ function syncSchoolScoreN(k){
 function updateSimSchoolAvg(){const v=avg([+simSKor.value,+simSMat.value,+simSEng.value,+simSInq.value]);simSchoolAvg.textContent=v?pct(v)+'등급':'-'}
 function currentSim(){return {kor:+simKor.value,mat:+simMat.value,eng:+simEng.value,inq:+simInq.value}}
 function currentSchoolSim(){return {kor:+simSKor.value,mat:+simSMat.value,eng:+simSEng.value,inq:+simSInq.value}}
+function officialSelectedPack(){return admissionRulePacks.find(pack=>rulePackKey(pack)===document.getElementById('officialPackSelect')?.value)}
+function officialSelectedRule(pack=officialSelectedPack()){return pack?.regularAdmissions?.find(rule=>rule.ruleId===document.getElementById('officialRuleSelect')?.value)}
+function renderOfficialPackOptions(){
+  const select=document.getElementById('officialPackSelect');if(!select)return;
+  const current=select.value;
+  select.innerHTML=admissionRulePacks.map(pack=>{const audit=auditRulePack(pack);return `<option value="${escapeHTML(rulePackKey(pack))}">${escapeHTML(pack.university.name)} ${pack.academicYear} · 계산 ${audit.readyRules}/${audit.regularResults.length}</option>`}).join('');
+  if(admissionRulePacks.some(pack=>rulePackKey(pack)===current))select.value=current;
+  renderOfficialRuleOptions();
+}
+function renderOfficialRuleOptions(){
+  const select=document.getElementById('officialRuleSelect');if(!select)return;
+  const pack=officialSelectedPack(),current=select.value;
+  select.innerHTML=(pack?.regularAdmissions||[]).map(rule=>`<option value="${escapeHTML(rule.ruleId)}">${escapeHTML(rule.admissionMethod||'수능')} · ${escapeHTML(rule.group)} · ${escapeHTML((rule.departments||[]).join(', '))}</option>`).join('');
+  if(pack?.regularAdmissions?.some(rule=>rule.ruleId===current))select.value=current;
+  renderOfficialRuleGate();
+}
+function addScoreRequirement(list,requirement){if(!list.some(item=>item.key===requirement.key))list.push(requirement)}
+function officialScoreRequirements(rule){
+  const requirements=[];
+  Object.entries(rule?.subjects||{}).forEach(([subject,config])=>{
+    if(config.application==='excluded'||config.metric==='qualification')return;
+    const label=subjectLabels[subject]||subject;
+    if(config.metric==='standard-score'){
+      if(subject==='inquiry'&&Number(config.count)===2)addScoreRequirement(requirements,{key:'inquiryStandardScores',label:'탐구 2과목 표준점수',count:2});
+      else addScoreRequirement(requirements,{key:`${subject}StandardScore`,label:`${label} 표준점수`});
+    }
+    if(config.metric==='converted-standard-score')addScoreRequirement(requirements,{key:'inquiryConvertedScores',label:`탐구 ${Number(config.count)||2}과목 변환표준점수`,count:Number(config.count)||2});
+    if(config.metric==='percentile')addScoreRequirement(requirements,{key:`${subject}Percentile`,label:`${label} 백분위`});
+    if(config.metric==='raw-score')addScoreRequirement(requirements,{key:`${subject}RawScore`,label:`${label} 원점수`});
+    if(config.metric==='grade-table')addScoreRequirement(requirements,{key:subject==='koreanHistory'?'koreanHistoryGrade':`${subject}Grade`,label:`${label} 등급`});
+  });
+  (rule?.bonuses||[]).forEach(bonus=>{
+    if(bonus.when?.mathSelection)addScoreRequirement(requirements,{key:'mathSelection',label:'수학 선택과목'});
+    if(bonus.when?.inquiryCategory)addScoreRequirement(requirements,{key:'inquiryCategories',label:'탐구 과목 계열',count:rule.subjects?.inquiry?.count||2,numeric:false});
+  });
+  return requirements;
+}
+function currentOfficialScoreRecord(){
+  const student=students.find(item=>String(item.id)===document.getElementById('simStudent')?.value)||students[0];
+  const mock=student?.mockScores?.find(item=>String(item.id)===document.getElementById('simMockRecord')?.value)||representativeMock(student)||{};
+  const sim=document.getElementById('simKor')?{kor:+document.getElementById('simKor').value,mat:+document.getElementById('simMat').value,eng:+document.getElementById('simEng').value,inq:+document.getElementById('simInq').value}:{kor:mock.kor,mat:mock.mat,eng:mock.eng,inq:mock.inq};
+  return {...mock,koreanPercentile:sim.kor,mathPercentile:sim.mat,englishGrade:sim.eng,inquiryPercentile:sim.inq};
+}
+function hasOfficialScoreValue(record,requirement){
+  const value=record?.[requirement.key];
+  if(requirement.count)return Array.isArray(value)&&value.length>=requirement.count&&value.slice(0,requirement.count).every(item=>item!==''&&item!==null&&item!==undefined&&(requirement.numeric===false||Number.isFinite(Number(item))));
+  if(typeof value==='string')return value.trim()!=='';
+  return value!==null&&value!==undefined&&value!==''&&(typeof value!=='number'||Number.isFinite(value));
+}
+function officialRuleGateState(pack,rule,scoreRecord=currentOfficialScoreRecord()){
+  if(!pack||!rule)return {ready:false,dataReasons:['대학 규칙을 선택하세요.'],ruleReasons:[],missingInputs:[],requirements:[]};
+  const audit=auditRegularRule(pack,rule),dataReasonLabels=new Set(['대학 파일 최종 검수 미완료','정시 공식 출처 연결 없음','정시 최종 모집요강 미확정']);
+  const dataReasons=audit.reasons.filter(reason=>dataReasonLabels.has(reason)),ruleReasons=audit.reasons.filter(reason=>!dataReasonLabels.has(reason));
+  const requirements=officialScoreRequirements(rule),missingInputs=requirements.filter(requirement=>!hasOfficialScoreValue(scoreRecord,requirement));
+  return {ready:!dataReasons.length&&!ruleReasons.length&&!missingInputs.length,dataReasons,ruleReasons,missingInputs,requirements};
+}
+function gateCheckHTML(title,reasons,successText){
+  const ok=!reasons.length;
+  return `<div class="gate-check"><span class="badge ${ok?'green':'amber'}">${ok?'통과':'보류'}</span><div><b>${escapeHTML(title)}</b><small>${ok?escapeHTML(successText):reasons.map(escapeHTML).join(' · ')}</small></div></div>`;
+}
+function renderOfficialRuleGate(){
+  const target=document.getElementById('officialGateResult'),badge=document.getElementById('officialGateBadge');if(!target||!badge)return;
+  if(document.getElementById('simType')?.value==='school'){return;}
+  const pack=officialSelectedPack(),rule=officialSelectedRule(pack);
+  if(!pack||!rule){badge.className='badge gray';badge.textContent='등록 자료 없음';target.innerHTML='<div class="notice">대학별 통합 규칙 파일을 먼저 등록하세요.</div>';return;}
+  const gate=officialRuleGateState(pack,rule);
+  badge.className='badge '+(gate.ready?'green':'amber');badge.textContent=gate.ready?'공식 계산 준비':'공식 계산 보류';
+  const missing=gate.missingInputs.map(item=>item.label);
+  target.innerHTML=`<div class="gate-checks">${gateCheckHTML('대학 자료 검수',gate.dataReasons,'최종 공식 자료와 파일 검수 완료')}${gateCheckHTML('산식 실행 조건',gate.ruleReasons,'환산식·반올림·변환표·실행 산식 확인 완료')}${gateCheckHTML('학생 성적 입력',missing,'이 규칙에 필요한 성적값 입력 완료')}</div><div class="${gate.ready?'audit-pass':'notice'}" style="margin-top:10px">${gate.ready?'<b>공식 환산 연결 조건을 모두 충족했습니다.</b> 이 규칙은 계산 실행 단계로 넘길 수 있습니다.':'<b>현재 아래 대학별 결과에는 이 공식 규칙을 사용하지 않습니다.</b> 기존 결과는 기능 확인용 백분위 샘플 분석이며, 위 보류 항목이 모두 해소된 뒤 공식 환산으로 전환됩니다.'}</div>`;
+}
 function runSimulation(){
   if(!document.getElementById('resultList'))return;
   const school=simType.value==='school', region=simRegion.value,status=simStatus.value;
@@ -820,6 +904,7 @@ function runSimulation(){
     <div><span class="badge ${x.color}">${x.label}</span><div class="delta" style="margin-top:5px;color:${x.advantage>=0?'#047857':'#b91c1c'}">${x.advantage>=0?'+':''}${pct(x.advantage)}${school?'등급':''}</div></div>
   </div>`).join('')||`<div class="empty">${school?'교과 3개년 데이터가 있는':'조건에 맞는'} 결과가 없습니다.</div>`;
   updateTargetSummary();
+  renderOfficialRuleGate();
 }
 function updateTargetSummary(){
   const u=universities.find(x=>String(x.id)===targetUni.value);if(!u)return;
@@ -987,6 +1072,7 @@ function validateRulePack(pack,fileName='파일'){
     if(!rule.calculation||rule.calculation.method!=='weighted-sum')fail(`${label}.calculation.method는 weighted-sum이어야 합니다.`);
     if(!['pending-final-guide','documented','verified'].includes(rule.calculation.formulaStatus))fail(`${label}.calculation.formulaStatus 값을 확인하세요.`);
     if(!['waiting','documented','verified'].includes(rule.calculation.roundingStatus))fail(`${label}.calculation.roundingStatus 값을 확인하세요.`);
+    if(rule.calculation.engineStatus!==undefined&&!['blocked','verified'].includes(rule.calculation.engineStatus))fail(`${label}.calculation.engineStatus 값을 확인하세요.`);
     const expected=Number(rule.calculation.weightTotal);
     if(!Number.isFinite(expected)||expected<=0)fail(`${label}.calculation.weightTotal을 확인하세요.`);
     const rounding=rule.calculation.rounding;
@@ -1067,7 +1153,7 @@ async function importRulePackFiles(event){
       }else{admissionRulePacks.push(pack);added++;}
     });
     admissionRulePacks.sort((a,b)=>b.academicYear-a.academicYear||a.university.name.localeCompare(b.university.name,'ko'));
-    persist();renderRulePacks();renderDashboard();
+    persist();renderRulePacks();renderDashboard();renderOfficialPackOptions();
     const rejected=reports.filter(report=>report.status==='rejected').length;
     alert(`파일 검사가 완료되었습니다. 신규 ${added}개, 교체 ${replaced}개를 저장했고 오류 ${rejected}개는 저장하지 않았습니다.`);
   }catch(err){alert('통합 규칙 파일 불러오기 실패: '+(err.message||'파일을 확인하세요.'));}
@@ -1144,6 +1230,7 @@ function auditRegularRule(pack,rule){
   else if(regularSources.some(source=>source.status!=='final'))reasons.push('정시 최종 모집요강 미확정');
   if(rule.calculation?.formulaStatus!=='verified')reasons.push('최종 환산식 미검수');
   if(rule.calculation?.roundingStatus!=='verified')reasons.push('반올림 순서 미검수');
+  if(rule.calculation?.engineStatus!=='verified')reasons.push('실행 산식 미등록');
   if(Object.values(rule.subjects||{}).some(subject=>subject.conversionTableStatus==='waiting'))reasons.push('탐구 변환표 미발표');
   return {ruleId:rule.ruleId,label:`${rule.admissionMethod||'수능'} · ${rule.group}`,departments:rule.departments||[],ready:reasons.length===0,reasons};
 }
