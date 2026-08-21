@@ -442,7 +442,11 @@ const RULE_PACK_TEMPLATE={
     {sourceId:'change-me-2027-early-guide',documentTitle:'2027학년도 수시모집요강',documentType:'early-guide',url:'https://대학교-입학처-공식주소',publishedDate:'YYYY-MM-DD',checkedDate:'YYYY-MM-DD',pages:['수시 전형 페이지'],status:'draft'},
     {sourceId:'change-me-2027-regular-guide',documentTitle:'2027학년도 정시모집요강',documentType:'regular-guide',url:'https://대학교-입학처-공식주소',publishedDate:'YYYY-MM-DD',checkedDate:'YYYY-MM-DD',pages:['정시 반영방법 페이지'],status:'waiting'}
   ],
-  sharedTables:{},
+  sharedTables:{earlyDepartmentQuotas:{
+    sourceRef:'change-me-2027-early-guide',pages:['전형별 모집인원 페이지'],
+    columns:['college','department','change-me-2027-early-01'],rows:[['단과대학','모집단위명',1]],
+    columnModes:{},specialSelections:{}
+  }},
   earlyAdmissions:[{
     admissionId:'change-me-2027-early-01',admissionType:'수시',category:'학생부교과',admissionName:'전형명',quotaType:'정원내',totalQuota:1,
     departments:['모집단위명'],eligibility:{summary:'지원자격 요약'},
@@ -889,6 +893,44 @@ function validateRulePack(pack,fileName='파일'){
     admission.sourceRefs.forEach(ref=>{if(!sourceIds.has(ref))fail(`${label}.sourceRefs의 ${ref} 출처가 sources에 없습니다.`)});
     if(!['draft','provisional','final','waiting'].includes(admission.dataStatus))fail(`${label}.dataStatus 값을 확인하세요.`);
   });
+  const quotaTable=pack.sharedTables?.earlyDepartmentQuotas;
+  if(quotaTable){
+    if(!sourceIds.has(quotaTable.sourceRef))fail('sharedTables.earlyDepartmentQuotas.sourceRef가 sources에 없습니다.');
+    const validateQuotaRows=(columns,rows,label)=>{
+      if(!Array.isArray(columns)||columns.length<3||columns[0]!=='college'||columns[1]!=='department')fail(`${label}.columns를 확인하세요.`);
+      if(new Set(columns).size!==columns.length)fail(`${label}.columns에 중복이 있습니다.`);
+      if(!Array.isArray(rows)||!rows.length)fail(`${label}.rows를 입력하세요.`);
+      const departmentKeys=new Set();
+      rows.forEach((row,rowIndex)=>{
+        if(!Array.isArray(row)||row.length!==columns.length)fail(`${label}.rows[${rowIndex}] 열 개수가 columns와 다릅니다.`);
+        if(!String(row[0]||'').trim()||!String(row[1]||'').trim())fail(`${label}.rows[${rowIndex}]의 단과대학·모집단위를 입력하세요.`);
+        const departmentKey=`${row[0]}::${row[1]}`;
+        if(departmentKeys.has(departmentKey))fail(`${label}.rows에 ${row[1]} 모집단위가 중복되었습니다.`);departmentKeys.add(departmentKey);
+        row.slice(2).forEach((value,valueIndex)=>{
+          if(!Number.isInteger(value)||value<0)fail(`${label}.rows[${rowIndex}]의 ${columns[valueIndex+2]} 인원은 0 이상의 정수여야 합니다.`);
+        });
+      });
+    };
+    validateQuotaRows(quotaTable.columns,quotaTable.rows,'sharedTables.earlyDepartmentQuotas');
+    if(quotaTable.autonomousPeriodColumns||quotaTable.autonomousPeriodRows)validateQuotaRows(quotaTable.autonomousPeriodColumns,quotaTable.autonomousPeriodRows,'sharedTables.earlyDepartmentQuotas.autonomousPeriod');
+    const sumColumn=(columns,rows,id)=>{
+      const index=columns.indexOf(id);return index<0?null:rows.reduce((sum,row)=>sum+Number(row[index]||0),0);
+    };
+    pack.earlyAdmissions.forEach(admission=>{
+      let total=sumColumn(quotaTable.columns,quotaTable.rows,admission.admissionId);
+      if(total===null&&Array.isArray(quotaTable.autonomousPeriodColumns)&&Array.isArray(quotaTable.autonomousPeriodRows))total=sumColumn(quotaTable.autonomousPeriodColumns,quotaTable.autonomousPeriodRows,admission.admissionId);
+      const special=quotaTable.specialSelections?.[admission.admissionId];
+      if(special){
+        const tracks=special.trackTotals;
+        if(!tracks||!Object.keys(tracks).length||Object.values(tracks).some(value=>!Number.isInteger(value)||value<0))fail(`${admission.admissionName} 계열별 모집인원을 확인하세요.`);
+        total=Object.values(tracks).reduce((sum,value)=>sum+value,0);
+        const maxColumn=quotaTable.columns.indexOf(admission.admissionId);
+        if(maxColumn<0||!Number.isInteger(special.maximumPerDepartment)||special.maximumPerDepartment<0||quotaTable.rows.some(row=>row[maxColumn]>special.maximumPerDepartment))fail(`${admission.admissionName} 모집단위별 최대인원을 확인하세요.`);
+      }
+      if(total===null)fail(`${admission.admissionName} 모집단위별 인원 열이 없습니다.`);
+      if(total!==admission.totalQuota)fail(`${admission.admissionName} 모집단위별 합계 ${total}명이 총 모집인원 ${admission.totalQuota}명과 다릅니다.`);
+    });
+  }
   const ruleIds=new Set();
   pack.regularAdmissions.forEach((rule,ruleIndex)=>{
     const label=`regularAdmissions[${ruleIndex}]`;
@@ -998,15 +1040,17 @@ function renderRulePacks(){
   const verified=admissionRulePacks.filter(pack=>pack.validation?.status==='verified').length;
   const earlyCount=admissionRulePacks.reduce((sum,pack)=>sum+(pack.earlyAdmissions?.length||0),0);
   const regularCount=admissionRulePacks.reduce((sum,pack)=>sum+(pack.regularAdmissions?.length||0),0);
+  const quotaRows=admissionRulePacks.reduce((sum,pack)=>sum+(pack.sharedTables?.earlyDepartmentQuotas?.rows?.length||0)+(pack.sharedTables?.earlyDepartmentQuotas?.autonomousPeriodRows?.length||0),0);
   const waiting=admissionRulePacks.filter(pack=>rulePackReadiness(pack)[0]==='변환표 대기').length;
-  summary.innerHTML=[['등록 대학',admissionRulePacks.length+'개'],['수시 전형',earlyCount+'개'],['정시 규칙',regularCount+'개'],['변환표 대기',waiting+'개'],['검수완료',verified+'개']].map(item=>`<div class="kpi-pill"><strong>${item[1]}</strong><span>${item[0]}</span></div>`).join('');
+  summary.innerHTML=[['등록 대학',admissionRulePacks.length+'개'],['수시 전형',earlyCount+'개'],['세부인원',quotaRows+'행'],['정시 규칙',regularCount+'개'],['변환표 대기',waiting+'개'],['검수완료',verified+'개']].map(item=>`<div class="kpi-pill"><strong>${item[1]}</strong><span>${item[0]}</span></div>`).join('');
   const validationLabels={draft:['미검수','gray'],reviewed:['1차 검수','blue'],verified:['검수완료','green']};
   body.innerHTML=admissionRulePacks.map(pack=>{
     const source=rulePackSourceBadge(pack);
     const validation=validationLabels[pack.validation.status]||['확인필요','red'];
     const ready=rulePackReadiness(pack),key=rulePackKey(pack);
     const imported=pack._meta?.importedAt?new Date(pack._meta.importedAt).toLocaleDateString('ko-KR'):'-';
-    const counts=`수시 ${pack.earlyAdmissions?.length||0} · 정시 ${pack.regularAdmissions?.length||0}`;
+    const packQuotaRows=(pack.sharedTables?.earlyDepartmentQuotas?.rows?.length||0)+(pack.sharedTables?.earlyDepartmentQuotas?.autonomousPeriodRows?.length||0);
+    const counts=`수시 ${pack.earlyAdmissions?.length||0} · 정시 ${pack.regularAdmissions?.length||0} · 모집단위 ${packQuotaRows}`;
     const links=(pack.sources||[]).map(item=>`<a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.documentTitle)}</a>`).join('<br>');
     return `<tr><td><b>${escapeHTML(pack.university.name)}</b><div class="muted" style="font-size:10px;margin-top:3px">${escapeHTML(pack.university.code)} · ${counts}</div></td><td>${pack.academicYear}</td><td><span class="badge ${source[1]}">${source[0]}</span></td><td><span class="badge ${validation[1]}">${validation[0]}</span></td><td><span class="badge ${ready[1]}">${ready[0]}</span></td><td>${links}</td><td>${imported}</td><td><button class="small-btn" onclick="downloadRulePack('${key}')">내보내기</button></td></tr>`;
   }).join('')||'<tr><td colspan="8" class="empty">등록된 통합 규칙 파일이 없습니다. 대학별 파일을 추가하면 여기에 표시됩니다.</td></tr>';
