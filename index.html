@@ -83,6 +83,21 @@ tbody tr:hover{background:#fafbff}
 .goal-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}.goal-card{border:1px solid var(--line);border-radius:12px;padding:12px}.goal-card b{display:block;margin-bottom:7px}.goal-card span{display:block;font-size:11px;color:var(--muted);line-height:1.6}
 .data-actions{display:flex;gap:8px;flex-wrap:wrap}.file-label{display:inline-flex;align-items:center;gap:7px}
 .rule-summary{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.rule-summary .kpi-pill{min-width:120px;flex:1}
+.rule-modal{width:min(1120px,100%)}
+.rule-detail-head{display:grid;grid-template-columns:1.35fr .65fr;gap:14px;margin-bottom:14px}
+.rule-detail-panel{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fbfcff}
+.rule-tabs{display:flex;gap:7px;padding:5px;background:#f3f4f6;border-radius:12px;margin:14px 0}
+.rule-tab{flex:1;border:0;background:transparent;border-radius:9px;padding:10px;color:#667085;font-weight:800}
+.rule-tab.active{background:#fff;color:var(--primary);box-shadow:0 1px 5px rgba(31,41,55,.10)}
+.rule-detail-card{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff;margin-top:10px}
+.rule-detail-card h4{margin:0 0 7px;font-size:14px}.rule-detail-card p{margin:5px 0;font-size:12px;line-height:1.6}
+.rule-list{margin:7px 0 0;padding-left:18px;color:#4b5563;font-size:12px;line-height:1.65}
+.rule-source-list{display:grid;gap:8px}.rule-source-list a{font-size:12px;font-weight:750}
+.rule-scope-list{display:grid;gap:7px;font-size:12px;line-height:1.5}
+.rule-scope-item{display:flex;gap:7px;align-items:flex-start}.rule-scope-item span:first-child{flex:0 0 auto}
+.rule-mini{font-size:11px;line-height:1.55;color:#667085;margin-top:5px}
+.rule-quota-panel{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+.rule-table-actions{display:flex;gap:6px;flex-wrap:wrap}
 .score-entry-grid{display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:start}
 .score-entry-card{min-width:0}
 .subsection{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fbfcff;margin-top:12px}
@@ -98,7 +113,7 @@ tbody tr:hover{background:#fafbff}
 .footer{padding:28px 0 12px;text-align:center;color:#98a2b3;font-size:11px}
 @media(max-width:1220px){.split{grid-template-columns:360px minmax(0,1fr)}.score-grid{grid-template-columns:1fr}}
 @media(max-width:1050px){.grid.cols-4{grid-template-columns:repeat(2,1fr)}.split,.score-entry-grid{grid-template-columns:1fr}.sticky{position:static}.hero{grid-template-columns:1fr}.result-card{grid-template-columns:1fr 90px 90px}.result-card .delta{display:none}.top-nav{overflow:auto}.brand{min-width:200px}}
-@media(max-width:720px){.app-header{padding:0 12px}.brand{min-width:auto}.brand div:last-child{display:none}.header-actions{display:none}.shell{padding:16px}.grid.cols-4,.grid.cols-2{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.result-card{grid-template-columns:1fr 85px}.result-card .cutoff{display:none}.score-grid,.form-row,.goal-cards,.detail-years,.kpi-strip{grid-template-columns:1fr}.top-nav{margin-left:12px}.nav-btn{white-space:nowrap}}
+@media(max-width:720px){.app-header{padding:0 12px}.brand{min-width:auto}.brand div:last-child{display:none}.header-actions{display:none}.shell{padding:16px}.grid.cols-4,.grid.cols-2{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.result-card{grid-template-columns:1fr 85px}.result-card .cutoff{display:none}.score-grid,.form-row,.goal-cards,.detail-years,.kpi-strip,.rule-detail-head{grid-template-columns:1fr}.top-nav{margin-left:12px}.nav-btn{white-space:nowrap}}
 </style>
 </head>
 <body>
@@ -330,10 +345,11 @@ tbody tr:hover{background:#fafbff}
         <tbody>
           <tr><td>01</td><td>학생 성적 DB</td><td><span class="badge green">교과+모고 구현</span></td><td>대학별 실제 반영 항목 확정</td></tr>
           <tr><td>02</td><td>대학 3개년 입결·충원 DB</td><td><span class="badge blue">틀 구현</span></td><td>공식 데이터 입력</td></tr>
-          <tr><td>03</td><td>대학별 2027 수시·정시 통합 규칙</td><td><span class="badge blue">통합 파일 구조 구현</span></td><td>대학별 공식 요강 추가·교차 검수</td></tr>
-          <tr><td>04</td><td>안정/적정/추합/소신 판정</td><td><span class="badge amber">샘플</span></td><td>판정 기준 확정</td></tr>
-          <tr><td>05</td><td>목표 성적 자동 탐색</td><td><span class="badge green">기본 구현</span></td><td>대학별 가산점·영어 감점 반영</td></tr>
-          <tr><td>06</td><td>상담 보고서 PDF 자동 생성</td><td><span class="badge gray">예정</span></td><td>최종 DB 이후 연결</td></tr>
+          <tr><td>03</td><td>대학별 2027 수시·정시 통합 규칙</td><td><span class="badge green">구조·상세조회 구현</span></td><td>일반전형 중심 대학 추가·교차 검수</td></tr>
+          <tr><td>04</td><td>검수완료 규칙 계산기 연결</td><td><span class="badge amber">대기</span></td><td>정시 최종요강·탐구 변환표 발표 후 연결</td></tr>
+          <tr><td>05</td><td>안정/적정/추합/소신 판정</td><td><span class="badge amber">샘플</span></td><td>판정 기준 확정</td></tr>
+          <tr><td>06</td><td>목표 성적 자동 탐색</td><td><span class="badge green">기본 구현</span></td><td>검수완료 환산식으로 교체</td></tr>
+          <tr><td>07</td><td>상담 보고서 PDF 자동 생성</td><td><span class="badge gray">예정</span></td><td>최종 DB 이후 연결</td></tr>
         </tbody>
       </table></div>
     </div>
@@ -398,6 +414,20 @@ tbody tr:hover{background:#fafbff}
   <div class="modal-head"><h3 id="detailTitle">대학 상세</h3><button class="close" onclick="closeModal('detailModal')">×</button></div>
   <div class="modal-body" id="detailBody"></div>
   <div class="modal-foot"><button class="btn primary" onclick="closeModal('detailModal');goView('simulator')">시뮬레이션으로 이동</button></div>
+</div></div>
+
+<!-- 수시·정시 통합 규칙 상세 모달 -->
+<div class="modal-backdrop" id="rulePackDetailModal"><div class="modal rule-modal">
+  <div class="modal-head"><h3 id="rulePackDetailTitle">전형 상세조회</h3><button class="close" onclick="closeModal('rulePackDetailModal')" aria-label="닫기">×</button></div>
+  <div class="modal-body">
+    <div id="rulePackDetailOverview"></div>
+    <div class="rule-tabs" role="tablist" aria-label="전형 구분">
+      <button id="ruleTabEarly" class="rule-tab active" role="tab" onclick="setRulePackDetailTab('early')">수시 전형</button>
+      <button id="ruleTabRegular" class="rule-tab" role="tab" onclick="setRulePackDetailTab('regular')">정시 반영</button>
+    </div>
+    <div id="rulePackDetailContent"></div>
+  </div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal('rulePackDetailModal')">닫기</button></div>
 </div></div>
 
 <script>
@@ -465,7 +495,7 @@ const RULE_PACK_TEMPLATE={
     },
     bonuses:[],restrictions:[],notes:['공식 자료를 확인해 예시값을 모두 교체하세요.']
   }],
-  coverage:{included:[],pending:['공식 자료를 확인해 예시값을 모두 교체하세요.']},
+  coverage:{included:[],pending:['공식 자료를 확인해 예시값을 모두 교체하세요.'],excluded:[]},
   validation:{status:'draft',checkedAt:'',notes:['입력 후 공식 자료와 교차 검수 필요']}
 };
 
@@ -976,6 +1006,11 @@ function validateRulePack(pack,fileName='파일'){
     if(Math.abs(weightSum-expected)>0.0001)fail(`${label} 가중 반영비율 합계 ${weightSum}가 weightTotal ${expected}와 다릅니다.`);
     if(!Array.isArray(rule.bonuses)||!Array.isArray(rule.restrictions)||!Array.isArray(rule.notes))fail(`${label}의 bonuses, restrictions, notes는 배열이어야 합니다.`);
   });
+  if(!pack.coverage||!Array.isArray(pack.coverage.included)||!Array.isArray(pack.coverage.pending))fail('coverage.included와 coverage.pending는 배열이어야 합니다.');
+  if(pack.coverage.excluded!==undefined&&!Array.isArray(pack.coverage.excluded))fail('coverage.excluded는 배열이어야 합니다.');
+  ['included','pending','excluded'].forEach(key=>{
+    (pack.coverage[key]||[]).forEach((item,index)=>{if(!String(item||'').trim())fail(`coverage.${key}[${index}] 내용을 입력하세요.`)});
+  });
   if(!pack.validation||!['draft','reviewed','verified'].includes(pack.validation.status))fail('validation.status 값을 확인하세요.');
   if(!validISODate(pack.validation.checkedAt||''))fail('validation.checkedAt은 YYYY-MM-DD 형식이어야 합니다.');
   if(pack.validation.status==='verified'&&!pack.validation.checkedAt)fail('검수완료 자료는 validation.checkedAt이 필요합니다.');
@@ -1035,6 +1070,109 @@ function rulePackSourceBadge(pack){
   if(statuses.includes('provisional'))return ['시행계획','blue'];
   return ['확인필요','red'];
 }
+const ruleValidationLabels={draft:['미검수','gray'],reviewed:['1차 검수','blue'],verified:['검수완료','green']};
+const subjectLabels={korean:'국어',math:'수학',english:'영어',inquiry:'탐구',koreanHistory:'한국사'};
+const metricLabels={'standard-score':'표준점수',percentile:'백분위','converted-standard-score':'변환표준점수','grade-table':'등급표','raw-score':'원점수','university-score':'대학환산점수',qualification:'자격'};
+let activeRulePackKey='';
+let activeRulePackTab='early';
+let activeQuotaAdmissionId='';
+
+function rulePackByKey(key){return admissionRulePacks.find(item=>rulePackKey(item)===key)}
+function isOutOfCurrentScopeAdmission(admission){
+  return admission.category==='실기/실적'||/특성화고/.test(admission.admissionName||'');
+}
+function selectionSummary(admission){
+  return (admission.selection?.stages||[]).map(stage=>{
+    const elements=(stage.elements||[]).map(item=>`${item.name} ${item.weight}%`).join(' + ');
+    return `${stage.stage} ${elements}${stage.multiplier?` · ${stage.multiplier}`:''}`;
+  }).join(' / ')||'-';
+}
+function csatMinimumSummary(admission){
+  if(!admission.csatMinimum?.applied)return '미적용';
+  const rules=admission.csatMinimum.rules||[];
+  return rules.length?rules.map(rule=>`${rule.target}: ${rule.condition}`).join(' / '):'적용(세부 규칙 확인 필요)';
+}
+function getDepartmentQuotas(pack,admissionId){
+  const quota=pack.sharedTables?.earlyDepartmentQuotas;if(!quota)return [];
+  const collect=(columns=[],rows=[])=>{
+    const index=columns.indexOf(admissionId);if(index<0)return [];
+    return rows.filter(row=>Number(row[index])>0).map(row=>({college:row[0],department:row[1],quota:Number(row[index])}));
+  };
+  return [...collect(quota.columns,quota.rows),...collect(quota.autonomousPeriodColumns,quota.autonomousPeriodRows)];
+}
+function showRulePackDetail(key){
+  const pack=rulePackByKey(key);if(!pack)return;
+  activeRulePackKey=key;activeRulePackTab='early';activeQuotaAdmissionId=pack.earlyAdmissions?.[0]?.admissionId||'';
+  document.getElementById('rulePackDetailTitle').textContent=`${pack.university.name} ${pack.academicYear}학년도 전형 상세조회`;
+  renderRulePackDetailOverview(pack);renderRulePackDetail();showModal('rulePackDetailModal');
+}
+function renderRulePackDetailOverview(pack){
+  const source=rulePackSourceBadge(pack),validation=ruleValidationLabels[pack.validation?.status]||['확인필요','red'],ready=rulePackReadiness(pack);
+  const included=(pack.coverage?.included||[]).map(item=>`<div class="rule-scope-item"><span class="badge green">포함</span><span>${escapeHTML(item)}</span></div>`).join('');
+  const pending=(pack.coverage?.pending||[]).map(item=>`<div class="rule-scope-item"><span class="badge amber">대기</span><span>${escapeHTML(item)}</span></div>`).join('');
+  const excluded=(pack.coverage?.excluded||[]).map(item=>`<div class="rule-scope-item"><span class="badge gray">제외</span><span>${escapeHTML(item)}</span></div>`).join('');
+  const sources=(pack.sources||[]).map(item=>`<div><a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.documentTitle)}</a><div class="rule-mini">${escapeHTML(item.documentType||'자료')} · ${escapeHTML(item.status||'확인필요')} · 확인일 ${escapeHTML(item.checkedDate||'-')}</div></div>`).join('');
+  document.getElementById('rulePackDetailOverview').innerHTML=`
+    <div class="notice"><b>조회와 계산을 분리했습니다.</b> 수시 확정 자료는 상세조회할 수 있지만, 정시 최종 산식·반올림 또는 탐구 변환표가 대기 중인 규칙은 계산기에 연결하지 않습니다.</div>
+    <div class="rule-summary">${[['수시 전형',(pack.earlyAdmissions?.length||0)+'개'],['정시 규칙',(pack.regularAdmissions?.length||0)+'개'],['자료 상태',source[0]],['검수 상태',validation[0]],['계산 준비',ready[0]]].map(item=>`<div class="kpi-pill"><strong>${escapeHTML(item[1])}</strong><span>${escapeHTML(item[0])}</span></div>`).join('')}</div>
+    <div class="rule-detail-head">
+      <div class="rule-detail-panel"><h4 style="margin:0 0 10px">수집 범위</h4><div class="rule-scope-list">${included}${pending}${excluded||'<div class="rule-mini">별도 제외 범위 없음</div>'}</div></div>
+      <div class="rule-detail-panel"><h4 style="margin:0 0 10px">공식 자료</h4><div class="rule-source-list">${sources||'<span class="muted">등록된 출처 없음</span>'}</div></div>
+    </div>`;
+}
+function setRulePackDetailTab(tab){
+  activeRulePackTab=tab==='regular'?'regular':'early';
+  document.getElementById('ruleTabEarly').classList.toggle('active',activeRulePackTab==='early');
+  document.getElementById('ruleTabRegular').classList.toggle('active',activeRulePackTab==='regular');
+  renderRulePackDetail();
+}
+function renderRulePackDetail(){
+  const pack=rulePackByKey(activeRulePackKey),content=document.getElementById('rulePackDetailContent');if(!pack||!content)return;
+  if(activeRulePackTab==='regular'){content.innerHTML=renderRegularRuleDetails(pack);return;}
+  const categories=[...new Set((pack.earlyAdmissions||[]).map(item=>item.category))];
+  content.innerHTML=`<div class="toolbar"><input id="ruleEarlySearch" class="input search" placeholder="전형명 검색" oninput="renderEarlyRuleRows()"><select id="ruleEarlyCategory" class="select" onchange="renderEarlyRuleRows()"><option value="">전체 전형유형</option>${categories.map(category=>`<option>${escapeHTML(category)}</option>`).join('')}</select></div><div id="ruleEarlyRows"></div><div id="ruleQuotaPanel" class="rule-quota-panel"></div>`;
+  renderEarlyRuleRows();
+}
+function renderEarlyRuleRows(){
+  const pack=rulePackByKey(activeRulePackKey),target=document.getElementById('ruleEarlyRows');if(!pack||!target)return;
+  const query=(document.getElementById('ruleEarlySearch')?.value||'').trim().toLowerCase();
+  const category=document.getElementById('ruleEarlyCategory')?.value||'';
+  const admissions=(pack.earlyAdmissions||[]).filter(item=>(!category||item.category===category)&&(!query||(item.admissionName+item.category).toLowerCase().includes(query)));
+  target.innerHTML=`<div class="table-wrap"><table><thead><tr><th>전형</th><th>모집인원</th><th>선발방법</th><th>수능최저</th><th>면접</th><th>상태</th><th>모집단위</th></tr></thead><tbody>${admissions.map(item=>{
+    const scope=isOutOfCurrentScopeAdmission(item)?'<span class="badge gray">현재범위 제외</span>':`<span class="badge ${item.dataStatus==='final'?'green':'amber'}">${item.dataStatus==='final'?'확정자료':'검수중'}</span>`;
+    return `<tr><td><b>${escapeHTML(item.admissionName)}</b><div class="rule-mini">${escapeHTML(item.category)} · ${escapeHTML(item.quotaType)}</div></td><td><b>${Number(item.totalQuota||0).toLocaleString('ko-KR')}명</b></td><td>${escapeHTML(selectionSummary(item))}</td><td><div class="rule-mini">${escapeHTML(csatMinimumSummary(item))}</div></td><td>${item.interview?.applied?'<span class="badge blue">있음</span>':'<span class="badge gray">없음</span>'}</td><td>${scope}</td><td><button class="small-btn" onclick="showAdmissionQuotas('${item.admissionId}')">인원 보기</button></td></tr>`;
+  }).join('')||'<tr><td colspan="7" class="empty">검색 결과가 없습니다.</td></tr>'}</tbody></table></div>`;
+  if(admissions.length&&!admissions.some(item=>item.admissionId===activeQuotaAdmissionId))activeQuotaAdmissionId=admissions[0].admissionId;
+  renderAdmissionQuotas();
+}
+function showAdmissionQuotas(admissionId){activeQuotaAdmissionId=admissionId;renderAdmissionQuotas();document.getElementById('ruleQuotaPanel')?.scrollIntoView({behavior:'smooth',block:'nearest'})}
+function renderAdmissionQuotas(){
+  const pack=rulePackByKey(activeRulePackKey),panel=document.getElementById('ruleQuotaPanel');if(!pack||!panel)return;
+  const admission=pack.earlyAdmissions?.find(item=>item.admissionId===activeQuotaAdmissionId);if(!admission){panel.innerHTML='';return;}
+  const rows=getDepartmentQuotas(pack,admission.admissionId),special=pack.sharedTables?.earlyDepartmentQuotas?.specialSelections?.[admission.admissionId];
+  const total=rows.reduce((sum,row)=>sum+row.quota,0);
+  const specialNote=special?`<div class="notice" style="margin-bottom:10px">이 전형의 표 숫자는 확정 배정 인원이 아니라 <b>모집단위별 최대 ${special.maximumPerDepartment}명</b>입니다. 계열 총원은 ${Object.entries(special.trackTotals||{}).map(([track,value])=>`${track==='humanities'?'인문':'자연'} ${value}명`).join(' · ')}입니다.</div>`:'';
+  panel.innerHTML=`<div class="panel-title"><h3>${escapeHTML(admission.admissionName)} 모집단위별 인원</h3><span class="badge ${special?'amber':'blue'}">${special?'최대인원 표시':`합계 ${total.toLocaleString('ko-KR')}명`}</span></div>${specialNote}<div class="table-wrap"><table><thead><tr><th>단과대학</th><th>모집단위</th><th>${special?'모집 가능':'모집인원'}</th></tr></thead><tbody>${rows.map(row=>`<tr><td>${escapeHTML(row.college)}</td><td><b>${escapeHTML(row.department)}</b></td><td>${special?`최대 ${row.quota}명`:`${row.quota}명`}</td></tr>`).join('')||'<tr><td colspan="3" class="empty">등록된 모집단위별 인원이 없습니다.</td></tr>'}</tbody></table></div>`;
+}
+function gradeTableSummary(subject){
+  if(!Array.isArray(subject?.table))return '-';
+  return subject.table.map(item=>`${item.grade}등급 ${item.value}`).join(' · ');
+}
+function bonusSummary(bonus){
+  const condition=Object.values(bonus.when||{}).join(' · ');
+  return `${condition?condition+' ':''}${Number(bonus.ratePercent||0)}% 가산`;
+}
+function renderRegularRuleDetails(pack){
+  const cards=(pack.regularAdmissions||[]).map(rule=>{
+    const weights=Object.entries(rule.subjects||{}).filter(([,value])=>value.application==='weighted').map(([key,value])=>`${subjectLabels[key]||key} ${value.weight}%`).join(' · ');
+    const metrics=Object.entries(rule.subjects||{}).filter(([,value])=>value.application==='weighted').map(([key,value])=>`${subjectLabels[key]||key} ${metricLabels[value.metric]||value.metric}`).join(' · ');
+    const waiting=rule.calculation?.formulaStatus!=='verified'||rule.calculation?.roundingStatus!=='verified'||Object.values(rule.subjects||{}).some(subject=>subject.conversionTableStatus==='waiting');
+    const bonuses=(rule.bonuses||[]).map(bonusSummary).join(' · ')||'없음';
+    const english=rule.subjects?.english,history=rule.subjects?.koreanHistory;
+    return `<div class="rule-detail-card"><div class="panel-title"><div><h4>${escapeHTML(rule.admissionMethod||'수능')} · ${escapeHTML(rule.group)}</h4><div class="rule-mini">${(rule.departments||[]).map(escapeHTML).join(' · ')}</div></div><span class="badge ${waiting?'amber':'green'}">${waiting?'조회 전용':'계산 가능'}</span></div><p><b>반영비율</b> ${escapeHTML(weights||'-')}</p><p><b>점수 기준</b> ${escapeHTML(metrics||'-')}</p><p><b>가산점</b> ${escapeHTML(bonuses)}</p><p><b>영어 등급표</b> <span class="rule-mini">${escapeHTML(gradeTableSummary(english))}</span></p><p><b>한국사 표</b> <span class="rule-mini">${escapeHTML(gradeTableSummary(history))}</span></p>${(rule.restrictions||[]).length?`<p><b>응시 조건</b> ${rule.restrictions.map(escapeHTML).join(' · ')}</p>`:''}${(rule.notes||[]).length?`<ul class="rule-list">${rule.notes.map(note=>`<li>${escapeHTML(note)}</li>`).join('')}</ul>`:''}</div>`;
+  }).join('');
+  return `<div class="notice"><b>현재 범위:</b> 정시 일반전형의 반영비율·점수 기준·영어·한국사·가산점 확인용입니다. 예체능·특성화고 전형은 제외했고, 탐구 변환표와 최종 산식이 확정될 때까지 환산 계산은 실행하지 않습니다.</div>${cards||'<div class="empty">등록된 정시 규칙이 없습니다.</div>'}`;
+}
 function renderRulePacks(){
   const body=document.getElementById('rulePackTbody'),summary=document.getElementById('rulePackSummary');if(!body||!summary)return;
   const verified=admissionRulePacks.filter(pack=>pack.validation?.status==='verified').length;
@@ -1043,16 +1181,15 @@ function renderRulePacks(){
   const quotaRows=admissionRulePacks.reduce((sum,pack)=>sum+(pack.sharedTables?.earlyDepartmentQuotas?.rows?.length||0)+(pack.sharedTables?.earlyDepartmentQuotas?.autonomousPeriodRows?.length||0),0);
   const waiting=admissionRulePacks.filter(pack=>rulePackReadiness(pack)[0]==='변환표 대기').length;
   summary.innerHTML=[['등록 대학',admissionRulePacks.length+'개'],['수시 전형',earlyCount+'개'],['세부인원',quotaRows+'행'],['정시 규칙',regularCount+'개'],['변환표 대기',waiting+'개'],['검수완료',verified+'개']].map(item=>`<div class="kpi-pill"><strong>${item[1]}</strong><span>${item[0]}</span></div>`).join('');
-  const validationLabels={draft:['미검수','gray'],reviewed:['1차 검수','blue'],verified:['검수완료','green']};
   body.innerHTML=admissionRulePacks.map(pack=>{
     const source=rulePackSourceBadge(pack);
-    const validation=validationLabels[pack.validation.status]||['확인필요','red'];
+    const validation=ruleValidationLabels[pack.validation.status]||['확인필요','red'];
     const ready=rulePackReadiness(pack),key=rulePackKey(pack);
     const imported=pack._meta?.importedAt?new Date(pack._meta.importedAt).toLocaleDateString('ko-KR'):'-';
     const packQuotaRows=(pack.sharedTables?.earlyDepartmentQuotas?.rows?.length||0)+(pack.sharedTables?.earlyDepartmentQuotas?.autonomousPeriodRows?.length||0);
     const counts=`수시 ${pack.earlyAdmissions?.length||0} · 정시 ${pack.regularAdmissions?.length||0} · 모집단위 ${packQuotaRows}`;
     const links=(pack.sources||[]).map(item=>`<a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.documentTitle)}</a>`).join('<br>');
-    return `<tr><td><b>${escapeHTML(pack.university.name)}</b><div class="muted" style="font-size:10px;margin-top:3px">${escapeHTML(pack.university.code)} · ${counts}</div></td><td>${pack.academicYear}</td><td><span class="badge ${source[1]}">${source[0]}</span></td><td><span class="badge ${validation[1]}">${validation[0]}</span></td><td><span class="badge ${ready[1]}">${ready[0]}</span></td><td>${links}</td><td>${imported}</td><td><button class="small-btn" onclick="downloadRulePack('${key}')">내보내기</button></td></tr>`;
+    return `<tr><td><b>${escapeHTML(pack.university.name)}</b><div class="muted" style="font-size:10px;margin-top:3px">${escapeHTML(pack.university.code)} · ${counts}</div></td><td>${pack.academicYear}</td><td><span class="badge ${source[1]}">${source[0]}</span></td><td><span class="badge ${validation[1]}">${validation[0]}</span></td><td><span class="badge ${ready[1]}">${ready[0]}</span></td><td>${links}</td><td>${imported}</td><td><div class="rule-table-actions"><button class="small-btn" onclick="showRulePackDetail('${key}')">상세조회</button><button class="small-btn" onclick="downloadRulePack('${key}')">내보내기</button></div></td></tr>`;
   }).join('')||'<tr><td colspan="8" class="empty">등록된 통합 규칙 파일이 없습니다. 대학별 파일을 추가하면 여기에 표시됩니다.</td></tr>';
 }
 function downloadRulePack(key){
