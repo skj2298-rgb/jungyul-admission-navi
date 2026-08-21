@@ -1104,7 +1104,7 @@ function showRulePackDetail(key){
   const pack=rulePackByKey(key);if(!pack)return;
   activeRulePackKey=key;activeRulePackTab='early';activeQuotaAdmissionId=pack.earlyAdmissions?.[0]?.admissionId||'';
   document.getElementById('rulePackDetailTitle').textContent=`${pack.university.name} ${pack.academicYear}학년도 전형 상세조회`;
-  renderRulePackDetailOverview(pack);renderRulePackDetail();showModal('rulePackDetailModal');
+  renderRulePackDetailOverview(pack);setRulePackDetailTab('early');showModal('rulePackDetailModal');
 }
 function renderRulePackDetailOverview(pack){
   const source=rulePackSourceBadge(pack),validation=ruleValidationLabels[pack.validation?.status]||['확인필요','red'],ready=rulePackReadiness(pack);
@@ -1139,10 +1139,11 @@ function renderEarlyRuleRows(){
   const category=document.getElementById('ruleEarlyCategory')?.value||'';
   const admissions=(pack.earlyAdmissions||[]).filter(item=>(!category||item.category===category)&&(!query||(item.admissionName+item.category).toLowerCase().includes(query)));
   target.innerHTML=`<div class="table-wrap"><table><thead><tr><th>전형</th><th>모집인원</th><th>선발방법</th><th>수능최저</th><th>면접</th><th>상태</th><th>모집단위</th></tr></thead><tbody>${admissions.map(item=>{
-    const scope=isOutOfCurrentScopeAdmission(item)?'<span class="badge gray">현재범위 제외</span>':`<span class="badge ${item.dataStatus==='final'?'green':'amber'}">${item.dataStatus==='final'?'확정자료':'검수중'}</span>`;
+    const scope=isOutOfCurrentScopeAdmission(item)?'<span class="badge gray">계산범위 제외</span>':`<span class="badge ${item.dataStatus==='final'?'green':'amber'}">${item.dataStatus==='final'?'확정자료':'검수중'}</span>`;
     return `<tr><td><b>${escapeHTML(item.admissionName)}</b><div class="rule-mini">${escapeHTML(item.category)} · ${escapeHTML(item.quotaType)}</div></td><td><b>${Number(item.totalQuota||0).toLocaleString('ko-KR')}명</b></td><td>${escapeHTML(selectionSummary(item))}</td><td><div class="rule-mini">${escapeHTML(csatMinimumSummary(item))}</div></td><td>${item.interview?.applied?'<span class="badge blue">있음</span>':'<span class="badge gray">없음</span>'}</td><td>${scope}</td><td><button class="small-btn" onclick="showAdmissionQuotas('${item.admissionId}')">인원 보기</button></td></tr>`;
   }).join('')||'<tr><td colspan="7" class="empty">검색 결과가 없습니다.</td></tr>'}</tbody></table></div>`;
-  if(admissions.length&&!admissions.some(item=>item.admissionId===activeQuotaAdmissionId))activeQuotaAdmissionId=admissions[0].admissionId;
+  if(!admissions.length)activeQuotaAdmissionId='';
+  else if(!admissions.some(item=>item.admissionId===activeQuotaAdmissionId))activeQuotaAdmissionId=admissions[0].admissionId;
   renderAdmissionQuotas();
 }
 function showAdmissionQuotas(admissionId){activeQuotaAdmissionId=admissionId;renderAdmissionQuotas();document.getElementById('ruleQuotaPanel')?.scrollIntoView({behavior:'smooth',block:'nearest'})}
