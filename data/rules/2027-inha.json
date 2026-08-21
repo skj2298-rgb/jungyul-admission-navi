@@ -1,0 +1,442 @@
+{
+  "schema": "jungyul-admission-rule-pack",
+  "schemaVersion": "1.0",
+  "academicYear": 2027,
+  "university": {
+    "code": "inha",
+    "name": "인하대학교",
+    "aliases": ["인하대"],
+    "region": "인천"
+  },
+  "source": {
+    "documentTitle": "2027학년도 인하대학교 대학입학전형 시행계획(지역의사선발 전형 신설, 학과 개편 및 정원 조정에 따른 변경사항 반영)",
+    "documentType": "implementation-plan",
+    "url": "https://admission.inha.ac.kr/cms/FR_CON/index.do?MENU_ID=130",
+    "publishedDate": "2026-06-12",
+    "checkedDate": "2026-08-21",
+    "pages": ["32쪽 수능(일반) 전형방법", "37~39쪽 수능 반영방법"],
+    "status": "provisional"
+  },
+  "sharedTables": {
+    "englishHumanitiesArts": [
+      {"grade": 1, "value": 150}, {"grade": 2, "value": 148}, {"grade": 3, "value": 145},
+      {"grade": 4, "value": 135}, {"grade": 5, "value": 120}, {"grade": 6, "value": 100},
+      {"grade": 7, "value": 80}, {"grade": 8, "value": 40}, {"grade": 9, "value": 0}
+    ],
+    "englishNatural": [
+      {"grade": 1, "value": 100}, {"grade": 2, "value": 98}, {"grade": 3, "value": 96},
+      {"grade": 4, "value": 90}, {"grade": 5, "value": 80}, {"grade": 6, "value": 60},
+      {"grade": 7, "value": 40}, {"grade": 8, "value": 20}, {"grade": 9, "value": 0}
+    ],
+    "koreanHistoryDeduction": [
+      {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+      {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+      {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+    ]
+  },
+  "rules": [
+    {
+      "ruleId": "inha-2027-humanities-general",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "모집단위별 가군·나군·다군",
+      "departments": ["인문 전 모집단위(경영융합학부·사회과학융합학부·인문융합학부 제외)"],
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 35},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 25, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 15, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 150, "maxContribution": 150,
+          "table": [
+            {"grade": 1, "value": 150}, {"grade": 2, "value": 148}, {"grade": 3, "value": 145},
+            {"grade": 4, "value": 135}, {"grade": 5, "value": 120}, {"grade": 6, "value": 100},
+            {"grade": 7, "value": 80}, {"grade": 8, "value": 40}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 25, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [{"id": "social-inquiry-3pct", "basis": "each-inquiry-converted-standard-score", "ratePercent": 3, "when": {"inquiryCategory": "사회탐구"}, "timing": "before-two-subject-average"}],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["탐구는 2개 과목 평균 반영", "탐구 자체변환표준점수는 2027학년도 표 발표 후 추가"]
+    },
+    {
+      "ruleId": "inha-2027-humanities-fusion-a",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "나군",
+      "departments": ["경영융합학부", "사회과학융합학부", "인문융합학부"],
+      "comparisonGroup": "inha-2027-humanities-fusion",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 35},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 30, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 150, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 150}, {"grade": 2, "value": 148}, {"grade": 3, "value": 145},
+            {"grade": 4, "value": 135}, {"grade": 5, "value": 120}, {"grade": 6, "value": 100},
+            {"grade": 7, "value": 80}, {"grade": 8, "value": 40}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 25, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [{"id": "social-inquiry-3pct", "basis": "each-inquiry-converted-standard-score", "ratePercent": 3, "when": {"inquiryCategory": "사회탐구"}, "timing": "before-two-subject-average"}],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["B형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-humanities-fusion-b",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "나군",
+      "departments": ["경영융합학부", "사회과학융합학부", "인문융합학부"],
+      "comparisonGroup": "inha-2027-humanities-fusion",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 30},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 30, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 150, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 150}, {"grade": 2, "value": 148}, {"grade": 3, "value": 145},
+            {"grade": 4, "value": 135}, {"grade": 5, "value": 120}, {"grade": 6, "value": 100},
+            {"grade": 7, "value": 80}, {"grade": 8, "value": 40}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 30, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["A형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-natural-general",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "모집단위별 가군·나군·다군",
+      "departments": ["자연 전 모집단위(공학융합학부·자연과학융합학부 제외)"],
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 25},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 35, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 100, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 100}, {"grade": 2, "value": 98}, {"grade": 3, "value": 96},
+            {"grade": 4, "value": 90}, {"grade": 5, "value": 80}, {"grade": 6, "value": 60},
+            {"grade": 7, "value": 40}, {"grade": 8, "value": 20}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 30, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [
+        {"id": "calculus-geometry-3pct", "basis": "math-standard-score", "ratePercent": 3, "when": {"mathSelection": ["미적분", "기하"]}},
+        {"id": "science-inquiry-3pct", "basis": "each-inquiry-converted-standard-score", "ratePercent": 3, "when": {"inquiryCategory": "과학탐구"}, "timing": "before-two-subject-average"}
+      ],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["탐구는 2개 과목 평균 반영"]
+    },
+    {
+      "ruleId": "inha-2027-natural-fusion-a",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "나군",
+      "departments": ["공학융합학부", "자연과학융합학부"],
+      "comparisonGroup": "inha-2027-natural-fusion",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 25},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 40, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 100, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 100}, {"grade": 2, "value": 98}, {"grade": 3, "value": 96},
+            {"grade": 4, "value": 90}, {"grade": 5, "value": 80}, {"grade": 6, "value": 60},
+            {"grade": 7, "value": 40}, {"grade": 8, "value": 20}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 25, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [{"id": "science-inquiry-3pct", "basis": "each-inquiry-converted-standard-score", "ratePercent": 3, "when": {"inquiryCategory": "과학탐구"}, "timing": "before-two-subject-average"}],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["B형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-natural-fusion-b",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "나군",
+      "departments": ["공학융합학부", "자연과학융합학부"],
+      "comparisonGroup": "inha-2027-natural-fusion",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 25},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 35, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 100, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 100}, {"grade": 2, "value": 98}, {"grade": 3, "value": 96},
+            {"grade": 4, "value": 90}, {"grade": 5, "value": 80}, {"grade": 6, "value": 60},
+            {"grade": 7, "value": 40}, {"grade": 8, "value": 20}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 30, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [{"id": "science-inquiry-3pct", "basis": "each-inquiry-converted-standard-score", "ratePercent": 3, "when": {"inquiryCategory": "과학탐구"}, "timing": "before-two-subject-average"}],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["A형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-free-humanities-a",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "가군",
+      "departments": ["자유전공융합학부(인문)"],
+      "comparisonGroup": "inha-2027-free-humanities",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 35},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 30, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 150, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 150}, {"grade": 2, "value": 148}, {"grade": 3, "value": 145},
+            {"grade": 4, "value": 135}, {"grade": 5, "value": 120}, {"grade": 6, "value": 100},
+            {"grade": 7, "value": 80}, {"grade": 8, "value": 40}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 25, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["B형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-free-humanities-b",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "가군",
+      "departments": ["자유전공융합학부(인문)"],
+      "comparisonGroup": "inha-2027-free-humanities",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 30},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 30, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 150, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 150}, {"grade": 2, "value": 148}, {"grade": 3, "value": 145},
+            {"grade": 4, "value": 135}, {"grade": 5, "value": 120}, {"grade": 6, "value": 100},
+            {"grade": 7, "value": 80}, {"grade": 8, "value": 40}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 30, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["A형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-free-natural-a",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "가군",
+      "departments": ["자유전공융합학부(자연)"],
+      "comparisonGroup": "inha-2027-free-natural",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 25},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 40, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 100, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 100}, {"grade": 2, "value": 98}, {"grade": 3, "value": 96},
+            {"grade": 4, "value": 90}, {"grade": 5, "value": 80}, {"grade": 6, "value": 60},
+            {"grade": 7, "value": 40}, {"grade": 8, "value": 20}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 25, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["B형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    },
+    {
+      "ruleId": "inha-2027-free-natural-b",
+      "admissionType": "정시",
+      "admissionMethod": "수능(일반)",
+      "group": "가군",
+      "departments": ["자유전공융합학부(자연)"],
+      "comparisonGroup": "inha-2027-free-natural",
+      "selection": "A형과 B형 중 환산점수가 높은 유형 반영",
+      "scoreScale": 1000,
+      "calculation": {
+        "method": "weighted-sum", "weightTotal": 100, "formulaStatus": "pending-final-guide",
+        "roundingStatus": "waiting", "rounding": {"stage": "final", "mode": "none", "digits": 0}
+      },
+      "subjects": {
+        "korean": {"application": "weighted", "metric": "standard-score", "weight": 25},
+        "math": {"application": "weighted", "metric": "standard-score", "weight": 35, "allowedSelections": ["확률과통계", "미적분", "기하"]},
+        "english": {
+          "application": "weighted", "metric": "grade-table", "weight": 10, "scoreTableMode": "normalize-to-weight",
+          "tableBaseMax": 100, "maxContribution": 100,
+          "table": [
+            {"grade": 1, "value": 100}, {"grade": 2, "value": 98}, {"grade": 3, "value": 96},
+            {"grade": 4, "value": 90}, {"grade": 5, "value": 80}, {"grade": 6, "value": 60},
+            {"grade": 7, "value": 40}, {"grade": 8, "value": 20}, {"grade": 9, "value": 0}
+          ]
+        },
+        "inquiry": {"application": "weighted", "metric": "converted-standard-score", "weight": 30, "count": 2, "selection": "average", "conversionTableStatus": "waiting"},
+        "koreanHistory": {
+          "application": "deduction", "metric": "grade-table",
+          "table": [
+            {"grade": 1, "value": 0}, {"grade": 2, "value": 0}, {"grade": 3, "value": 0},
+            {"grade": 4, "value": 0}, {"grade": 5, "value": -1}, {"grade": 6, "value": -2},
+            {"grade": 7, "value": -3}, {"grade": 8, "value": -4}, {"grade": 9, "value": -5}
+          ]
+        }
+      },
+      "bonuses": [],
+      "restrictions": ["대학이 반영하는 모든 수능 영역 응시", "한국사 필수 응시"],
+      "notes": ["A형과 함께 계산한 뒤 높은 환산점수를 사용"]
+    }
+  ],
+  "coverage": {
+    "included": ["수능(일반) 인문·자연 일반 모집단위", "경영·사회과학·인문·공학·자연과학융합학부 A/B형", "자유전공융합학부(인문/자연) A/B형"],
+    "pending": ["예체능·실기 모집단위 세부 산출식", "수능(특성화고교졸업자)", "2027학년도 탐구 자체변환표준점수", "영역별 표준점수 환산식과 반올림 순서"]
+  },
+  "validation": {
+    "status": "reviewed",
+    "checkedAt": "2026-08-21",
+    "notes": [
+      "인하대학교 입학처 공식 공지의 자료명과 게시일을 확인함",
+      "시행계획 37~39쪽의 반영비율·가산점·영어·한국사 표를 교차 대조함",
+      "최종 정시모집요강 및 2027 탐구 자체변환표 발표 후 재검수 필요",
+      "미확정 산출식은 계산 엔진에 연결하지 않음"
+    ]
+  }
+}
