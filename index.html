@@ -443,12 +443,12 @@ const RULE_PACK_TEMPLATE={
   },
   rules:[{
     ruleId:'change-me-2027-regular-01',admissionType:'정시',group:'가군',departments:['모집단위명'],scoreScale:1000,
-    calculation:{method:'weighted-sum',weightTotal:100,rounding:{stage:'final',mode:'half-up',digits:2}},
+    calculation:{method:'weighted-sum',weightTotal:100,formulaStatus:'pending-final-guide',roundingStatus:'waiting',rounding:{stage:'final',mode:'none',digits:0}},
     subjects:{
       korean:{application:'weighted',metric:'standard-score',weight:35},
       math:{application:'weighted',metric:'standard-score',weight:35,allowedSelections:['확률과통계','미적분','기하']},
-      english:{application:'deduction',metric:'grade-table',table:[1,2,3,4,5,6,7,8,9].map(grade=>({grade,value:0}))},
-      inquiry:{application:'weighted',metric:'converted-standard-score',weight:30,count:2,selection:'average',conversionTableStatus:'waiting'},
+      english:{application:'weighted',metric:'grade-table',weight:10,scoreTableMode:'normalize-to-weight',tableBaseMax:100,maxContribution:100,table:[1,2,3,4,5,6,7,8,9].map(grade=>({grade,value:0}))},
+      inquiry:{application:'weighted',metric:'converted-standard-score',weight:20,count:2,selection:'average',conversionTableStatus:'waiting'},
       koreanHistory:{application:'bonus',metric:'grade-table',table:[1,2,3,4,5,6,7,8,9].map(grade=>({grade,value:0}))}
     },
     bonuses:[],restrictions:[],notes:['공식 자료를 확인해 예시값을 모두 교체하세요.']
@@ -850,6 +850,8 @@ function validateRulePack(pack,fileName='파일'){
     if(!Array.isArray(rule.departments)||!rule.departments.length)fail(`${label}.departments에 모집단위를 입력하세요.`);
     if(!Number.isFinite(Number(rule.scoreScale))||Number(rule.scoreScale)<=0)fail(`${label}.scoreScale을 확인하세요.`);
     if(!rule.calculation||rule.calculation.method!=='weighted-sum')fail(`${label}.calculation.method는 weighted-sum이어야 합니다.`);
+    if(!['pending-final-guide','documented','verified'].includes(rule.calculation.formulaStatus))fail(`${label}.calculation.formulaStatus 값을 확인하세요.`);
+    if(!['waiting','documented','verified'].includes(rule.calculation.roundingStatus))fail(`${label}.calculation.roundingStatus 값을 확인하세요.`);
     const expected=Number(rule.calculation.weightTotal);
     if(!Number.isFinite(expected)||expected<=0)fail(`${label}.calculation.weightTotal을 확인하세요.`);
     const rounding=rule.calculation.rounding;
@@ -867,6 +869,11 @@ function validateRulePack(pack,fileName='파일'){
       }
       if(config.metric==='grade-table'){
         try{validateGradeTable(config.table,subjectLabel)}catch(err){fail(err.message)}
+        if(config.application==='weighted'){
+          if(config.scoreTableMode!=='normalize-to-weight')fail(`${subjectLabel}.scoreTableMode는 normalize-to-weight여야 합니다.`);
+          if(!Number.isFinite(Number(config.tableBaseMax))||Number(config.tableBaseMax)<=0)fail(`${subjectLabel}.tableBaseMax를 확인하세요.`);
+          if(!Number.isFinite(Number(config.maxContribution))||Number(config.maxContribution)<=0)fail(`${subjectLabel}.maxContribution을 확인하세요.`);
+        }
       }
       if(subject==='inquiry'){
         if(![1,2].includes(Number(config.count)))fail(`${subjectLabel}.count는 1 또는 2여야 합니다.`);
@@ -919,6 +926,8 @@ async function importRulePackFiles(event){
 function rulePackReadiness(pack){
   const waiting=pack.rules.some(rule=>Object.values(rule.subjects||{}).some(subject=>subject.conversionTableStatus==='waiting'));
   if(waiting)return ['변환표 대기','amber'];
+  const formulaPending=pack.rules.some(rule=>rule.calculation?.formulaStatus!=='verified'||rule.calculation?.roundingStatus!=='verified');
+  if(formulaPending)return ['산출식 검수','amber'];
   if(pack.validation?.status==='verified')return ['계산 가능','green'];
   if(pack.validation?.status==='reviewed')return ['최종 검수 필요','blue'];
   return ['검수대기','gray'];
