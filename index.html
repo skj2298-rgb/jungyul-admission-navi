@@ -359,13 +359,12 @@ tbody tr:hover{background:#fafbff}
     </div>
     <div class="split">
       <div class="card sticky">
-        <div class="section-title">학생 및 전형 설정</div>
+        <div class="section-title">학생 성적 불러오기·조정</div>
         <div class="form-group"><label>전형 기준</label><select id="simType" class="select" onchange="changeSimType()"><option value="regular">정시 · 모의고사</option><option value="school">수시 · 학생부교과</option></select></div>
         <div class="form-group"><label>학생 선택</label><select id="simStudent" class="select" onchange="loadStudentToSimulator()"></select></div>
         <div id="simModeBanner" class="mode-banner"><b>정시 · 모의고사 기준</b><br>선택한 모의고사 백분위와 영어 등급을 대학별 반영비율에 대입합니다.</div>
         <div id="simMockRecordGroup" class="form-group"><label>모의고사 선택</label><select id="simMockRecord" class="select" onchange="loadSelectedMockToSimulator()"></select></div>
 
-        <div id="currentScoreSnapshot" class="linked-score-card"></div>
         <div class="sim-adjust-actions">
           <button id="simAdjustToggle" class="small-btn" onclick="toggleSimulationAdjustment()">가상 성적 조정 열기</button>
           <button class="small-btn" onclick="resetSimulationToStored()">저장 성적으로 되돌리기</button>
@@ -395,14 +394,10 @@ tbody tr:hover{background:#fafbff}
         </div>
         </div>
 
-        <div class="form-group" style="margin-top:14px"><label>목표 지역</label><select id="simRegion" class="select" onchange="runSimulation()"><option value="">전체</option><option>서울</option><option>경기</option><option>인천</option></select></div>
-        <div class="form-group"><label>목표 대학</label><select id="targetUniversity" class="select" onchange="changeTargetUniversity()"></select></div>
-        <div class="form-group"><label>목표 학과</label><select id="targetUni" class="select" onchange="updateTargetSummary()"></select></div>
-        <button class="btn primary" style="width:100%" onclick="runSimulation()">현재 성적으로 다시 분석</button>
-        <button class="btn soft" style="width:100%;margin-top:8px" onclick="findGoal()">목표 성적 조합 찾기</button>
-        <div id="goalSummary" class="sim-summary" style="display:none"></div>
       </div>
       <div>
+        <div id="currentScoreSnapshot" class="linked-score-card" style="margin:0 0 10px"></div>
+        <div hidden><input id="simRegion" value=""><select id="targetUniversity"></select><select id="targetUni"></select><div id="goalSummary"></div></div>
         <div id="officialGateToggleRow" class="official-gate-toggle-row"><button id="officialGateToggle" class="small-btn" onclick="toggleOfficialRuleGate()">고급 공식 환산 검수 열기</button></div>
         <div id="officialRuleGate" class="card official-gate" style="display:none">
           <div class="panel-title"><div><h3>공식 환산 규칙 연결</h3><div class="muted" style="font-size:11px;margin-top:4px">검수완료 규칙과 필요한 성적값이 모두 준비된 경우에만 계산 연결이 열립니다.</div></div><span id="officialGateBadge" class="badge gray">확인 중</span></div>
@@ -416,7 +411,7 @@ tbody tr:hover{background:#fafbff}
         <div class="kpi-strip" id="simKpis"></div>
         <div id="universityOverview" class="university-overview">
           <div class="university-overview-head">
-            <div><b>선택 대학 전체 모집단위</b><small>왼쪽에서 대학을 고르면 해당 대학의 등록 모집단위만 현재 성적과 한 번에 비교합니다.</small></div>
+            <div><b>대학 검색·전체 모집단위 비교</b><small>대학교를 검색하면 해당 대학에 등록된 모든 모집단위를 현재 성적과 바로 비교합니다.</small></div>
             <div id="universityGroupButtons" class="university-buttons"></div>
           </div>
           <div id="universityOverviewBody"><div class="empty">전체 모집단위 데이터가 등록된 대학을 선택하세요.</div></div>
@@ -1244,19 +1239,24 @@ function renderUniversityOverview(){
   const school=document.getElementById('simType')?.value==='school';box.style.display=school?'none':'block';if(school)return;
   renderUniversityGroupButtons();
   if(!simulationHasStoredScore()){body.innerHTML='<div class="empty">성적 입력에서 분석 가능한 모의고사를 저장하면 전체 학과 비교가 자동으로 표시됩니다.</div>';return}
-  const oldSearch=document.getElementById('univDeptSearch')?.value||'',oldGroup=document.getElementById('univDeptGroup')?.value||'',oldStatus=document.getElementById('univDeptStatus')?.value||'';
-  const rows=universities.filter(u=>u.university===selectedUniversityOverview&&u.officialResult),groups=[...new Set(rows.map(u=>u.group))];
+  const oldUniversitySearch=document.getElementById('univSchoolSearch')?.value||selectedUniversityOverview,oldSearch=document.getElementById('univDeptSearch')?.value||'',oldGroup=document.getElementById('univDeptGroup')?.value||'',oldStatus=document.getElementById('univDeptStatus')?.value||'';
+  const allRows=universities.filter(u=>u.officialResult),schoolNames=[...new Set(allRows.map(u=>u.university))],rows=allRows.filter(u=>u.university===selectedUniversityOverview),groups=[...new Set(rows.map(u=>u.group))];
   if(!rows.length){body.innerHTML='<div class="empty">선택한 대학의 전체 모집단위 입결이 아직 등록되지 않았습니다.</div>';return}
-  body.innerHTML=`<div class="university-overview-toolbar"><input id="univDeptSearch" class="input" placeholder="모집단위 검색" oninput="renderUniversityOverviewTable()"><select id="univDeptGroup" class="select" onchange="renderUniversityOverviewTable()"><option value="">전체 군</option>${groups.map(group=>`<option>${escapeHTML(group)}</option>`).join('')}</select><select id="univDeptStatus" class="select" onchange="renderUniversityOverviewTable()"><option value="">전체 판정</option><option>합격권</option><option>추합권</option><option>소신</option><option>부족</option></select><span class="badge blue">${rows.length}개 모집단위</span></div><div id="universityOverviewTable"></div>`;
-  document.getElementById('univDeptSearch').value=oldSearch;document.getElementById('univDeptGroup').value=oldGroup;document.getElementById('univDeptStatus').value=oldStatus;
+  body.innerHTML=`<div class="university-overview-toolbar"><input id="univSchoolSearch" class="input" list="univSchoolOptions" placeholder="대학교 검색" oninput="renderUniversityOverviewTable()" onchange="applyUniversitySearch()"><datalist id="univSchoolOptions">${schoolNames.map(name=>`<option value="${escapeHTML(name)}">`).join('')}</datalist><input id="univDeptSearch" class="input" placeholder="학과·모집단위 검색" oninput="renderUniversityOverviewTable()"><select id="univDeptGroup" class="select" onchange="renderUniversityOverviewTable()"><option value="">전체 군</option>${groups.map(group=>`<option>${escapeHTML(group)}</option>`).join('')}</select><select id="univDeptStatus" class="select" onchange="renderUniversityOverviewTable()"><option value="">전체 판정</option><option>합격권</option><option>추합권</option><option>소신</option><option>부족</option></select><span class="badge blue">${rows.length}개 모집단위</span></div><div id="universityOverviewTable"></div>`;
+  document.getElementById('univSchoolSearch').value=oldUniversitySearch;document.getElementById('univDeptSearch').value=oldSearch;document.getElementById('univDeptGroup').value=oldGroup;document.getElementById('univDeptStatus').value=oldStatus;
   renderUniversityOverviewTable();
+}
+function applyUniversitySearch(){
+  const value=(document.getElementById('univSchoolSearch')?.value||'').trim(),names=[...new Set(universities.filter(u=>u.officialResult).map(u=>u.university))],matched=names.find(name=>name===value)||names.find(name=>name.includes(value));
+  if(!matched){renderUniversityOverviewTable();return}
+  selectedUniversityOverview=matched;const hidden=document.getElementById('targetUniversity');if(hidden)hidden.value=matched;renderTargetOptions();renderUniversityGroupButtons();renderUniversityOverview();
 }
 function renderUniversityOverviewTable(){
   const target=document.getElementById('universityOverviewTable');if(!target)return;
-  const query=(document.getElementById('univDeptSearch')?.value||'').trim().toLowerCase(),group=document.getElementById('univDeptGroup')?.value||'',status=document.getElementById('univDeptStatus')?.value||'',s=currentSim();
-  const rows=universities.filter(u=>u.university===selectedUniversityOverview&&u.officialResult).map(u=>{const current=officialReferenceScore(s,u),cut=officialCutReferenceScore(u),gap=cut===null?null:current-cut,judgment=gap===null?{label:'산출대기',color:'gray'}:universityReferenceJudgment(gap);return{u,current,cut,gap,judgment}}).filter(x=>(!query||(x.u.department+x.u.sourceDepartment).toLowerCase().includes(query))&&(!group||x.u.group===group)&&(!status||x.judgment.label===status)).sort((a,b)=>(a.u.group||'').localeCompare(b.u.group||'','ko')||(b.gap??-999)-(a.gap??-999));
-  const source=universities.find(u=>u.university===selectedUniversityOverview&&u.officialResult)?.officialResult?.sourceUrl||'';
-  target.innerHTML=`<div class="university-dept-wrap"><table class="university-dept-table"><thead><tr><th>군</th><th>모집단위</th><th>2025 모집/충원</th><th>현재 참고지수</th><th>2025 70% 참고지수</th><th>차이·부족점수</th><th>참고판정</th><th>공식 70%컷<br>(1000점)</th><th>상세</th></tr></thead><tbody>${rows.map(({u,current,cut,gap,judgment})=>`<tr><td><span class="badge gray">${escapeHTML(u.group)}</span></td><td class="department">${escapeHTML(u.department)}${u.sourceDepartment!==u.department?`<small class="muted" style="display:block">2025 명칭: ${escapeHTML(u.sourceDepartment)}</small>`:''}</td><td>${u.officialResult.recruit}명 / ${u.officialResult.extra}명</td><td><b>${pct(current)}</b></td><td>${cut===null?'-':pct(cut)}</td><td><span class="score-gap ${gap>=0?'positive':'negative'}">${gap===null?'-':gap>=0?`+${pct(gap)}`:`부족 ${pct(Math.abs(gap))}`}</span></td><td><span class="badge ${judgment.color}">${judgment.label}</span></td><td><b>${pct(u.officialResult.cut70)}</b></td><td><button class="small-btn" onclick="showUniversity(${u.id})">보기</button></td></tr>`).join('')||'<tr><td colspan="9" class="empty">조건에 맞는 모집단위가 없습니다.</td></tr>'}</tbody></table></div><div class="university-source-note"><b>읽는 법:</b> 현재·70% 참고지수는 2027 인하대 영역 반영비율로 백분위를 비교한 값이며 공식 합격선이 아닙니다. 2027 탐구 변환표준점수와 선택과목 3% 가산점은 아직 반영하지 않았습니다. 공식 대학 환산 70%컷(1000점)은 별도 열에서 확인하세요. ${source?`<a href="${escapeHTML(source)}" target="_blank" rel="noopener">대학어디가 공식 입결 ↗</a>`:''}</div>`;
+  const schoolQuery=(document.getElementById('univSchoolSearch')?.value||'').trim().toLowerCase(),query=(document.getElementById('univDeptSearch')?.value||'').trim().toLowerCase(),group=document.getElementById('univDeptGroup')?.value||'',status=document.getElementById('univDeptStatus')?.value||'',s=currentSim();
+  const rows=universities.filter(u=>u.officialResult&&(!schoolQuery||u.university.toLowerCase().includes(schoolQuery))).map(u=>{const current=officialReferenceScore(s,u),cut=officialCutReferenceScore(u),gap=cut===null?null:current-cut,judgment=gap===null?{label:'산출대기',color:'gray'}:universityReferenceJudgment(gap);return{u,current,cut,gap,judgment}}).filter(x=>(!query||(x.u.department+x.u.sourceDepartment).toLowerCase().includes(query))&&(!group||x.u.group===group)&&(!status||x.judgment.label===status)).sort((a,b)=>a.u.university.localeCompare(b.u.university,'ko')||(a.u.group||'').localeCompare(b.u.group||'','ko')||(b.gap??-999)-(a.gap??-999));
+  const source=rows[0]?.u.officialResult?.sourceUrl||'';
+  target.innerHTML=`<div class="university-dept-wrap"><table class="university-dept-table"><thead><tr><th>대학</th><th>군</th><th>모집단위</th><th>2025 모집/충원</th><th>현재 참고지수</th><th>2025 70% 참고지수</th><th>차이·부족점수</th><th>참고판정</th><th>공식 70%컷<br>(1000점)</th><th>상세</th></tr></thead><tbody>${rows.map(({u,current,cut,gap,judgment})=>`<tr><td><b>${escapeHTML(u.university)}</b></td><td><span class="badge gray">${escapeHTML(u.group)}</span></td><td class="department">${escapeHTML(u.department)}${u.sourceDepartment!==u.department?`<small class="muted" style="display:block">2025 명칭: ${escapeHTML(u.sourceDepartment)}</small>`:''}</td><td>${u.officialResult.recruit}명 / ${u.officialResult.extra}명</td><td><b>${pct(current)}</b></td><td>${cut===null?'-':pct(cut)}</td><td><span class="score-gap ${gap>=0?'positive':'negative'}">${gap===null?'-':gap>=0?`+${pct(gap)}`:`부족 ${pct(Math.abs(gap))}`}</span></td><td><span class="badge ${judgment.color}">${judgment.label}</span></td><td><b>${pct(u.officialResult.cut70)}</b></td><td><button class="small-btn" onclick="showUniversity(${u.id})">보기</button></td></tr>`).join('')||'<tr><td colspan="10" class="empty">검색한 대학의 등록 모집단위가 없습니다.</td></tr>'}</tbody></table></div><div class="university-source-note"><b>읽는 법:</b> 현재·70% 참고지수는 등록된 대학 반영비율로 백분위를 비교한 참고값이며 공식 합격선이 아닙니다. 탐구 변환표준점수와 선택과목 가산점 등 미발표 항목은 반영 전입니다. 공식 대학 환산 70%컷(1000점)은 별도 열에서 확인하세요. ${source?`<a href="${escapeHTML(source)}" target="_blank" rel="noopener">대학어디가 공식 입결 ↗</a>`:''}</div>`;
 }
 function renderSimMockOptions(){
   const el=document.getElementById('simMockRecord');if(!el)return;
@@ -1274,13 +1274,14 @@ function selectedSimulationMock(s){return s?.mockScores?.find(item=>String(item.
 function renderCurrentScoreSnapshot(s,m=selectedSimulationMock(s)){
   const target=document.getElementById('currentScoreSnapshot');if(!target||!s)return;
   if(document.getElementById('simType')?.value==='school'){
-    const g=effectiveSchoolGrades(s),complete=['kor','mat','eng','inq'].every(key=>g[key]!==null&&Number.isFinite(Number(g[key]))),detail=(s.schoolRecords||[]).some(row=>row.grade!==null),overall=avg(Object.values(g));
-    target.innerHTML=`<div class="linked-score-head"><div><b>성적 입력에서 불러온 현재 교과 성적</b><small>${detail?'상세 입력 · 단위수 가중 평균':'간편 입력 · 영역별 평균등급'}</small></div><span class="badge ${complete?'green':'amber'}">${complete?'자동 연결':'입력 확인'}</span></div>${linkedScoreItemsHTML([['국어',g.kor===null?null:pct(g.kor)+'등급'],['수학',g.mat===null?null:pct(g.mat)+'등급'],['영어',g.eng===null?null:pct(g.eng)+'등급'],['탐구',g.inq===null?null:pct(g.inq)+'등급']])}<div class="linked-score-note">${complete?`전체 평균 ${pct(overall)}등급 · 성적 입력에 저장한 값으로 바로 분석합니다.`:'네 영역 성적을 성적 입력에서 저장하면 자동으로 분석에 연결됩니다.'}</div>`;
+    const adjusted=document.getElementById('simAdjustmentFields')?.classList.contains('active'),g=adjusted?currentSchoolSim():effectiveSchoolGrades(s),complete=['kor','mat','eng','inq'].every(key=>g[key]!==null&&Number.isFinite(Number(g[key]))),detail=(s.schoolRecords||[]).some(row=>row.grade!==null),overall=avg(Object.values(g));
+    target.innerHTML=`<div class="linked-score-head"><div><b>${adjusted?'현재 가상 조정 교과 성적':'성적 입력에서 불러온 현재 교과 성적'}</b><small>${adjusted?'조정값이 아래 학과 분석에 즉시 반영됩니다.':(detail?'상세 입력 · 단위수 가중 평균':'간편 입력 · 영역별 평균등급')}</small></div><span class="badge ${adjusted?'amber':(complete?'green':'amber')}">${adjusted?'가상 조정':(complete?'자동 연결':'입력 확인')}</span></div>${linkedScoreItemsHTML([['국어',g.kor===null?null:pct(g.kor)+'등급'],['수학',g.mat===null?null:pct(g.mat)+'등급'],['영어',g.eng===null?null:pct(g.eng)+'등급'],['탐구',g.inq===null?null:pct(g.inq)+'등급']])}<div class="linked-score-note">${complete?`전체 평균 ${pct(overall)}등급 · ${adjusted?'아래 학과별 결과를 같은 값으로 다시 계산했습니다.':'저장 성적으로 바로 분석합니다.'}`:'네 영역 성적을 성적 입력에서 저장하면 자동으로 분석에 연결됩니다.'}</div>`;
     return;
   }
-  const ready=m&&normalizeMockScore(m).simulationReady;
-  target.innerHTML=`<div class="linked-score-head"><div><b>성적 입력에서 불러온 현재 모의고사</b><small>${m?`${m.year||''} ${escapeHTML(m.exam)}${m.representative?' · 대표 모고':''}`:'저장된 분석 가능 모의고사가 없습니다.'}</small></div><span class="badge ${ready?'green':'amber'}">${ready?'자동 연결':'입력 확인'}</span></div>${linkedScoreItemsHTML([['국어',ready?m.kor+' 백분위':null],['수학',ready?m.mat+' 백분위':null],['영어',ready?m.eng+'등급':null],['탐구',ready?m.inq+' 백분위':null]])}<div class="linked-score-note">${ready?'선택한 회차의 저장 성적으로 바로 분석합니다. 다른 회차를 고르면 함께 바뀝니다.':'성적표 직접 입력에서 국어·수학·탐구 백분위와 영어 등급을 저장하세요.'}</div>`;
+  const adjusted=document.getElementById('simAdjustmentFields')?.classList.contains('active'),ready=m&&normalizeMockScore(m).simulationReady,shown=adjusted?currentSim():m;
+  target.innerHTML=`<div class="linked-score-head"><div><b>${adjusted?'현재 가상 조정 모의고사':'성적 입력에서 불러온 현재 모의고사'}</b><small>${adjusted?'조정값이 아래 학과 분석에 즉시 반영됩니다.':(m?`${m.year||''} ${escapeHTML(m.exam)}${m.representative?' · 대표 모고':''}`:'저장된 분석 가능 모의고사가 없습니다.')}</small></div><span class="badge ${adjusted?'amber':(ready?'green':'amber')}">${adjusted?'가상 조정':(ready?'자동 연결':'입력 확인')}</span></div>${linkedScoreItemsHTML([['국어',shown?shown.kor+' 백분위':null],['수학',shown?shown.mat+' 백분위':null],['영어',shown?shown.eng+'등급':null],['탐구',shown?shown.inq+' 백분위':null]])}<div class="linked-score-note">${adjusted?'표시된 조정 성적으로 아래 모든 학과를 다시 계산했습니다.':(ready?'선택한 회차의 저장 성적으로 바로 분석합니다. 다른 회차를 고르면 함께 바뀝니다.':'성적표 직접 입력에서 국어·수학·탐구 백분위와 영어 등급을 저장하세요.')}</div>`;
 }
+function refreshCurrentScoreSnapshot(){const s=students.find(x=>String(x.id)===String(document.getElementById('simStudent')?.value))||students[0];if(s)renderCurrentScoreSnapshot(s,selectedSimulationMock(s))}
 function simulationHasStoredScore(){
   const s=students.find(item=>String(item.id)===String(document.getElementById('simStudent')?.value))||students[0];if(!s)return false;
   if(document.getElementById('simType')?.value==='school'){const g=effectiveSchoolGrades(s);return ['kor','mat','eng','inq'].every(key=>g[key]!==null&&Number.isFinite(Number(g[key])))}
@@ -1335,13 +1336,13 @@ function loadSelectedMockToSimulator(){
   renderCurrentScoreSnapshot(s,m);
   runSimulation();
 }
-function syncScore(k){document.getElementById('sim'+k+'N').value=document.getElementById('sim'+k).value;markSimulationAdjusted();runSimulation()}
+function syncScore(k){document.getElementById('sim'+k+'N').value=document.getElementById('sim'+k).value;markSimulationAdjusted();refreshCurrentScoreSnapshot();runSimulation()}
 function syncScoreN(k){
-  const r=document.getElementById('sim'+k),n=document.getElementById('sim'+k+'N');let v=+n.value;v=Math.max(+r.min,Math.min(+r.max,v));r.value=v;markSimulationAdjusted();runSimulation()
+  const r=document.getElementById('sim'+k),n=document.getElementById('sim'+k+'N');let v=+n.value;v=Math.max(+r.min,Math.min(+r.max,v));r.value=v;markSimulationAdjusted();refreshCurrentScoreSnapshot();runSimulation()
 }
-function syncSchoolScore(k){document.getElementById('simS'+k+'N').value=document.getElementById('simS'+k).value;markSimulationAdjusted();updateSimSchoolAvg();runSimulation()}
+function syncSchoolScore(k){document.getElementById('simS'+k+'N').value=document.getElementById('simS'+k).value;markSimulationAdjusted();updateSimSchoolAvg();refreshCurrentScoreSnapshot();runSimulation()}
 function syncSchoolScoreN(k){
-  const r=document.getElementById('simS'+k),n=document.getElementById('simS'+k+'N');let v=+n.value;v=Math.max(+r.min,Math.min(+r.max,v));r.value=v;markSimulationAdjusted();updateSimSchoolAvg();runSimulation()
+  const r=document.getElementById('simS'+k),n=document.getElementById('simS'+k+'N');let v=+n.value;v=Math.max(+r.min,Math.min(+r.max,v));r.value=v;markSimulationAdjusted();updateSimSchoolAvg();refreshCurrentScoreSnapshot();runSimulation()
 }
 function updateSimSchoolAvg(){const v=avg([+simSKor.value,+simSMat.value,+simSEng.value,+simSInq.value]);simSchoolAvg.textContent=v?pct(v)+'등급':'-'}
 function currentSim(){return {kor:+simKor.value,mat:+simMat.value,eng:+simEng.value,inq:+simInq.value}}
