@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>정율 Admission Navi · 개인용</title>
+<title>정율 Admission Navi</title>
 <style>
 :root{
   --bg:#f4f6fb; --panel:#ffffff; --line:#e8ebf2; --text:#1f2937; --muted:#6b7280;
@@ -70,6 +70,15 @@ tbody tr:hover{background:#fafbff}
 .delta{font-size:12px;font-weight:800}
 .empty{padding:40px;text-align:center;color:var(--muted)}
 .kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0 18px}.kpi-pill{border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px;text-align:center}.kpi-pill strong{display:block;font-size:17px}.kpi-pill span{font-size:11px;color:var(--muted)}
+.six-card-groups{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.six-card-group{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fbfcff}
+.six-card-group-title{margin-bottom:10px}
+.six-card-list{display:grid;gap:8px}
+.six-card{border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px;cursor:pointer}
+.six-card:hover{border-color:#c8ccff;box-shadow:0 7px 20px rgba(79,70,229,.08)}
+.six-card-empty{border:1px dashed var(--line);color:var(--muted);font-size:12px;text-align:center;padding:18px 10px;cursor:default}
+.pagination-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.small-btn[disabled]{opacity:.4;cursor:not-allowed}
 .panel-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.panel-title h3{margin:0;font-size:16px}
 .notice{background:#fffbeb;border:1px solid #fde68a;color:#92400e;padding:12px 14px;border-radius:12px;font-size:12px;line-height:1.55}
 .code-like{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#111827;color:#d1d5db;padding:14px;border-radius:12px;font-size:12px;overflow:auto}
@@ -138,12 +147,27 @@ tbody tr:hover{background:#fafbff}
 @media(max-width:1050px){.grid.cols-4{grid-template-columns:repeat(2,1fr)}.split,.score-entry-grid{grid-template-columns:1fr}.sticky{position:static}.hero{grid-template-columns:1fr}.result-card{grid-template-columns:1fr 90px 90px}.result-card .delta{display:none}.top-nav{overflow:auto}.brand{min-width:200px}}
 @media(max-width:720px){.app-header{padding:0 12px}.brand{min-width:auto}.brand div:last-child{display:none}.header-actions{display:none}.shell{padding:16px}.grid.cols-4,.grid.cols-2{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.result-card{grid-template-columns:1fr 85px}.result-card .cutoff{display:none}.score-grid,.form-row,.form-row.compact,.inquiry-score-grid,.raw-score-grid,.derived-grade-grid,.goal-cards,.detail-years,.kpi-strip,.rule-detail-head,.official-gate-grid{grid-template-columns:1fr}.linked-score-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.audit-banner,.school-record-toolbar,.university-overview-head{align-items:flex-start;flex-direction:column}.top-nav{margin-left:12px}.nav-btn{white-space:nowrap}}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+<div class="modal-backdrop show" id="authGate" style="z-index:200">
+  <div class="modal" style="width:360px">
+    <div class="modal-head"><h3>상담사 로그인</h3></div>
+    <div class="modal-body">
+      <form id="authGateForm">
+        <div class="form-group"><label>이메일</label><input id="authEmail" class="input" type="email" required autocomplete="username" style="width:100%"></div>
+        <div class="form-group"><label>비밀번호</label><input id="authPassword" class="input" type="password" required autocomplete="current-password" style="width:100%"></div>
+        <div id="authGateError" style="color:#dc2626;font-size:12px;margin-bottom:10px"></div>
+        <button type="submit" class="btn primary" style="width:100%">로그인</button>
+      </form>
+    </div>
+  </div>
+</div>
 <header class="app-header">
   <div class="brand">
     <div class="brand-mark">J</div>
-    <div>정율 Admission Navi<small>개인용 입시 시뮬레이션 · 내 PC에서만 저장</small></div>
+    <div>정율 Admission Navi<small>클라우드 동기화 · 상담사 계정으로 여러 PC 공유</small></div>
   </div>
   <nav class="top-nav">
     <button class="nav-btn active" data-view="dashboard">대시보드</button>
@@ -154,6 +178,8 @@ tbody tr:hover{background:#fafbff}
     <button class="nav-btn" data-view="data">데이터 관리</button>
   </nav>
   <div class="header-actions">
+    <span class="muted" id="authUserEmail" style="font-size:12px;align-self:center;margin-right:4px"></span>
+    <button class="btn" id="authLogoutBtn">로그아웃</button>
     <button class="btn soft" onclick="goView('simulator')">빠른 분석</button>
   </div>
 </header>
@@ -177,7 +203,7 @@ tbody tr:hover{background:#fafbff}
         <div id="recentStudents"></div>
       </div>
       <div class="card">
-        <div class="panel-title"><h3>데이터 구축 진행도</h3><span class="badge green">LOCAL ONLY</span></div>
+        <div class="panel-title"><h3>데이터 구축 진행도</h3><span class="badge green">CLOUD SYNCED</span></div>
         <div class="progress-row"><div class="progress-label">학생 DB</div><div class="bar"><span style="width:75%"></span></div><div class="progress-value">75%</div></div>
         <div class="progress-row"><div class="progress-label">대학 DB</div><div class="bar"><span style="width:38%"></span></div><div class="progress-value">38%</div></div>
         <div class="progress-row"><div class="progress-label">환산식</div><div class="bar"><span style="width:46%"></span></div><div class="progress-value">46%</div></div>
@@ -194,14 +220,15 @@ tbody tr:hover{background:#fafbff}
     </div>
     <div class="card">
       <div class="toolbar">
-        <input id="studentSearch" class="input search" placeholder="학생 이름 / 학교 검색" oninput="renderStudents()">
-        <select id="gradeFilter" class="select" onchange="renderStudents()"><option value="">전체 학년</option><option>고2</option><option>고3</option></select>
+        <input id="studentSearch" class="input search" placeholder="학생 이름 / 학교 검색" oninput="onStudentFilterChange()">
+        <select id="gradeFilter" class="select" onchange="onStudentFilterChange()"><option value="">전체 학년</option><option>고2</option><option>고3</option></select>
         <button class="btn" onclick="exportStudentsCSV()">CSV 다운로드</button>
       </div>
       <div class="table-wrap"><table>
         <thead><tr><th>이름</th><th>학교</th><th>학년</th><th>계열</th><th>교과 평균</th><th>대표 모고</th><th>국어</th><th>수학</th><th>영어</th><th>탐구</th><th>희망 대학</th><th>관리</th></tr></thead>
         <tbody id="studentTbody"></tbody>
       </table></div>
+      <div class="pagination-row" id="studentPagination"></div>
     </div>
   </section>
 
@@ -409,6 +436,10 @@ tbody tr:hover{background:#fafbff}
           <div id="officialGateResult"></div>
         </div>
         <div class="kpi-strip" id="simKpis"></div>
+        <div class="card" id="sixCardPanel" style="margin-bottom:16px">
+          <div class="panel-title"><h3>추천 6장 카드</h3><span class="muted" style="font-size:11px">안정 2 · 소신 2 · 상향 2</span></div>
+          <div class="six-card-groups" id="sixCardGroups"></div>
+        </div>
         <div id="universityOverview" class="university-overview">
           <div class="university-overview-head">
             <div><b>대학 검색·전체 모집단위 비교</b><small>대학교를 검색하면 해당 대학에 등록된 모든 모집단위를 현재 성적과 바로 비교합니다.</small></div>
@@ -503,7 +534,7 @@ tbody tr:hover{background:#fafbff}
     </div>
   </section>
 
-  <div class="footer">정율 Admission Navi · 개인용 · 데이터는 이 브라우저에만 저장됩니다.</div>
+  <div class="footer">정율 Admission Navi · 학생 데이터는 클라우드에 동기화되어 로그인한 계정 어디서나 확인할 수 있습니다.</div>
 </main>
 
 <!-- 학생 모달 -->
@@ -835,6 +866,31 @@ function persist(){
   localStorage.setItem('jy_admission_rule_packs',JSON.stringify(admissionRulePacks));
   localStorage.setItem('jy_admission_rule_archive',JSON.stringify(admissionRuleArchive));
   localStorage.setItem('jy_exam_conversion_rows',JSON.stringify(examConversionRows));
+  syncStudentsToCloud(students);
+}
+let cloudSyncedSnapshot={};
+function syncStudentsToCloud(list){
+  if(!window.fb)return;
+  const currentIds=new Set(list.map(s=>String(s.id)));
+  list.forEach(s=>{
+    const key=String(s.id),json=JSON.stringify(s);
+    if(cloudSyncedSnapshot[key]===json)return;
+    cloudSyncedSnapshot[key]=json;
+    window.fb.setStudentDoc(key,s);
+  });
+  Object.keys(cloudSyncedSnapshot).forEach(key=>{
+    if(!currentIds.has(key)){
+      delete cloudSyncedSnapshot[key];
+      window.fb.deleteStudentDoc(key);
+    }
+  });
+}
+function getStudentsSnapshotForUpload(){return students}
+function setStudentsFromCloud(list){
+  students=list.map(normalizeStudent);
+  list.forEach(s=>{cloudSyncedSnapshot[String(s.id)]=JSON.stringify(s)});
+  localStorage.setItem('jy_students',JSON.stringify(students));
+  renderAll();
 }
 function avg(a){const valid=a.filter(v=>Number.isFinite(Number(v))&&Number(v)>0).map(Number);return valid.length?valid.reduce((x,y)=>x+y,0)/valid.length:0}
 function pct(n,d=1){return Number(n).toFixed(d)}
@@ -909,18 +965,37 @@ function renderDashboard(){
   document.getElementById('heroUni').textContent=`${universities.length}개 모집단위 · ${admissionRulePacks.length}개 대학별 환산 규칙`;
   document.getElementById('recentStudents').innerHTML=students.slice(0,4).map(s=>{const m=representativeMock(s),sa=schoolAverage(s);return `<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid #f0f2f5"><div><b>${s.name}</b><div class="muted" style="font-size:11px;margin-top:3px">${s.school} · ${s.grade} · 교과 ${sa?pct(sa):'미입력'} · ${m?m.exam:'모고 미입력'}</div></div><button class="small-btn" onclick="quickSim(${s.id})">분석</button></div>`}).join('');
 }
+let studentPage=1;
+const STUDENT_PAGE_SIZE=20;
+function onStudentFilterChange(){studentPage=1;renderStudents()}
+function goStudentPage(p){studentPage=p;renderStudents()}
+function renderStudentPagination(total,totalPages){
+  const el=document.getElementById('studentPagination');if(!el)return;
+  if(!total){el.innerHTML='';return}
+  const start=(studentPage-1)*STUDENT_PAGE_SIZE+1,end=Math.min(total,studentPage*STUDENT_PAGE_SIZE);
+  el.innerHTML=`<span class="muted" style="font-size:12px">전체 ${total}명 중 ${start}-${end}명</span>
+    <div style="display:flex;align-items:center;gap:6px">
+      <button class="small-btn" ${studentPage<=1?'disabled':''} onclick="goStudentPage(${studentPage-1})">이전</button>
+      <span class="muted" style="font-size:12px;padding:0 4px">${studentPage} / ${totalPages}</span>
+      <button class="small-btn" ${studentPage>=totalPages?'disabled':''} onclick="goStudentPage(${studentPage+1})">다음</button>
+    </div>`;
+}
 function renderStudents(){
   const q=(document.getElementById('studentSearch')?.value||'').toLowerCase(), gf=document.getElementById('gradeFilter')?.value||'';
   const rows=students.filter(s=>(s.name+s.school).toLowerCase().includes(q)&&(!gf||s.grade===gf));
-  document.getElementById('studentTbody').innerHTML=rows.map(s=>{
+  const totalPages=Math.max(1,Math.ceil(rows.length/STUDENT_PAGE_SIZE));
+  studentPage=Math.min(Math.max(1,studentPage),totalPages);
+  const pageRows=rows.slice((studentPage-1)*STUDENT_PAGE_SIZE,studentPage*STUDENT_PAGE_SIZE);
+  document.getElementById('studentTbody').innerHTML=pageRows.map(s=>{
     const m=representativeMock(s),sa=schoolAverage(s);
     return `<tr>
       <td><b>${s.name}</b></td><td>${s.school}</td><td><span class="badge blue">${s.grade}</span></td><td>${s.track}</td>
       <td>${sa?pct(sa):'<span class="muted">미입력</span>'}</td>
       <td>${m?`<b>${m.year||''} ${m.exam}</b>`:'<span class="muted">미입력</span>'}</td>
       <td>${m?m.kor:'-'}</td><td>${m?m.mat:'-'}</td><td>${m?m.eng+'등급':'-'}</td><td>${m?m.inq:'-'}</td><td>${s.target||'-'}</td>
-      <td><div class="row-actions"><button class="small-btn" onclick="quickScore(${s.id})">성적</button><button class="small-btn" onclick="quickSim(${s.id})">분석</button><button class="small-btn" onclick="editStudent(${s.id})">수정</button><button class="small-btn" onclick="deleteStudent(${s.id})">삭제</button></div></td>
+      <td><div class="row-actions"><button class="small-btn" onclick="quickScore(${s.id})">성적</button><button class="small-btn" onclick="quickSim(${s.id})">분석</button><button class="small-btn" onclick="generateReportPDF(${s.id})">보고서</button><button class="small-btn" onclick="editStudent(${s.id})">수정</button><button class="small-btn" onclick="deleteStudent(${s.id})">삭제</button></div></td>
     </tr>`}).join('')||`<tr><td colspan="12" class="empty">검색 결과가 없습니다.</td></tr>`;
+  renderStudentPagination(rows.length,totalPages);
 }
 function openStudentModal(){
   document.getElementById('studentModalTitle').textContent='학생 추가';
@@ -1429,6 +1504,105 @@ function renderOfficialRuleGate(){
   const missing=gate.missingInputs.map(item=>item.label);
   target.innerHTML=`<div class="gate-checks">${gateCheckHTML('대학 자료 검수',gate.dataReasons,'최종 공식 자료와 파일 검수 완료')}${gateCheckHTML('산식 실행 조건',gate.ruleReasons,'환산식·반올림·변환표·실행 산식 확인 완료')}${gateCheckHTML('학생 성적 입력',missing,'이 규칙에 필요한 성적값 입력 완료')}</div><div class="${gate.ready?'audit-pass':'notice'}" style="margin-top:10px">${gate.ready?'<b>공식 환산 연결 조건을 모두 충족했습니다.</b> 이 규칙은 계산 실행 단계로 넘길 수 있습니다.':'<b>현재 아래 대학별 결과에는 이 공식 규칙을 사용하지 않습니다.</b> 기존 결과는 기능 확인용 백분위 샘플 분석이며, 위 보류 항목이 모두 해소된 뒤 공식 환산으로 전환됩니다.'}</div>`;
 }
+function computeUniversityMatches(school,scoreInput){
+  const s=scoreInput||(school?currentSchoolSim():currentSim());
+  return universities.map(u=>{
+    const cut=school?schoolCutoff(u):(u.officialResult?officialCutReferenceScore(u):cutoff(u));if(!cut)return null;
+    const sc=school?scoreSchool(s,u):(u.officialResult?officialReferenceScore(s,u):scoreStudent(s,u));
+    const [label,color]=school?classifySchool(sc,cut):classify(sc,cut);
+    const advantage=school?cut-sc:sc-cut;
+    return{u,sc,cut,label,color,advantage};
+  }).filter(Boolean);
+}
+const SIX_CARD_GROUP_MAP={안정:'안정',적정:'안정',추합예상:'소신',소신:'소신',상향:'상향'};
+function recommendSixCards(school,scoreInput){
+  const groups={안정:[],소신:[],상향:[]};
+  computeUniversityMatches(school,scoreInput).forEach(x=>{
+    const g=SIX_CARD_GROUP_MAP[x.label];if(g)groups[g].push(x);
+  });
+  Object.values(groups).forEach(list=>list.sort((a,b)=>b.advantage-a.advantage));
+  const used=new Set();
+  const pick=list=>{
+    const out=[];
+    for(const item of list){
+      const key=item.u.university+'::'+item.u.department;
+      if(used.has(key))continue;
+      used.add(key);out.push(item);
+      if(out.length===2)break;
+    }
+    return out;
+  };
+  return{안정:pick(groups.안정),소신:pick(groups.소신),상향:pick(groups.상향)};
+}
+function renderSixCards(school){
+  const wrap=document.getElementById('sixCardGroups');if(!wrap)return;
+  if(!simulationHasStoredScore()){wrap.innerHTML='<div class="empty">성적을 입력하면 추천 카드가 표시됩니다.</div>';return}
+  const groups=recommendSixCards(school),meta={안정:'green',소신:'red',상향:'gray'};
+  wrap.innerHTML=['안정','소신','상향'].map(key=>{
+    const list=groups[key];
+    const slots=[0,1].map(i=>{
+      const x=list[i];
+      if(!x)return '<div class="six-card six-card-empty">추천 대학 부족</div>';
+      return`<div class="six-card" onclick="showUniversity(${x.u.id})"><div class="uni-name">${x.u.university} · ${x.u.department}</div><div class="uni-meta">${school?'학생부교과':'정시'} · ${x.u.region}</div><div class="delta" style="margin-top:6px;color:${x.advantage>=0?'#047857':'#b91c1c'}">${x.advantage>=0?'+':''}${pct(x.advantage)}${school?'등급':''}</div></div>`;
+    }).join('');
+    return`<div class="six-card-group"><div class="six-card-group-title"><span class="badge ${meta[key]}">${key}</span></div><div class="six-card-list">${slots}</div></div>`;
+  }).join('');
+}
+function buildStudentReportData(s){
+  const mock=representativeMock(s);
+  const regularScore=mock?{kor:mock.kor,mat:mock.mat,eng:mock.eng,inq:mock.inq}:null;
+  const g=effectiveSchoolGrades(s);
+  const schoolScore=Object.values(g).some(v=>v!==null)?{kor:g.kor??9,mat:g.mat??9,eng:g.eng??9,inq:g.inq??9}:null;
+  return{
+    student:s,
+    regular:regularScore?{score:regularScore,cards:recommendSixCards(false,regularScore)}:null,
+    school:schoolScore?{score:schoolScore,cards:recommendSixCards(true,schoolScore)}:null
+  };
+}
+function reportCardRowsHTML(list,label,school){
+  if(!list||!list.length)return `<tr><td style="padding:4px 6px;border-bottom:1px solid #eee">${label}</td><td style="padding:4px 6px;border-bottom:1px solid #eee;color:#999" colspan="2">추천 대학 부족</td></tr>`;
+  return list.map(x=>`<tr><td style="padding:4px 6px;border-bottom:1px solid #eee">${label}</td><td style="padding:4px 6px;border-bottom:1px solid #eee">${x.u.university} · ${x.u.department}</td><td style="padding:4px 6px;border-bottom:1px solid #eee;text-align:right">${x.advantage>=0?'+':''}${pct(x.advantage)}${school?'등급':''}</td></tr>`).join('');
+}
+function reportTrackSectionHTML(title,trackData,school){
+  if(!trackData)return`<h3 style="margin:18px 0 6px;font-size:14px">${title}</h3><div style="color:#999;font-size:12px">저장된 성적이 없어 분석할 수 없습니다.</div>`;
+  const groups=trackData.cards;
+  const rows=['안정','소신','상향'].map(k=>reportCardRowsHTML(groups[k],k,school)).join('');
+  return`<h3 style="margin:18px 0 6px;font-size:14px">${title}</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr><th style="text-align:left;padding:4px 6px;border-bottom:1px solid #333">구분</th><th style="text-align:left;padding:4px 6px;border-bottom:1px solid #333">대학·모집단위</th><th style="text-align:right;padding:4px 6px;border-bottom:1px solid #333">유불리</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function buildReportHTML(data){
+  const s=data.student,sa=schoolAverage(s),mock=representativeMock(s);
+  return`<div style="font-family:'Malgun Gothic',sans-serif;color:#111;width:680px">
+    <h1 style="font-size:20px;margin:0 0 4px">${s.name} 학생 입시 상담 리포트</h1>
+    <div style="color:#666;font-size:12px;margin-bottom:16px">${s.school} · ${s.grade} · ${s.track}${s.target?' · 희망 '+s.target:''} · 생성일 ${new Date().toLocaleDateString('ko-KR')}</div>
+    <h3 style="margin:0 0 6px;font-size:14px">성적 요약</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px">
+      <tr><td style="padding:4px 6px;border-bottom:1px solid #eee;width:120px">교과 평균</td><td style="padding:4px 6px;border-bottom:1px solid #eee">${sa?pct(sa)+'등급':'미입력'}</td></tr>
+      <tr><td style="padding:4px 6px;border-bottom:1px solid #eee">대표 모의고사</td><td style="padding:4px 6px;border-bottom:1px solid #eee">${mock?`${mock.year} ${mock.exam} · 국${mock.kor} 수${mock.mat} 영${mock.eng}등급 탐${mock.inq}`:'미입력'}</td></tr>
+    </table>
+    ${reportTrackSectionHTML('정시 추천 6장 카드 (모의고사 기준)',data.regular,false)}
+    ${reportTrackSectionHTML('수시 학생부교과 추천 6장 카드',data.school,true)}
+    <div style="margin-top:20px;color:#999;font-size:10px">정율 Admission Navi 자동 생성 리포트 · 실제 지원 전 반드시 공식 모집요강으로 재확인하세요.</div>
+  </div>`;
+}
+function generateReportPDF(id){
+  const s=students.find(x=>x.id===id);if(!s)return;
+  if(typeof window.jspdf==='undefined'||typeof window.html2canvas==='undefined'){alert('PDF 생성 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인하세요.');return}
+  const data=buildStudentReportData(s);
+  const container=document.createElement('div');
+  container.style.cssText='position:fixed;left:-9999px;top:0;padding:24px;background:#fff';
+  container.innerHTML=buildReportHTML(data);
+  document.body.appendChild(container);
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF('p','pt','a4');
+  doc.html(container,{
+    x:20,y:20,width:555,windowWidth:728,
+    callback:function(doc){
+      document.body.removeChild(container);
+      doc.save(`${s.name}-report.pdf`);
+    }
+  });
+}
 function runSimulation(){
   if(!document.getElementById('resultList'))return;
   const school=simType.value==='school', region=simRegion.value,status=simStatus.value;
@@ -1436,16 +1610,9 @@ function runSimulation(){
   if(!simulationHasStoredScore()){
     simKpis.innerHTML=['안정','적정','추합예상','소신','상향'].map(label=>`<div class="kpi-pill"><strong>0</strong><span>${label}</span></div>`).join('');
     resultList.innerHTML='<div class="empty">성적 입력에서 네 영역의 성적을 저장하면 이곳에 대학별 분석 결과가 자동으로 연결됩니다.</div>';
-    goalSummary.style.display='none';renderOfficialRuleGate();return;
+    goalSummary.style.display='none';renderOfficialRuleGate();renderSixCards(school);return;
   }
-  const s=school?currentSchoolSim():currentSim();
-  let base=universities.map(u=>{
-    const cut=school?schoolCutoff(u):(u.officialResult?officialCutReferenceScore(u):cutoff(u));if(!cut)return null;
-    const sc=school?scoreSchool(s,u):(u.officialResult?officialReferenceScore(s,u):scoreStudent(s,u));
-    const [label,color]=school?classifySchool(sc,cut):classify(sc,cut);
-    const advantage=school?cut-sc:sc-cut;
-    return{u,sc,cut,label,color,advantage};
-  }).filter(Boolean);
+  let base=computeUniversityMatches(school);
   const counts={안정:0,적정:0,추합예상:0,소신:0,상향:0};base.forEach(x=>counts[x.label]++);
   let results=base.filter(x=>(!region||x.u.region===region)&&(!status||x.label===status)).sort((a,b)=>b.advantage-a.advantage);
   simKpis.innerHTML=Object.entries(counts).map(([k,v])=>`<div class="kpi-pill"><strong>${v}</strong><span>${k}</span></div>`).join('');
@@ -1457,6 +1624,7 @@ function runSimulation(){
   </div>`}).join('')||`<div class="empty">${school?'교과 3개년 데이터가 있는':'조건에 맞는'} 결과가 없습니다.</div>`;
   updateTargetSummary();
   renderOfficialRuleGate();
+  renderSixCards(school);
 }
 function updateTargetSummary(){
   const u=universities.find(x=>String(x.id)===targetUni.value);if(!u)return;
@@ -2030,6 +2198,76 @@ function downloadText(text,name,type){const blob=new Blob([text],{type}),a=docum
 function resetData(){if(confirm('학생 DB를 샘플로, 대학 DB를 인하대 60개 모집단위로 초기화할까요? 불러온 대학별 환산 규칙 파일은 유지됩니다.')){students=structuredClone(SAMPLE_STUDENTS).map(normalizeStudent);universities=structuredClone(INHA_UNIS).map(normalizeUniversity);persist();renderAll()}}
 function renderAll(){renderDashboard();renderStudents();renderScoreStudentOptions();renderUniversities();renderSimStudentOptions();renderUniversityGroupButtons();renderRulePacks();renderExamReferences();if(document.getElementById('simType'))changeSimType();if(document.getElementById('scoreStudentSelect'))renderScoreInput()}
 renderAll();
+</script>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import{getFirestore,collection,doc,setDoc,deleteDoc,getDocs,writeBatch,onSnapshot}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const firebaseConfig={
+  apiKey:"AIzaSyBBtJAkO5T1-AUqqxznsmLMSF4Z1s4pzNA",
+  authDomain:"jungyul-admission-navi.firebaseapp.com",
+  projectId:"jungyul-admission-navi",
+  storageBucket:"jungyul-admission-navi.firebasestorage.app",
+  messagingSenderId:"343128507032",
+  appId:"1:343128507032:web:b388be4b72d68ea0e146ed"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+const studentsCol=collection(db,'students');
+let unsubscribeStudents=null;
+
+window.fb={
+  setStudentDoc(id,data){setDoc(doc(studentsCol,id),data).catch(err=>console.error('학생 저장 실패',err));},
+  deleteStudentDoc(id){deleteDoc(doc(studentsCol,id)).catch(err=>console.error('학생 삭제 실패',err));},
+  signIn(email,password){return signInWithEmailAndPassword(auth,email,password);},
+  signOut(){return signOut(auth);}
+};
+
+function showLoginGate(errorMsg){
+  const gate=document.getElementById('authGate');if(!gate)return;
+  gate.classList.add('show');
+  const err=document.getElementById('authGateError');if(err)err.textContent=errorMsg||'';
+}
+function hideLoginGate(){
+  const gate=document.getElementById('authGate');if(gate)gate.classList.remove('show');
+}
+
+onAuthStateChanged(auth,async user=>{
+  if(unsubscribeStudents){unsubscribeStudents();unsubscribeStudents=null;}
+  if(user){
+    hideLoginGate();
+    const label=document.getElementById('authUserEmail');if(label)label.textContent=user.email||'';
+    try{
+      const snap=await getDocs(studentsCol);
+      if(snap.empty&&window.getStudentsSnapshotForUpload){
+        const localList=window.getStudentsSnapshotForUpload();
+        if(localList&&localList.length){
+          const batch=writeBatch(db);
+          localList.forEach(s=>batch.set(doc(studentsCol,String(s.id)),s));
+          await batch.commit();
+        }
+      }
+    }catch(err){console.error('초기 업로드 실패',err);}
+    unsubscribeStudents=onSnapshot(studentsCol,snap=>{
+      const list=snap.docs.map(d=>d.data());
+      if(window.setStudentsFromCloud)window.setStudentsFromCloud(list);
+    },err=>console.error('학생 목록 동기화 오류',err));
+  }else{
+    const label=document.getElementById('authUserEmail');if(label)label.textContent='';
+    showLoginGate();
+  }
+});
+
+document.getElementById('authGateForm')?.addEventListener('submit',e=>{
+  e.preventDefault();
+  const email=document.getElementById('authEmail').value.trim();
+  const password=document.getElementById('authPassword').value;
+  window.fb.signIn(email,password).catch(()=>showLoginGate('로그인 실패: 이메일 또는 비밀번호를 확인하세요.'));
+});
+document.getElementById('authLogoutBtn')?.addEventListener('click',()=>window.fb.signOut());
 </script>
 </body>
 </html>
