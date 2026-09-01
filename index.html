@@ -936,7 +936,22 @@ function flattenUniversityDB(db){
             sourceUrl:(year.sources&&year.sources[0]&&year.sources[0].url)||''}
         });
       }
-      // 다른 계산 엔진(예: 백분위 가중합산형 정시)을 검증된 대학에 연결할 때 이 지점에 분기를 추가한다.
+      if(rule.engine==='ranked-subject-weighted'){
+        rows.push({
+          id:stableNumericId(`${univ.id}:${dept.id}:${detail.id}:${year.year}`),
+          officialKey:`udb-${univ.id}-${year.year}-${dept.id}`,fromUniversityDB:true,
+          university:shortName,department:dept.name,sourceDepartment:dept.name,
+          region:univ.region,group:detail.group,track:null,
+          weights:{kor:'순위형',mat:'순위형',eng:'순위형',inq:(rule.fixedSubjects&&rule.fixedSubjects.inq)??'순위형'},weightOptions:null,
+          years:{[year.year]:{finalCut:0,recruit:year.recruitCount,extra:(year.additionalPass&&year.additionalPass.count)||0}},
+          schoolYears:{},
+          rankedRule:rule,
+          rankedCutValue:year.indicators&&(year.indicators.percentileCut70??year.indicators.percentileCut50),
+          rankedIndicators:year.indicators,
+          rankedSourceUrl:(year.sources&&year.sources[0]&&year.sources[0].url)||''
+        });
+      }
+      // 다른 계산 엔진을 검증된 대학에 연결할 때 이 지점에 분기를 추가한다.
     });
   });
   return rows;
@@ -1174,6 +1189,39 @@ function inhaReferenceScore(s,u){
 function inhaProfileReferenceScore(u){
   const p=u.officialResult?.profile70;if(!Array.isArray(p)||p.length<5)return null;
   return inhaReferenceScore({kor:p[0],mat:p[1],inq:(Number(p[2])+Number(p[3]))/2,eng:p[4]},u);
+}
+// ===== 우수영역 순위형 반영(ranked-subject-weighted) 계산 엔진 =====
+// 국어/수학/영어(/탐구) 중 "성적이 좋은 영역 순서로" 가중치가 달라지는 대학(예: 가천대 정시)을 위한 범용 엔진.
+// rule.rankedSubjects: 순위 경쟁에 들어가는 영역 키 배열(예:['kor','mat','eng']), rule.rankedWeights: 순위별 가중치(1위,2위,3위 순)
+// rule.fixedSubjects: 순위 경쟁 없이 고정 비율로 더해지는 영역({inq:20} 등)
+// rule.englishGradeToScore: 영어 등급(1~9)→환산점수 표(대학마다 다름, engMap 전역표를 쓰지 않고 반드시 이 표를 사용)
+// 순위 경쟁 영역 수 > 가중치 배열 길이면 하위 영역은 자동으로 버려진다(예: 4개 영역 중 상위 3개만 반영).
+function rankedSubjectValue(student,key,rule){
+  if(key==='eng'){
+    if(student.eng===null||student.eng===undefined||student.eng==='')return null;
+    const table=rule.englishGradeToScore||{};
+    const v=table[Number(student.eng)];
+    return Number.isFinite(v)?v:null;
+  }
+  if(student[key]===null||student[key]===undefined||student[key]==='')return null;
+  const v=Number(student[key]);
+  return Number.isFinite(v)?v:null;
+}
+function computeRankedRegularScore(student,rule){
+  if(!rule||rule.status!=='verified'||rule.engine!=='ranked-subject-weighted')return null;
+  const rankedValues=(rule.rankedSubjects||[]).map(key=>rankedSubjectValue(student,key,rule));
+  if(rankedValues.some(v=>v===null))return null;
+  const sorted=rankedValues.slice().sort((a,b)=>b-a);
+  const weights=rule.rankedWeights||[];
+  let total=0,weightSum=0;
+  weights.forEach((w,i)=>{if(sorted[i]!==undefined){total+=sorted[i]*w;weightSum+=w}});
+  for(const [key,w] of Object.entries(rule.fixedSubjects||{})){
+    const v=rankedSubjectValue(student,key,rule);
+    if(v===null)return null;
+    total+=v*w;weightSum+=w;
+  }
+  if(!weightSum)return null;
+  return total/weightSum;
 }
 function scoreSchool(s,u){
   const w=u.weights,total=(w.kor+w.mat+w.eng+w.inq)||100;
@@ -1854,6 +1902,12 @@ function showUniversity(id){
     detailBody.innerHTML=`<div class="detail-years"><div class="year-card"><span class="badge blue">${d.year} 공식 정시</span><div style="margin-top:10px">대학 환산 50%컷</div><strong>${pct(d.cut50)}</strong><div>1000점 만점</div></div><div class="year-card"><span class="badge blue">${d.year} 공식 정시</span><div style="margin-top:10px">대학 환산 70%컷</div><strong>${pct(d.cut70)}</strong><div>1000점 만점</div></div><div class="year-card"><span class="badge gray">${escapeHTML(u.group)}</span><div style="margin-top:10px">모집·충원·경쟁률</div><strong>${d.recruit}명</strong><div>충원 ${d.extra}명 · ${d.competition}:1</div></div></div><div class="sim-summary"><h4>70% 등록자 성적 프로필</h4><div>국어 ${p[0]} · 수학 ${p[1]} · 탐구1 ${p[2]} · 탐구2 ${p[3]} 백분위</div><div style="margin-top:6px">영어 ${p[4]}등급 · 한국사 ${p[5]}등급</div></div>${gap===null?'<div class="notice">성적 입력에서 분석 가능한 모의고사를 저장하면 현재 점수와의 차이가 표시됩니다.</div>':`<div class="sim-summary"><h4>현재 성적 참고 비교</h4><div style="display:flex;justify-content:space-between"><span>현재 참고지수</span><b>${pct(current)}</b></div><div style="display:flex;justify-content:space-between;margin-top:6px"><span>2025 70% 참고지수</span><b>${pct(cutRef)}</b></div><div style="margin-top:10px"><span class="badge ${judgment.color}">${judgment.label}</span> <b class="score-gap ${gap>=0?'positive':'negative'}">${gap>=0?`+${pct(gap)}`:`부족 ${pct(Math.abs(gap))}`}</b></div></div>`}<div class="rule-detail-card"><h4>2027 정시 반영 구조</h4><div>${weightText}</div><div class="muted" style="margin-top:7px;font-size:11px">국어·수학 표준점수, 탐구 대학 변환표준점수, 영어 등급점수 적용. 자연계열 미적분/기하 및 과탐, 인문계열 사탐은 해당 시 3% 가산점이 있으나 위 참고 비교에는 미반영했습니다.</div></div>${u.sourceDepartment!==u.department?`<div class="notice">2025 결과표 모집단위명은 <b>${escapeHTML(u.sourceDepartment)}</b>이며, 화면에는 2027 변경 명칭을 적용했습니다.</div>`:''}<div class="rule-detail-card"><h4>공식 출처</h4><div class="source-actions"><a class="small-btn" href="${escapeHTML(d.sourceUrl)}" target="_blank" rel="noopener">대학어디가 2025 정시 결과 ↗</a><a class="small-btn" href="https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2027&unvCd=0000169" target="_blank" rel="noopener">2027 전형평가기준 ↗</a></div></div><div class="university-source-note"><b>주의:</b> 참고지수와 참고판정은 백분위 비교용이며 대학의 공식 환산점수나 합격 보장이 아닙니다. 2027 탐구 변환표준점수 발표 후 공식 계산으로 교체해야 합니다.</div>`;
     document.getElementById('targetUniversity').value=u.university;renderTargetOptions();targetUni.value=u.id;showModal('detailModal');return;
   }
+  if(u.rankedRule){
+    const rule=u.rankedRule,ind=u.rankedIndicators||{},hasScore=document.getElementById('simType')?.value!=='school'&&simulationHasStoredScore(),current=hasScore?computeRankedRegularScore(currentSim(),rule):null,cutRef=u.rankedCutValue,gap=current===null||!cutRef?null:current-cutRef,judgment=gap===null?null:universityReferenceJudgment(gap);
+    const yearEntry=Object.entries(u.years)[0]||[],yr=yearEntry[0],yd=yearEntry[1]||{};
+    detailBody.innerHTML=`<div class="detail-years"><div class="year-card"><span class="badge blue">${yr} 정시</span><div style="margin-top:10px">백분위/표준점수 50%컷</div><strong>${ind.percentileCut50??ind.standardScoreCut50??'-'}</strong></div><div class="year-card"><span class="badge blue">${yr} 정시</span><div style="margin-top:10px">백분위/표준점수 70%컷</div><strong>${ind.percentileCut70??ind.standardScoreCut70??'-'}</strong></div><div class="year-card"><span class="badge gray">${escapeHTML(u.group||'')}</span><div style="margin-top:10px">모집·충원·경쟁률</div><strong>${yd.recruit??'-'}명</strong><div>충원 ${yd.extra??'-'}명</div></div></div>${gap===null?'<div class="notice">성적 입력에서 분석 가능한 모의고사를 저장하면 현재 점수와의 차이가 표시됩니다.</div>':`<div class="sim-summary"><h4>현재 성적 참고 비교</h4><div style="display:flex;justify-content:space-between"><span>현재 참고지수</span><b>${pct(current)}</b></div><div style="display:flex;justify-content:space-between;margin-top:6px"><span>${yr} 70% 컷</span><b>${pct(cutRef)}</b></div><div style="margin-top:10px"><span class="badge ${judgment.color}">${judgment.label}</span> <b class="score-gap ${gap>=0?'positive':'negative'}">${gap>=0?`+${pct(gap)}`:`부족 ${pct(Math.abs(gap))}`}</b></div></div>`}<div class="rule-detail-card"><h4>정시 반영 구조(우수영역 순위형)</h4><div>${escapeHTML(rule.method||'')}</div></div>`;
+    document.getElementById('targetUniversity').value=u.university;renderTargetOptions();targetUni.value=u.id;showModal('detailModal');return;
+  }
   const school=schoolCutoff(u);
   detailBody.innerHTML=`<div class="detail-years">${Object.entries(u.years).map(([y,d])=>`<div class="year-card"><span class="badge blue">${y} 정시</span><div style="margin-top:10px">최종등록 컷</div><strong>${d.finalCut||'-'}</strong><div>모집 ${d.recruit||'-'}명 · 충원 ${d.extra||0}명</div></div>`).join('')}</div>
     <div class="detail-years" style="margin-top:10px">${Object.entries(u.schoolYears||{}).map(([y,d])=>`<div class="year-card"><span class="badge green">${y} 교과</span><div style="margin-top:10px">최종등록 평균등급</div><strong>${d.finalGrade?d.finalGrade+'등급':'-'}</strong></div>`).join('')}</div>
@@ -2113,8 +2167,9 @@ function renderOfficialRuleGate(){
 function computeUniversityMatches(school,scoreInput){
   const s=scoreInput||(school?currentSchoolSim():currentSim());
   return universities.map(u=>{
-    const cut=school?schoolCutoff(u):(u.officialResult?officialCutReferenceScore(u):cutoff(u));if(!cut)return null;
-    const sc=school?scoreSchool(s,u):(u.officialResult?officialReferenceScore(s,u):scoreStudent(s,u));
+    const cut=school?schoolCutoff(u):(u.rankedRule?u.rankedCutValue:(u.officialResult?officialCutReferenceScore(u):cutoff(u)));if(!cut)return null;
+    const sc=school?scoreSchool(s,u):(u.rankedRule?computeRankedRegularScore(s,u.rankedRule):(u.officialResult?officialReferenceScore(s,u):scoreStudent(s,u)));
+    if(sc===null||sc===undefined||!Number.isFinite(sc))return null;
     const [label,color]=school?classifySchool(sc,cut):classify(sc,cut);
     const advantage=school?cut-sc:sc-cut;
     return{u,sc,cut,label,color,advantage};
@@ -2293,7 +2348,7 @@ function runSimulation(){
   resultList.innerHTML=results.map(x=>{const source=guideSources(guidePackForUniversity(x.u.university))[0];return `<div class="result-card" onclick="showUniversity(${x.u.id})">
     <div><div class="uni-name">${x.u.university} · ${x.u.department}</div><div class="uni-meta">${school?'학생부교과 · 내신':`정시 · 모고 · ${x.u.group}`} · ${x.u.region} · 국${x.u.weights.kor}/수${x.u.weights.mat}/영${x.u.weights.eng}/탐${x.u.weights.inq}</div>${source?`<a class="small-btn" style="display:inline-block;margin-top:6px" href="${escapeHTML(source.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">모집요강 ↗</a>`:''}</div>
     <div class="result-score">${pct(x.sc)}<small> ${school?'환산등급':'환산지수'}</small></div>
-    <div class="cutoff"><b>${pct(x.cut)}${school?'등급':''}</b><div class="muted" style="font-size:10px">${school?'교과 3개년 평균':(x.u.officialResult?'2025 70% 참고지수':'정시 3개년 평균컷')}</div></div>
+    <div class="cutoff"><b>${pct(x.cut)}${school?'등급':''}</b><div class="muted" style="font-size:10px">${school?'교과 3개년 평균':(x.u.rankedRule?'공식 70% 컷':(x.u.officialResult?'2025 70% 참고지수':'정시 3개년 평균컷'))}</div></div>
     <div><span class="badge ${x.color}">${x.label}</span><div class="delta" style="margin-top:5px;color:${x.advantage>=0?'#047857':'#b91c1c'}">${x.advantage>=0?'+':''}${pct(x.advantage)}${school?'등급':''}</div></div>
   </div>`}).join('')||`<div class="empty">${school?'교과 3개년 데이터가 있는':'조건에 맞는'} 결과가 없습니다.</div>`;
   updateTargetSummary();
@@ -2304,6 +2359,13 @@ function updateTargetSummary(){
   const u=universities.find(x=>String(x.id)===targetUni.value);if(!u)return;
   if(!simulationHasStoredScore()){goalSummary.style.display='none';return}
   const school=simType.value==='school';
+  if(!school&&u.rankedRule){
+    const sc=computeRankedRegularScore(currentSim(),u.rankedRule),c=u.rankedCutValue;
+    if(sc===null||!c){goalSummary.style.display='block';goalSummary.innerHTML='<div class="notice">이 모집단위는 계산에 필요한 성적값이 부족하거나 비교 기준 컷이 없습니다.</div>';return}
+    const adv=sc-c,judgment=universityReferenceJudgment(adv);
+    goalSummary.style.display='block';
+    goalSummary.innerHTML=`<h4>${u.university} ${u.department}</h4><div class="muted" style="font-size:11px;margin-bottom:9px">정시 · 공식 계산규칙(${escapeHTML(u.rankedRule.id)}) 기준 비교</div><div style="display:flex;justify-content:space-between"><span>현재 참고지수</span><b>${pct(sc)}</b></div><div style="display:flex;justify-content:space-between;margin-top:5px"><span>공식 70% 컷</span><b>${pct(c)}</b></div><div style="margin-top:10px"><span class="badge ${judgment.color}">${judgment.label}</span> <span class="muted" style="font-size:11px">${adv>=0?'차이 +'+pct(adv):'부족 '+pct(Math.abs(adv))}</span></div></div>`;return;
+  }
   if(!school&&u.officialResult){
     const sc=officialReferenceScore(currentSim(),u),c=officialCutReferenceScore(u),adv=sc-c,judgment=universityReferenceJudgment(adv);
     goalSummary.style.display='block';
@@ -2327,12 +2389,13 @@ function findGoal(){
     goalSummary.innerHTML=`<h4>${u.university} ${u.department} 교과 목표</h4>${need===0?'<div class="notice" style="background:#ecfdf5;border-color:#bbf7d0;color:#065f46">현재 교과 환산등급이 3개년 평균컷 이내입니다.</div>':`<div class="goal-card"><b>평균적으로 약 ${pct(need)}등급 개선 필요</b><span>현재 환산등급 ${pct(sc)} → 목표 ${pct(c)} 이하</span><span>국어 ${pct(target.kor)} · 수학 ${pct(target.mat)} · 영어 ${pct(target.eng)} · 탐구 ${pct(target.inq)} 수준을 1차 목표로 볼 수 있습니다.</span></div>`}<div class="muted" style="font-size:10px;margin-top:10px">※ 현재는 영역별 단순 가중 평균 기반 목표치입니다. 실제 학생부교과는 대학별 반영교과·학년별 비율·진로선택·이수단위 등을 별도 반영해야 합니다.</div>`;
     return;
   }
-  const base=currentSim(), c=u.officialResult?officialCutReferenceScore(u):cutoff(u);
+  const base=currentSim(), c=u.rankedRule?u.rankedCutValue:(u.officialResult?officialCutReferenceScore(u):cutoff(u));
+  if(!c){goalSummary.style.display='block';goalSummary.innerHTML='<div class="notice">이 모집단위는 비교 기준 컷이 없어 목표 조합을 계산할 수 없습니다.</div>';return}
   let candidates=[];
   const maxK=Math.min(100,base.kor+18),maxM=Math.min(100,base.mat+18),maxI=Math.min(100,base.inq+18),minE=Math.max(1,base.eng-2);
   for(let k=base.kor;k<=maxK;k+=2) for(let m=base.mat;m<=maxM;m+=2) for(let i=base.inq;i<=maxI;i+=2) for(let e=base.eng;e>=minE;e--){
-    const s={kor:k,mat:m,inq:i,eng:e},sc=u.officialResult?officialReferenceScore(s,u):scoreStudent(s,u);
-    if(sc>=c){const effort=(k-base.kor)+(m-base.mat)+(i-base.inq)+(base.eng-e)*4;candidates.push({s,sc,effort})}
+    const s={kor:k,mat:m,inq:i,eng:e},sc=u.rankedRule?computeRankedRegularScore(s,u.rankedRule):(u.officialResult?officialReferenceScore(s,u):scoreStudent(s,u));
+    if(sc!==null&&sc>=c){const effort=(k-base.kor)+(m-base.mat)+(i-base.inq)+(base.eng-e)*4;candidates.push({s,sc,effort})}
   }
   candidates.sort((a,b)=>a.effort-b.effort||a.sc-b.sc);
   const top=candidates.slice(0,3);
