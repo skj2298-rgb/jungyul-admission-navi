@@ -1057,11 +1057,14 @@ function renderUdbDetailTabs(){
 function udbSourceListHTML(sources){
   const list=Array.isArray(sources)?sources:[];
   if(!list.length)return '<span class="muted">출처 미기재</span>';
-  return `<div class="source-actions">${list.map(s=>`<a class="small-btn" href="${escapeHTML(s.url||'#')}" target="_blank" rel="noopener">${escapeHTML(s.org||'출처')} · ${escapeHTML(s.title||'')}${s.publishedDate?' ('+escapeHTML(s.publishedDate)+')':''} ↗</a>`).join('')}</div>`;
+  return `<div class="source-actions">${list.map(s=>{
+    const label=`${escapeHTML(s.org||'출처')} · ${escapeHTML(s.title||'')}${s.page?' ('+escapeHTML(String(s.page))+'p)':''}${s.publishedDate?' ('+escapeHTML(s.publishedDate)+')':''}`;
+    return s.url?`<a class="small-btn" href="${escapeHTML(s.url)}" target="_blank" rel="noopener">${label} ↗</a>`:`<span class="badge gray">${label}</span>`;
+  }).join('')}</div>`;
 }
 function udbIndicatorRowsHTML(indicators){
   if(!indicators)return '<div class="notice">공개된 정량 지표가 없습니다(정성 전형이거나 미공개).</div>';
-  const labels={universityScoreCut50:'대학환산 50%컷',universityScoreCut70:'대학환산 70%컷',percentileCut50:'백분위 50%컷',percentileCut70:'백분위 70%컷',standardScoreCut50:'표준점수 50%컷',standardScoreCut70:'표준점수 70%컷',avgGradeReference50:'평균등급 50%컷(참고)',avgGradeReference70:'평균등급 70%컷(참고)'};
+  const labels={universityScoreCut50:'대학환산 50%컷',universityScoreCut70:'대학환산 70%컷',percentileCut50:'백분위 50%컷',percentileCut70:'백분위 70%컷',percentileCut90:'백분위 90%컷',standardScoreCut50:'표준점수 50%컷',standardScoreCut70:'표준점수 70%컷',standardScoreCut90:'표준점수 90%컷',avgGradeReference50:'평균등급 50%컷(참고)',avgGradeReference70:'평균등급 70%컷(참고)',avgGradeReference90:'평균등급 90%컷(참고)'};
   const items=Object.entries(labels).filter(([key])=>indicators[key]!==undefined&&indicators[key]!==null).map(([key,label])=>[label,indicators[key]]);
   (indicators.extra||[]).forEach(item=>items.push([item.label,item.value]));
   if(!items.length)return '<div class="notice">공개된 정량 지표가 없습니다(정성 전형이거나 미공개).</div>';
@@ -1069,6 +1072,7 @@ function udbIndicatorRowsHTML(indicators){
 }
 function udbYearCardHTML(detail,year,status){
   const badge=status==='linked'?'<span class="badge green">시뮬레이션 연결</span>':status==='pending'?'<span class="badge amber">계산 보류</span>':'';
+  const rule=year.calculationRuleId?CALCULATION_RULES[year.calculationRuleId]:null;
   return `<div class="rule-detail-card">
     <div class="panel-title"><h4>${year.year}학년도 · ${escapeHTML(detail.name)}${detail.group?' · '+escapeHTML(detail.group):''}</h4>${badge}</div>
     <div>모집인원 ${year.recruitCount??'미공개'}명 · 경쟁률 ${year.competitionRatio??'미공개'}:1 · 충원 ${(year.additionalPass&&year.additionalPass.count)??'미공개'}명</div>
@@ -1076,6 +1080,8 @@ function udbYearCardHTML(detail,year,status){
     ${Array.isArray(year.stageRatios)&&year.stageRatios.length?`<div class="muted" style="margin-top:4px">${year.stageRatios.map(st=>`${escapeHTML(String(st.stage))}: ${escapeHTML(st.ratio||'')}${st.multiplier?' ('+escapeHTML(st.multiplier)+')':''}`).join(' → ')}</div>`:''}
     ${Array.isArray(year.evaluationFactors)&&year.evaluationFactors.length?`<div class="muted" style="margin-top:4px">평가요소: ${year.evaluationFactors.map(escapeHTML).join(', ')}</div>`:''}
     <div style="margin-top:10px">${udbIndicatorRowsHTML(year.indicators)}</div>
+    ${rule&&rule.method?`<div class="notice" style="margin-top:10px"><b>반영방법(계산규칙):</b> ${escapeHTML(rule.method)}</div>`:''}
+    ${rule&&Array.isArray(rule.notes)&&rule.notes.length?`<div class="muted" style="margin-top:6px;font-size:11px">${rule.notes.map(escapeHTML).join('<br>')}</div>`:''}
     <div style="margin-top:10px">${udbSourceListHTML(year.sources)}</div>
   </div>`;
 }
@@ -1086,11 +1092,11 @@ function renderUdbDetailBody(){
   const details=(dept.admissionTypes&&dept.admissionTypes[type]&&dept.admissionTypes[type].details)||[];
   if(!details.length){target.innerHTML='<div class="empty">이 전형유형은 아직 공식 자료가 등록되지 않았습니다.</div>';return}
   target.innerHTML=details.map(detail=>(detail.years||[]).map((year,yearIndex)=>{
+    const rule=year.calculationRuleId?CALCULATION_RULES[year.calculationRuleId]:null;
     let status=null;
-    if(type==='regular'){
-      const bound=dept.simulationBinding&&dept.simulationBinding.regular===detail.id&&yearIndex===0;
-      const rule=year.calculationRuleId?CALCULATION_RULES[year.calculationRuleId]:null;
-      status=(bound&&rule&&rule.status==='verified')?'linked':'pending';
+    if(rule){
+      const bound=type==='regular'&&dept.simulationBinding&&dept.simulationBinding.regular===detail.id&&yearIndex===0;
+      status=(bound&&rule.status==='verified')?'linked':'pending';
     }
     return udbYearCardHTML(detail,year,status);
   }).join('')).join('');
