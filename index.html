@@ -1692,14 +1692,26 @@ function buildReportBodyHTML(data){
     <div style="margin-top:30px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af">정율 Admission Navi 자동 생성 리포트 · 생성일 ${new Date().toLocaleDateString('ko-KR')} · 실제 지원 전 반드시 공식 모집요강으로 재확인하세요.</div>
   </div>`;
 }
-function pdfRenderHtml(doc,html){
-  return new Promise(resolve=>{
-    const container=document.createElement('div');
-    container.style.cssText='position:fixed;left:-9999px;top:0';
-    container.innerHTML=html;
-    document.body.appendChild(container);
-    doc.html(container,{x:0,y:0,width:595,windowWidth:794,autoPaging:'text',callback:function(){document.body.removeChild(container);resolve()}});
-  });
+async function pdfAddHtmlAsPages(doc,html,pageState){
+  const container=document.createElement('div');
+  container.style.cssText='position:fixed;left:-9999px;top:0';
+  container.innerHTML=html;
+  document.body.appendChild(container);
+  const canvas=await html2canvas(container.firstElementChild,{});
+  document.body.removeChild(container);
+  const pageW=doc.internal.pageSize.getWidth(),pageH=doc.internal.pageSize.getHeight();
+  const pxPerPt=canvas.width/pageW,pageHeightPx=pageH*pxPerPt;
+  let y=0;
+  while(canvas.height-y>1){
+    const sliceH=Math.min(pageHeightPx,canvas.height-y);
+    const sliceCanvas=document.createElement('canvas');
+    sliceCanvas.width=canvas.width;sliceCanvas.height=sliceH;
+    sliceCanvas.getContext('2d').drawImage(canvas,0,y,canvas.width,sliceH,0,0,canvas.width,sliceH);
+    if(!pageState.first)doc.addPage();
+    doc.addImage(sliceCanvas.toDataURL('image/png'),'PNG',0,0,pageW,sliceH/pxPerPt);
+    pageState.first=false;
+    y+=sliceH;
+  }
 }
 async function generateReportPDF(id){
   const s=students.find(x=>x.id===id);if(!s)return;
@@ -1707,7 +1719,9 @@ async function generateReportPDF(id){
   const data=buildStudentReportData(s);
   const{jsPDF}=window.jspdf;
   const doc=new jsPDF('p','pt','a4');
-  await pdfRenderHtml(doc,buildCoverHTML(data)+buildReportBodyHTML(data));
+  const pageState={first:true};
+  await pdfAddHtmlAsPages(doc,buildCoverHTML(data),pageState);
+  await pdfAddHtmlAsPages(doc,buildReportBodyHTML(data),pageState);
   doc.save(`${s.name}-report.pdf`);
 }
 function runSimulation(){
