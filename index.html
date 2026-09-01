@@ -807,24 +807,27 @@ const PE_ARTS_SUBJECTS_2022=['체육1','체육2','운동과 건강','스포츠 �
 const LIBERAL_SUBJECTS_2022=['진로와 직업','생태와 환경','인간과 철학','논리와 사고','인간과 심리','교육의 이해','삶과 종교','보건','인간과 경제활동','논술'];
 const PE_ARTS_SUBJECTS_2015=['체육','운동과 건강','스포츠 생활','음악','미술','음악과 생활','미술 창작','음악 감상과 비평','미술 감상과 비평'];
 const LIBERAL_SUBJECTS_2015=['진로와 직업','논리학','철학','심리학','교육학','종교학','실용 경제','논술','보건','환경'];
+const SCIENCE_LAB_SUBJECTS_2015=['과학탐구실험'];
 
-const SUBJECT_TRACK_LABELS={standard:'표준(공통·일반선택·진로선택)',careerElective:'진로선택(2015개정, 석차등급 없음)',noRankFusion:'융합선택(석차등급 미산출·공식 목록)',peArts:'체육·예술/과학탐구실험',liberal:'교양',jointOnline:'공동교육과정·온라인학교',outsideSchool:'학교 밖 교육(위탁 등)'};
+// 유형 라벨은 교육과정별로 분리(2015 표준에는 진로선택을 절대 포함하지 않음)
+const SUBJECT_TRACK_LABELS={
+  2015:{standard:'표준(공통·일반선택)',careerElective:'진로선택(2015개정)',scienceLab:'과학탐구실험(2015개정)',peArts:'체육·예술',liberal:'교양'},
+  2022:{standard:'표준(공통·일반선택·진로선택)',noRankFusion:'융합선택(석차등급 미산출·공식 목록)',peArts:'과학탐구실험/체육·예술',liberal:'교양'}
+};
+const OFF_CAMPUS_LABELS={'':'일반',jointOnline:'공동교육과정·온라인학교',outsideSchool:'학교 밖 교육(위탁 등)'};
 const SUBJECT_TRACK_SCHEMA={
   2015:{
     standard:{fields:['rawScore','mean','stddev','achievement','enrolledCount','grade'],achievementLevels:['A','B','C','D','E'],gradeType:'number',gradeMax:9},
     careerElective:{fields:['rawScore','mean','achievement','distribution','enrolledCount'],achievementLevels:['A','B','C'],gradeType:null},
+    scienceLab:{fields:['rawScore','mean','stddev','achievement','enrolledCount'],achievementLevels:['A','B','C'],gradeType:null},
     peArts:{fields:['achievement'],achievementLevels:['A','B','C'],gradeType:null},
-    liberal:{fields:['pass'],achievementLevels:null,gradeType:null},
-    jointOnline:{fields:['rawScore','mean','stddev','achievement','enrolledCount'],achievementLevels:['A','B','C','D','E'],gradeType:'dot'},
-    outsideSchool:{fields:[],achievementLevels:null,gradeType:'dot'}
+    liberal:{fields:['pass'],achievementLevels:null,gradeType:null}
   },
   2022:{
     standard:{fields:['rawScore','mean','achievement','distribution','enrolledCount','grade'],achievementLevels:['A','B','C','D','E'],gradeType:'number',gradeMax:5},
     noRankFusion:{fields:['rawScore','mean','achievement','distribution','enrolledCount'],achievementLevels:['A','B','C','D','E'],gradeType:null},
     peArts:{fields:['achievement','enrolledCount'],achievementLevels:['A','B','C'],gradeType:null},
-    liberal:{fields:['pass','enrolledCount'],achievementLevels:null,gradeType:null},
-    jointOnline:{fields:['rawScore','mean','achievement','distribution','enrolledCount'],achievementLevels:['A','B','C','D','E'],gradeType:'dot'},
-    outsideSchool:{fields:[],achievementLevels:null,gradeType:'dot'}
+    liberal:{fields:['pass','enrolledCount'],achievementLevels:null,gradeType:null}
   }
 };
 function trackSchemaFor(curriculum,track){return SUBJECT_TRACK_SCHEMA[curriculum]?.[track]||SUBJECT_TRACK_SCHEMA[curriculum].standard}
@@ -832,6 +835,7 @@ function classifySubjectTrack(name,curriculum){
   const n=String(name||'').trim();
   if(!n)return{track:null,needsReview:true};
   if(curriculum==='2022'&&NO_RANK_FUSION_SUBJECTS_2022.includes(n))return{track:'noRankFusion',needsReview:false};
+  if(curriculum==='2015'&&SCIENCE_LAB_SUBJECTS_2015.includes(n))return{track:'scienceLab',needsReview:false};
   const peArts=curriculum==='2022'?PE_ARTS_SUBJECTS_2022:PE_ARTS_SUBJECTS_2015;
   if(peArts.includes(n))return{track:'peArts',needsReview:false};
   const liberal=curriculum==='2022'?LIBERAL_SUBJECTS_2022:LIBERAL_SUBJECTS_2015;
@@ -873,8 +877,9 @@ function normalizeSchoolRecordRow(row,curriculum){
     const guess=classifySubjectTrack(name,curriculum||'2022');
     subjectTrack=guess.track;needsReview=guess.needsReview;
   }
+  const offCampusType=['jointOnline','outsideSchool'].includes(row?.offCampusType)?row.offCampusType:'';
   return{id:Number(row?.id)||Date.now()+Math.floor(Math.random()*100000),term:String(row?.term||'1학년 1학기'),group:String(row?.group||'기타'),name,
-    subjectTrack,needsReview,
+    subjectTrack,needsReview,offCampusType,
     credits:optionalNumber(row?.credits),rawScore:optionalNumber(row?.rawScore),mean:optionalNumber(row?.mean),stddev:optionalNumber(row?.stddev),
     achievement:String(row?.achievement||''),grade:rankGradeValue(row?.grade),enrolledCount:optionalNumber(row?.enrolledCount),
     distribution:normalizeDistribution(row?.distribution),pass:row?.pass?'P':''}
@@ -1176,9 +1181,9 @@ function setSchoolInputMode(mode,savePreference=true){
 function schoolGroupOptions(selected){return ['국어','수학','영어','사회','과학','기술가정/정보','제2외국어/한문','체육','예술','교양','기타'].map(value=>`<option ${value===selected?'selected':''}>${value}</option>`).join('')}
 const SCHOOL_TERMS=['1학년 1학기','1학년 2학기','2학년 1학기','2학년 2학기','3학년 1학기','3학년 2학기'];
 function schoolDetailColumns(curriculum){
-  const cols=['교과','유형','과목명',curriculum==='2015'?'단위수':'학점','원점수','평균'];
+  const cols=['교과','유형','이수구분','과목명',curriculum==='2015'?'단위수':'학점','원점수','평균'];
   if(curriculum==='2015')cols.push('표준편차');
-  cols.push('성취도','성취도별 분포비율(A~E)','이수여부','수강자수','석차등급','관리');
+  cols.push('성취도','성취도별 분포비율','이수여부','수강자수','석차등급','관리');
   return cols;
 }
 function schoolDetailSkeletonHTML(curriculum){
@@ -1187,53 +1192,79 @@ function schoolDetailSkeletonHTML(curriculum){
   return grades.map(([grade,terms])=>`<div class="school-grade-block"><div class="school-grade-title">${grade}</div>${terms.map(term=>`<div class="school-term-block"><div class="school-term-head"><b>${term}</b><button class="small-btn" type="button" onclick="addSchoolDetailRow('${term}')">+ 과목 추가</button></div><div class="table-wrap"><table class="school-record-table" data-curriculum="${curriculum}"><thead><tr>${headCells}</tr></thead><tbody data-term="${term}"></tbody></table></div></div>`).join('')}</div>`).join('');
 }
 function schoolTrackOptionsHTML(curriculum,selected){
-  const keys=Object.keys(SUBJECT_TRACK_SCHEMA[curriculum]);
-  return `<option value="">선택 필요</option>`+keys.map(k=>`<option value="${k}" ${k===selected?'selected':''}>${SUBJECT_TRACK_LABELS[k]}</option>`).join('');
+  const keys=Object.keys(SUBJECT_TRACK_SCHEMA[curriculum]),labels=SUBJECT_TRACK_LABELS[curriculum];
+  return `<option value="">선택 필요</option>`+keys.map(k=>`<option value="${k}" ${k===selected?'selected':''}>${labels[k]}</option>`).join('');
+}
+function schoolOffCampusOptionsHTML(selected){
+  return Object.entries(OFF_CAMPUS_LABELS).map(([k,label])=>`<option value="${k}" ${k===(selected||'')?'selected':''}>${label}</option>`).join('');
 }
 function schoolNumberCell(field,row,step=1){return `<td><input class="input" data-field="${field}" type="number" min="0" max="100" step="${step}" value="${row[field]??''}"></td>`}
 function schoolCellHTML(row,curriculum,fieldKey){
-  const schema=trackSchemaFor(curriculum,row.subjectTrack||'standard'),active=row.subjectTrack&&schema.fields.includes(fieldKey);
+  const schema=trackSchemaFor(curriculum,row.subjectTrack||'standard');
+  const outsideSchool=row.offCampusType==='outsideSchool';
+  // 학교 밖 교육은 교과·과목·학점 외 모든 항목을 '·'로 처리(교육부 지침), 그 외에는 선택한 유형의 공식 항목을 그대로 활성화
+  const active=!!row.subjectTrack&&!outsideSchool&&schema.fields.includes(fieldKey);
   if(fieldKey==='achievement'){
-    if(!active||!schema.achievementLevels)return '<td class="muted" style="text-align:center">—</td>';
+    if(!active||!schema.achievementLevels)return `<td class="muted" style="text-align:center">${outsideSchool&&row.subjectTrack?'·':'—'}</td>`;
     return `<td><select class="select" data-field="achievement"><option value="" ${!row.achievement?'selected':''}>-</option>${schema.achievementLevels.map(v=>`<option value="${v}" ${v===row.achievement?'selected':''}>${v}</option>`).join('')}</select></td>`;
   }
   if(fieldKey==='distribution'){
-    if(!active)return '<td class="muted" style="text-align:center">—</td>';
-    const d=row.distribution||{};
-    return `<td><div class="dist-inputs">${['A','B','C','D','E'].map(k=>`<input class="input dist-input" data-field="dist${k}" type="number" min="0" max="100" placeholder="${k}" value="${d[k]??''}">`).join('')}</div></td>`;
+    if(!active)return `<td class="muted" style="text-align:center">${outsideSchool&&row.subjectTrack&&schema.fields.includes('distribution')?'·':'—'}</td>`;
+    const levels=schema.achievementLevels||['A','B','C','D','E'],d=row.distribution||{};
+    return `<td><div class="dist-inputs">${levels.map(k=>`<input class="input dist-input" data-field="dist${k}" type="number" min="0" max="100" placeholder="${k}" value="${d[k]??''}">`).join('')}</div></td>`;
   }
   if(fieldKey==='pass'){
-    if(!active)return '<td class="muted" style="text-align:center">—</td>';
+    if(!active)return `<td class="muted" style="text-align:center">${outsideSchool&&row.subjectTrack&&schema.fields.includes('pass')?'·':'—'}</td>`;
     return `<td><select class="select" data-field="pass"><option value="" ${row.pass!=='P'?'selected':''}>-</option><option value="P" ${row.pass==='P'?'selected':''}>P</option></select></td>`;
   }
   if(fieldKey==='enrolledCount'){
-    if(!active)return '<td class="muted" style="text-align:center">—</td>';
+    if(!active)return `<td class="muted" style="text-align:center">${outsideSchool&&row.subjectTrack&&schema.fields.includes('enrolledCount')?'·':'—'}</td>`;
     return `<td><input class="input" data-field="enrolledCount" type="number" min="0" value="${row.enrolledCount??''}"></td>`;
   }
   if(fieldKey==='grade'){
-    if(!row.subjectTrack||!schema.gradeType)return '<td class="muted" style="text-align:center">—</td>';
-    if(schema.gradeType==='dot')return '<td class="muted" style="text-align:center">·</td>';
+    if(!row.subjectTrack)return '<td class="muted" style="text-align:center">—</td>';
+    if(outsideSchool)return '<td class="muted" style="text-align:center">·</td>';
+    if(schema.gradeType!=='number')return '<td class="muted" style="text-align:center">—</td>';
+    if(row.offCampusType==='jointOnline')return '<td class="muted" style="text-align:center">·</td>'; // 공동교육과정·온라인학교는 석차등급에 '·' 입력(별표9)
     return `<td><input class="input" data-field="grade" type="number" min="1" max="${schema.gradeMax}" value="${typeof row.grade==='number'?row.grade:''}"></td>`;
   }
-  if(fieldKey==='rawScore')return active?schoolNumberCell('rawScore',row,1):'<td class="muted" style="text-align:center">—</td>';
-  if(fieldKey==='mean')return active?schoolNumberCell('mean',row,0.1):'<td class="muted" style="text-align:center">—</td>';
-  if(fieldKey==='stddev')return active?schoolNumberCell('stddev',row,0.1):'<td class="muted" style="text-align:center">—</td>';
+  if(fieldKey==='rawScore')return active?schoolNumberCell('rawScore',row,1):`<td class="muted" style="text-align:center">${outsideSchool&&row.subjectTrack&&schema.fields.includes('rawScore')?'·':'—'}</td>`;
+  if(fieldKey==='mean')return active?schoolNumberCell('mean',row,0.1):`<td class="muted" style="text-align:center">${outsideSchool&&row.subjectTrack&&schema.fields.includes('mean')?'·':'—'}</td>`;
+  if(fieldKey==='stddev')return active?schoolNumberCell('stddev',row,0.1):`<td class="muted" style="text-align:center">${outsideSchool&&row.subjectTrack&&schema.fields.includes('stddev')?'·':'—'}</td>`;
   return '<td class="muted" style="text-align:center">—</td>';
 }
 function schoolTermRowHTML(row,curriculum){
   const reviewBadge=row.needsReview?'<span class="badge amber" style="margin-left:6px;white-space:nowrap">확인 필요</span>':'';
   const cells=[
     `<td><select class="select" data-field="group">${schoolGroupOptions(row.group)}</select></td>`,
-    `<td><select class="select" data-field="subjectTrack" style="min-width:150px">${schoolTrackOptionsHTML(curriculum,row.subjectTrack)}</select>${reviewBadge}</td>`,
-    `<td><input class="input subject-name" data-field="name" value="${escapeHTML(row.name)}"></td>`,
+    `<td><select class="select" data-field="subjectTrack" style="min-width:150px" onchange="updateSchoolRowField(this)">${schoolTrackOptionsHTML(curriculum,row.subjectTrack)}</select>${reviewBadge}</td>`,
+    `<td><select class="select" data-field="offCampusType" style="min-width:150px" onchange="updateSchoolRowField(this)">${schoolOffCampusOptionsHTML(row.offCampusType)}</select></td>`,
+    `<td><input class="input subject-name" data-field="name" value="${escapeHTML(row.name)}" onchange="updateSchoolRowField(this)"></td>`,
     `<td><input class="input" data-field="credits" type="number" min="1" max="20" value="${row.credits??''}"></td>`,
     schoolCellHTML(row,curriculum,'rawScore'),
     schoolCellHTML(row,curriculum,'mean')
   ];
   if(curriculum==='2015')cells.push(schoolCellHTML(row,curriculum,'stddev'));
   cells.push(schoolCellHTML(row,curriculum,'achievement'),schoolCellHTML(row,curriculum,'distribution'),schoolCellHTML(row,curriculum,'pass'),schoolCellHTML(row,curriculum,'enrolledCount'),schoolCellHTML(row,curriculum,'grade'));
-  cells.push(`<td><button class="small-btn" onclick="deleteSchoolDetailRow(${row.id})">삭제</button></td>`);
+  cells.push(`<td><button class="small-btn" type="button" onclick="deleteSchoolDetailRow(${row.id})">삭제</button></td>`);
   return `<tr data-id="${row.id}" class="${row.needsReview?'needs-review-row':''}">${cells.join('')}</tr>`;
+}
+function readSchoolRowFromTr(tr,term){
+  const raw={id:+tr.dataset.id,term};
+  [...tr.querySelectorAll('[data-field]')].forEach(input=>{
+    const f=input.dataset.field;
+    if(f.startsWith('dist')){raw.distribution=raw.distribution||{};raw.distribution[f.slice(4)]=input.value}
+    else raw[f]=input.value;
+  });
+  return raw;
+}
+function updateSchoolRowField(el){
+  const tr=el.closest('tr'),body=tr.closest('tbody'),term=body.dataset.term;
+  const curriculum=studentCurriculum(currentScoreStudent());
+  const row=normalizeSchoolRecordRow(readSchoolRowFromTr(tr,term),curriculum);
+  const tmp=document.createElement('tbody');
+  tmp.innerHTML=schoolTermRowHTML(row,curriculum);
+  tr.replaceWith(tmp.firstElementChild);
 }
 function renderCurriculumBadge(s,curriculum){
   const el=document.getElementById('curriculumBadge');if(!el)return;
@@ -1267,13 +1298,7 @@ function readAllVisibleSchoolRows(curriculum){
   return [...document.querySelectorAll('#schoolDetailTerms tbody[data-term]')].flatMap(body=>{
     const term=body.dataset.term;
     return [...body.querySelectorAll('tr[data-id]')].map(tr=>{
-      const raw={id:+tr.dataset.id,term};
-      [...tr.querySelectorAll('[data-field]')].forEach(input=>{
-        const f=input.dataset.field;
-        if(f.startsWith('dist')){raw.distribution=raw.distribution||{};raw.distribution[f.slice(4)]=input.value}
-        else raw[f]=input.value;
-      });
-      return normalizeSchoolRecordRow(raw,curriculum);
+      return normalizeSchoolRecordRow(readSchoolRowFromTr(tr,term),curriculum);
     });
   });
 }
