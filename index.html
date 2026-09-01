@@ -185,6 +185,7 @@ tr.needs-review-row{background:#fffbeb}
     <button class="nav-btn" data-view="students">학생 관리</button>
     <button class="nav-btn" data-view="scores">성적 입력</button>
     <button class="nav-btn" data-view="universities">대학 DB</button>
+    <button class="nav-btn" data-view="universityStructure">대학 구조 DB</button>
     <button class="nav-btn" data-view="simulator">성적 시뮬레이션</button>
     <button class="nav-btn" data-view="data">데이터 관리</button>
   </nav>
@@ -396,6 +397,22 @@ tr.needs-review-row{background:#fffbeb}
     </div>
   </section>
 
+  <section id="universityStructure" class="view">
+    <div class="page-head">
+      <div><h1>대학 구조 DB <span class="badge amber">파일럿</span></h1><p>대학 → 모집단위 → 전형유형(정시·학생부교과·학생부종합·논술) → 세부전형 → 학년도 구조로 공식 원자료를 있는 그대로 저장합니다. 계산 규칙이 검증되지 않은 항목은 시뮬레이터에 반영하지 않고 "계산 보류"로 표시합니다.</p></div>
+    </div>
+    <div class="card">
+      <div class="toolbar">
+        <input id="udbSearch" class="input search" placeholder="대학 / 모집단위 검색" oninput="renderUniversityStructureList()">
+        <select id="udbRegionFilter" class="select" onchange="renderUniversityStructureList()"><option value="">전체 지역</option></select>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>대학</th><th>모집단위</th><th>지역</th><th>군</th><th>데이터 보유현황</th><th>상세</th></tr></thead>
+        <tbody id="udbTbody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
   <section id="simulator" class="view">
     <div class="page-head">
       <div><h1>성적 시뮬레이션</h1><p>전형 기준을 선택하면 모의고사 또는 교과 성적을 자동으로 불러와 대학별 지원 구간을 비교합니다.</p></div>
@@ -485,6 +502,7 @@ tr.needs-review-row{background:#fffbeb}
         <div class="data-actions">
           <button class="btn primary" onclick="exportJSON()">전체 데이터 JSON 다운로드</button>
           <label class="btn file-label">JSON 불러오기<input id="jsonImport" type="file" accept=".json" hidden onchange="importJSON(event)"></label>
+          <button class="btn soft" onclick="downloadLegacyUniversityBackup()">이전(대학 구조 DB 이전) 대학 DB 백업 다운로드</button>
           <button class="btn danger" onclick="resetData()">샘플 데이터 초기화</button>
         </div>
       </div>
@@ -617,6 +635,17 @@ tr.needs-review-row{background:#fffbeb}
   <div class="modal-foot"><button class="btn primary" onclick="closeModal('detailModal');goView('simulator')">시뮬레이션으로 이동</button></div>
 </div></div>
 
+<!-- 대학 구조 DB 상세 모달 -->
+<div class="modal-backdrop" id="udbDetailModal"><div class="modal rule-modal">
+  <div class="modal-head"><h3 id="udbDetailTitle">모집단위 상세</h3><button class="close" onclick="closeModal('udbDetailModal')">×</button></div>
+  <div class="modal-body">
+    <div id="udbDetailCoverage"></div>
+    <div class="rule-tabs" role="tablist" aria-label="전형유형 구분" id="udbDetailTabs"></div>
+    <div id="udbDetailBody"></div>
+  </div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal('udbDetailModal')">닫기</button></div>
+</div></div>
+
 <!-- 수시·정시 통합 규칙 상세 모달 -->
 <div class="modal-backdrop" id="rulePackDetailModal"><div class="modal rule-modal">
   <div class="modal-head"><h3 id="rulePackDetailTitle">전형 상세조회</h3><button class="close" onclick="closeModal('rulePackDetailModal')" aria-label="닫기">×</button></div>
@@ -632,6 +661,10 @@ tr.needs-review-row{background:#fffbeb}
   <div class="modal-foot"><button class="btn" onclick="closeModal('rulePackDetailModal')">닫기</button></div>
 </div></div>
 
+<script>var UNIVERSITY_DB=[];var CALCULATION_RULES={};</script>
+<script src="data/universities/inha.js"></script>
+<script src="data/universities/gachon.js"></script>
+<script src="data/universities/korea.js"></script>
 <script>
 const SAMPLE_STUDENTS = [
   {id:1,name:'김민서',school:'정율고',grade:'고3',track:'인문',target:'인하대 경영학과',schoolGrades:{kor:3.2,mat:2.8,eng:3.0,inq:3.1},mockScores:[
@@ -658,80 +691,8 @@ const SAMPLE_UNIS = [
   {id:110,university:'경기대',department:'경영학부',region:'경기',group:'다군',weights:{kor:30,mat:30,eng:10,inq:30},years:{2024:{finalCut:77.8,recruit:28,extra:34},2025:{finalCut:78.5,recruit:28,extra:36},2026:{finalCut:79.4,recruit:30,extra:39}},schoolYears:{2024:{finalGrade:3.3},2025:{finalGrade:3.2},2026:{finalGrade:3.1}}}
 ];
 
-// 대학어디가 공개표준안의 2025학년도 인하대학교 수능(일반) 결과.
-// 배열: 모집단위, 군, 최종모집, 경쟁률, 충원합격순위, 환산50컷, 환산70컷, 계열, 70% 등록자 [국,수,탐1,탐2,영,한].
-const INHA_2025_RESULT_ROWS=[
-  ['조선해양공학과','가군',7,6.0,3,890.8,890.6,'N',[72,81,90,97,2,1]],
-  ['산업경영공학과','가군',5,6.2,5,891.7,891.3,'N',[82,87,81,83,3,3]],
-  ['환경공학과','가군',6,6.0,5,888.0,887.3,'N',[77,90,87,75,4,4]],
-  ['건축학부','가군',18,4.8,20,890.8,889.3,'N',[79,85,84,88,4,2]],
-  ['반도체시스템공학과','가군',33,4.7,22,906.3,904.6,'N',[86,81,98,77,3,1]],
-  ['수학과','가군',2,11.0,0,895.9,895.9,'N',[86,92,56,90,2,3]],
-  ['화학과','가군',5,10.8,5,889.8,889.4,'N',[97,74,66,83,3,1]],
-  ['경영학과','가군',13,6.2,12,884.1,883.8,'H',[89,78,72,85,3,1]],
-  ['국어교육과','가군',8,5.9,12,888.9,884.3,'H',[82,59,96,98,3,1]],
-  ['교육학과','가군',13,5.8,9,882.3,881.2,'H',[82,76,93,82,3,3]],
-  ['미디어커뮤니케이션학과','가군',2,11.5,0,891.2,891.2,'H',[77,90,90,93,3,1]],
-  ['사회복지학과','가군',3,7.3,6,878.6,878.6,'H',[86,66,88,78,2,4]],
-  ['사학과','가군',4,10.3,2,887.5,887.5,'H',[96,56,83,84,3,1]],
-  ['문화콘텐츠문화경영학과','가군',7,7.4,9,881.1,880.3,'H',[85,74,81,88,3,4]],
-  ['의예과','가군',40,6.1,31,991.5,990.8,'N',[99,99,99,98,2,1]],
-  ['데이터사이언스학과','가군',16,5.3,21,897.6,892.3,'N',[75,90,85,83,3,3]],
-  ['자유전공융합학부(인문)','가군',100,4.1,56,882.3,880.2,'FH',[92,87,81,59,3,2]],
-  ['자유전공융합학부(자연)','가군',150,3.9,95,883.3,881.1,'FN',[93,87,87,61,3,5]],
-  ['자연과학융합학부','가군',40,4.4,29,880.1,879.5,'FN',[80,95,72,61,3,1]],
-  ['사회과학융합학부','가군',41,4.5,32,883.6,882.7,'FH',[83,63,92,92,3,1]],
-  ['인문융합학부','가군',33,4.2,17,882.0,880.8,'FH',[70,63,99,95,2,2]],
-  ['생명공학과','가군',15,4.5,16,899.0,896.2,'N',[82,85,81,85,2,1]],
-  ['기계공학과','나군',18,4.9,21,905.8,900.4,'N',[97,74,92,81,3,3]],
-  ['항공우주공학과','나군',6,6.5,3,915.6,912.6,'N',[95,92,66,85,2,2]],
-  ['화공에너지공학부(화학공학전공)','나군',10,5.5,15,900.9,900.7,'N',[88,92,72,80,3,4],'화학공학과'],
-  ['고분자공학과','나군',4,8.8,2,895.8,895.8,'N',[82,78,90,88,3,4]],
-  ['사회인프라공학과','나군',7,5.7,5,892.2,890.4,'N',[91,90,87,68,4,2]],
-  ['에너지자원공학과','나군',5,9.2,11,891.9,890.0,'N',[85,85,81,75,3,2]],
-  ['화공에너지공학부(이차전지공학전공)','나군',16,4.9,9,892.8,892.0,'N',[83,85,90,71,3,1],'이차전지융합학과'],
-  ['식품영양학과','나군',6,8.0,6,888.3,887.9,'N',[74,92,90,64,2,1]],
-  ['파이낸스경영학과','나군',13,5.4,7,888.8,887.1,'H',[83,89,95,85,4,5]],
-  ['아태물류학부','나군',6,5.5,5,902.2,901.0,'H',[83,85,97,100,4,3]],
-  ['영어교육과','나군',14,4.3,13,879.4,878.7,'H',[85,63,97,73,2,2]],
-  ['사회교육과','나군',8,3.9,2,891.4,888.7,'H',[86,70,92,99,4,4]],
-  ['수학교육과','나군',8,7.0,9,887.4,887.3,'N',[94,81,87,64,4,1]],
-  ['정치외교학과','나군',7,6.0,6,884.8,883.9,'H',[98,57,71,71,2,1]],
-  ['경제학과','나군',6,7.8,6,887.2,886.1,'H',[86,54,97,94,2,1]],
-  ['한국어문학과','나군',5,8.0,5,882.4,878.9,'H',[91,59,80,83,2,1]],
-  ['철학과','나군',4,8.8,3,879.7,879.7,'H',[85,74,97,68,3,2]],
-  ['중국학과','나군',8,7.6,10,879.7,879.4,'H',[85,70,95,74,3,1]],
-  ['간호학과','나군',42,3.3,15,898.7,894.9,'N',[97,85,66,71,2,4]],
-  ['컴퓨터공학과','나군',55,3.6,31,899.8,898.2,'N',[75,96,85,83,4,5]],
-  ['공학융합학부','나군',131,4.3,90,885.1,883.9,'FN',[88,95,81,59,4,2]],
-  ['경영융합학부','나군',44,5.0,25,888.1,885.5,'FH',[77,85,97,74,3,3]],
-  ['첨단바이오의약학과','나군',10,5.2,4,906.4,904.4,'N',[82,87,94,81,3,2]],
-  ['신소재공학과','다군',9,9.4,11,904.9,900.7,'N',[75,90,87,88,3,5]],
-  ['공간정보공학과','다군',13,7.2,27,892.0,889.2,'N',[80,76,90,85,3,3]],
-  ['전기전자공학부','다군',20,7.5,26,914.7,912.3,'N',[83,95,87,77,3,3]],
-  ['통계학과','다군',3,15.0,12,888.8,879.2,'N',[70,95,99,92,6,3]],
-  ['물리학과','다군',5,15.4,15,896.8,895.9,'N',[94,90,72,66,3,2]],
-  ['해양과학과','다군',5,10.8,13,886.9,886.7,'N',[91,78,75,75,2,2]],
-  ['국제통상학과','다군',7,13.3,15,893.8,891.5,'H',[89,57,93,95,2,3]],
-  ['행정학과','다군',7,11.3,17,893.8,886.0,'H',[98,78,90,55,4,2]],
-  ['소비자학과','다군',8,10.5,21,880.9,880.8,'H',[80,74,87,90,2,3]],
-  ['아동심리학과','다군',7,18.0,13,883.4,883.1,'H',[82,59,97,93,2,2]],
-  ['일본언어문화학과','다군',7,11.6,9,879.2,878.9,'H',[65,78,98,98,2,1]],
-  ['의류디자인학과(일반)','다군',8,10.8,10,887.1,885.9,'H',[88,74,80,85,2,4]],
-  ['인공지능공학과','다군',32,7.4,63,900.4,895.2,'N',[77,90,84,88,4,3]],
-  ['스마트모빌리티공학과','다군',13,9.8,21,898.8,897.4,'N',[85,95,85,83,5,2]],
-  ['생명과학과','다군',12,8.8,27,894.8,891.6,'N',[83,85,87,71,2,1]]
-];
-const INHA_WEIGHT_OPTIONS={
-  H:[{kor:35,mat:25,eng:15,inq:25}],N:[{kor:25,mat:35,eng:10,inq:30}],
-  FH:[{kor:35,mat:30,eng:10,inq:25},{kor:30,mat:30,eng:10,inq:30}],
-  FN:[{kor:25,mat:40,eng:10,inq:25},{kor:25,mat:35,eng:10,inq:30}]
-};
-const INHA_UNIS=INHA_2025_RESULT_ROWS.map((row,index)=>{
-  const [department,group,recruit,competition,extra,cut50,cut70,track,profile70,sourceDepartment]=row,weightOptions=INHA_WEIGHT_OPTIONS[track];
-  return{id:2001+index,officialKey:`inha-2025-${index+1}`,university:'인하대',department,sourceDepartment:sourceDepartment||department,region:'인천',group,track,weights:weightOptions[0],weightOptions,
-    years:{2025:{finalCut:0,recruit,extra}},schoolYears:{},officialResult:{year:2025,competition,recruit,extra,cut50,cut70,total:1000,profile70,sourceUrl:'https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000169'}};
-});
+// 인하대 정시 60개 모집단위 원자료는 data/universities/inha.js의 UNIVERSITY_DB로 이관됨(대학 구조 DB 재설계).
+// flattenUniversityDB()가 이 파일 로드 시점에 채워진 UNIVERSITY_DB/CALCULATION_RULES를 읽어 기존 코드가 쓰던 형태로 되돌려준다.
 
 const SAMPLE_SCHOOL_CUTS={
   101:[3.0,2.9,2.8],102:[2.8,2.7,2.6],103:[2.4,2.3,2.2],104:[2.3,2.2,2.1],105:[2.1,2.0,1.9],
@@ -935,14 +896,204 @@ function normalizeUniversity(u){
   }
   return u;
 }
-function mergeOfficialUniversityRows(rows){
-  const retained=(rows||[]).filter(u=>!String(u.officialKey||'').startsWith('inha-2025-')&&!(Number(u.id)===103&&u.university==='인하대'&&u.department==='경영학과'));
-  return [...retained,...structuredClone(INHA_UNIS)];
+
+// ===== 대학 구조 DB(UNIVERSITY_DB) → 기존 시뮬레이터가 쓰는 평평한 universities 배열 어댑터 =====
+// 대학DB(원자료, data/universities/*.js)와 시뮬레이션(검증된 비교값)의 역할을 분리한다:
+// 모집단위별 simulationBinding에 명시적으로 지정된 세부전형·최신 연도만, 그 연도가 참조하는 계산규칙이 status:'verified'일 때만 계산에 포함한다.
+// 지정이 없거나 규칙이 검증되지 않은 학과·전형은 이 함수가 그냥 건너뛰므로(=계산 보류) 시뮬레이터·6장 카드·PDF에는 나타나지 않고,
+// "대학 구조 DB" 화면에서 원자료 그대로만 확인할 수 있다.
+function stableNumericId(str){
+  let h=0;const s=String(str);
+  for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))|0}
+  return 9000000+(Math.abs(h)%900000);
+}
+function flattenUniversityDB(db){
+  const rows=[];
+  (db||[]).forEach(univ=>{
+    const shortName=(univ.aliases&&univ.aliases[0])||univ.name;
+    (univ.departments||[]).forEach(dept=>{
+      const regDetailId=dept.simulationBinding&&dept.simulationBinding.regular;
+      if(!regDetailId)return;
+      const detail=((dept.admissionTypes&&dept.admissionTypes.regular&&dept.admissionTypes.regular.details)||[]).find(d=>d.id===regDetailId);
+      if(!detail)return;
+      const year=(detail.years||[])[0];
+      if(!year)return;
+      const rule=year.calculationRuleId?CALCULATION_RULES[year.calculationRuleId]:null;
+      if(!rule||rule.status!=='verified')return;
+      if(rule.engine==='inha-profile-percentile'){
+        const track=year.indicators&&year.indicators.track;
+        const weightOptions=(rule.weightOptionsByTrack&&rule.weightOptionsByTrack[track])||[{kor:25,mat:35,eng:10,inq:30}];
+        rows.push({
+          id:stableNumericId(`${univ.id}:${dept.id}:${detail.id}:${year.year}`),
+          officialKey:`udb-${univ.id}-${year.year}-${dept.id}`,fromUniversityDB:true,
+          university:shortName,department:dept.name,sourceDepartment:(year.indicators&&year.indicators.sourceDepartment)||dept.name,
+          region:univ.region,group:detail.group,track,weights:weightOptions[0],weightOptions,
+          years:{[year.year]:{finalCut:0,recruit:year.recruitCount,extra:(year.additionalPass&&year.additionalPass.count)||0}},
+          schoolYears:{},
+          officialResult:{year:year.year,competition:year.competitionRatio,recruit:year.recruitCount,extra:(year.additionalPass&&year.additionalPass.count)||0,
+            cut50:year.indicators&&year.indicators.universityScoreCut50,cut70:year.indicators&&year.indicators.universityScoreCut70,
+            total:(year.indicators&&year.indicators.universityScoreScale)||1000,profile70:year.indicators&&year.indicators.profile70,
+            sourceUrl:(year.sources&&year.sources[0]&&year.sources[0].url)||''}
+        });
+      }
+      // 다른 계산 엔진(예: 백분위 가중합산형 정시)을 검증된 대학에 연결할 때 이 지점에 분기를 추가한다.
+    });
+  });
+  return rows;
+}
+// 학생부교과(수시) 대학별 계산규칙 적용 — 기존 curriculum-aware student.schoolRecords를 그대로 입력받는다.
+// calculationRule이 없거나 검증되지 않았으면 이 함수를 호출하지 않고 기존 scoreSchool(단순 평균) 폴백을 그대로 쓴다(기존 시뮬레이터는 깨지지 않음).
+function computeSchoolRecordUniversityScore(student,rule){
+  if(!rule||rule.status!=='verified'||!Array.isArray(rule.gradeToScoreTable))return null;
+  const gradeScore=Object.fromEntries(rule.gradeToScoreTable.map(row=>[Number(row.grade),Number(row.score)]));
+  const yearWeights=rule.yearWeights||{};
+  const reflected=new Set(rule.reflectedSubjects||[]);
+  const buckets={};
+  (student.schoolRecords||[]).forEach(row=>{
+    if(row.needsReview)return;
+    if(reflected.size&&!reflected.has(row.group))return;
+    const termYear=String(row.term||'').match(/^(\d)학년/);
+    const yearKey=termYear?`${termYear[1]}학년`:null;
+    if(!yearKey||!(yearKey in yearWeights))return;
+    let score=null;
+    if(row.grade!==null&&row.grade!=='·'&&Number.isFinite(Number(row.grade))&&Number(row.grade) in gradeScore){
+      score=gradeScore[Number(row.grade)];
+    }else if(row.achievement&&rule.careerElectiveHandling&&(row.achievement in rule.careerElectiveHandling)){
+      score=rule.careerElectiveHandling[row.achievement];
+    }
+    if(score===null)return;
+    const credits=Number(row.credits)||1;
+    if(!buckets[yearKey])buckets[yearKey]={sum:0,credits:0};
+    buckets[yearKey].sum+=score*credits;buckets[yearKey].credits+=credits;
+  });
+  let total=0,weightSum=0;
+  Object.entries(yearWeights).forEach(([yearKey,weight])=>{
+    const bucket=buckets[yearKey];if(!bucket||!bucket.credits)return;
+    total+=(bucket.sum/bucket.credits)*Number(weight);weightSum+=Number(weight);
+  });
+  if(!weightSum)return null;
+  return (total/weightSum)*((rule.scoreScale||100)/100);
+}
+function mergeUniversityDBRows(rows){
+  const manual=(rows||[]).filter(u=>!u.fromUniversityDB);
+  return [...manual,...flattenUniversityDB(UNIVERSITY_DB)];
 }
 function initializeUniversityRows(rows){
-  const version='inha-pilot-v1';
-  if(localStorage.getItem('jy_university_scope_version')!==version){localStorage.setItem('jy_university_scope_version',version);return structuredClone(INHA_UNIS)}
-  return mergeOfficialUniversityRows(rows);
+  const version='university-db-v2';
+  if(localStorage.getItem('jy_university_scope_version')!==version){
+    const legacyRaw=localStorage.getItem('jy_universities');
+    if(legacyRaw)localStorage.setItem('jy_universities_backup_legacy',legacyRaw);
+    localStorage.setItem('jy_university_scope_version',version);
+    return flattenUniversityDB(UNIVERSITY_DB);
+  }
+  return mergeUniversityDBRows(rows);
+}
+// ===== 대학 구조 DB(UNIVERSITY_DB) 목록·상세 화면 — 대학DB(원자료)와 시뮬레이션(검증된 비교값)을 분리해서 그대로 보여준다 =====
+const ADMISSION_TYPE_LABELS={regular:'정시',schoolRecord:'학생부교과',comprehensive:'학생부종합',essay:'논술'};
+const ADMISSION_TYPE_ORDER=['regular','schoolRecord','comprehensive','essay'];
+function admissionTypeYears(dept,type){
+  const details=(dept.admissionTypes&&dept.admissionTypes[type]&&dept.admissionTypes[type].details)||[];
+  const years=new Set();
+  details.forEach(d=>(d.years||[]).forEach(y=>years.add(y.year)));
+  return [...years].sort((a,b)=>b-a);
+}
+function departmentCoverageSummary(dept){
+  return ADMISSION_TYPE_ORDER.map(type=>{
+    const years=admissionTypeYears(dept,type);
+    return `${ADMISSION_TYPE_LABELS[type]} ${years.length?years.length+'개년':'미공개'}`;
+  }).join(' · ');
+}
+function departmentPrimaryGroup(dept){
+  for(const type of ADMISSION_TYPE_ORDER){
+    const details=(dept.admissionTypes&&dept.admissionTypes[type]&&dept.admissionTypes[type].details)||[];
+    if(details[0]&&details[0].group)return details[0].group;
+  }
+  return '-';
+}
+function allUniversityStructureRows(){
+  const rows=[];
+  (UNIVERSITY_DB||[]).forEach(univ=>(univ.departments||[]).forEach(dept=>rows.push({univ,dept})));
+  return rows;
+}
+function renderUdbRegionOptions(){
+  const el=document.getElementById('udbRegionFilter');if(!el)return;
+  const regions=[...new Set((UNIVERSITY_DB||[]).map(u=>u.region).filter(Boolean))];
+  const current=el.value;
+  el.innerHTML='<option value="">전체 지역</option>'+regions.map(r=>`<option>${escapeHTML(r)}</option>`).join('');
+  if(regions.includes(current))el.value=current;
+}
+function renderUniversityStructureList(){
+  renderUdbRegionOptions();
+  const q=(document.getElementById('udbSearch')?.value||'').toLowerCase(),r=document.getElementById('udbRegionFilter')?.value||'';
+  const rows=allUniversityStructureRows().filter(({univ,dept})=>(univ.name+dept.name+(univ.aliases||[]).join('')).toLowerCase().includes(q)&&(!r||univ.region===r));
+  document.getElementById('udbTbody').innerHTML=rows.map(({univ,dept})=>`<tr>
+    <td><b>${escapeHTML(univ.name)}</b></td><td>${escapeHTML(dept.name)}</td><td>${escapeHTML(univ.region||'-')}</td><td><span class="badge gray">${escapeHTML(departmentPrimaryGroup(dept))}</span></td>
+    <td>${escapeHTML(departmentCoverageSummary(dept))}</td><td><button class="small-btn" onclick="showUniversityStructureDetail('${escapeHTML(univ.id)}','${escapeHTML(dept.id)}')">상세</button></td>
+  </tr>`).join('')||`<tr><td colspan="6" class="empty">${allUniversityStructureRows().length?'검색 결과가 없습니다.':'등록된 모집단위가 아직 없습니다. 공식 자료 확인 후 data/universities 파일에 추가하세요.'}</td></tr>`;
+}
+let udbDetailState={univId:null,deptId:null,tab:'regular'};
+function findUdbDept(univId,deptId){
+  const univ=(UNIVERSITY_DB||[]).find(u=>u.id===univId);
+  const dept=univ&&(univ.departments||[]).find(d=>d.id===deptId);
+  return {univ,dept};
+}
+function showUniversityStructureDetail(univId,deptId){
+  const {univ,dept}=findUdbDept(univId,deptId);if(!univ||!dept)return;
+  udbDetailState={univId,deptId,tab:'regular'};
+  document.getElementById('udbDetailTitle').textContent=`${univ.name} ${dept.name}`;
+  document.getElementById('udbDetailCoverage').innerHTML=`<div class="sim-summary"><h4>전형유형별 데이터 보유현황</h4><div>${escapeHTML(departmentCoverageSummary(dept))}</div></div>`;
+  renderUdbDetailTabs();renderUdbDetailBody();
+  showModal('udbDetailModal');
+}
+function setUdbDetailTab(type){udbDetailState.tab=type;renderUdbDetailTabs();renderUdbDetailBody()}
+function renderUdbDetailTabs(){
+  const target=document.getElementById('udbDetailTabs');if(!target)return;
+  const {dept}=findUdbDept(udbDetailState.univId,udbDetailState.deptId);if(!dept)return;
+  target.innerHTML=ADMISSION_TYPE_ORDER.map(type=>{
+    const years=admissionTypeYears(dept,type);
+    return `<button class="rule-tab ${udbDetailState.tab===type?'active':''}" role="tab" onclick="setUdbDetailTab('${type}')">${ADMISSION_TYPE_LABELS[type]}${years.length?'':' (미공개)'}</button>`;
+  }).join('');
+}
+function udbSourceListHTML(sources){
+  const list=Array.isArray(sources)?sources:[];
+  if(!list.length)return '<span class="muted">출처 미기재</span>';
+  return `<div class="source-actions">${list.map(s=>`<a class="small-btn" href="${escapeHTML(s.url||'#')}" target="_blank" rel="noopener">${escapeHTML(s.org||'출처')} · ${escapeHTML(s.title||'')}${s.publishedDate?' ('+escapeHTML(s.publishedDate)+')':''} ↗</a>`).join('')}</div>`;
+}
+function udbIndicatorRowsHTML(indicators){
+  if(!indicators)return '<div class="notice">공개된 정량 지표가 없습니다(정성 전형이거나 미공개).</div>';
+  const labels={universityScoreCut50:'대학환산 50%컷',universityScoreCut70:'대학환산 70%컷',percentileCut50:'백분위 50%컷',percentileCut70:'백분위 70%컷',standardScoreCut50:'표준점수 50%컷',standardScoreCut70:'표준점수 70%컷',avgGradeReference50:'평균등급 50%컷(참고)',avgGradeReference70:'평균등급 70%컷(참고)'};
+  const items=Object.entries(labels).filter(([key])=>indicators[key]!==undefined&&indicators[key]!==null).map(([key,label])=>[label,indicators[key]]);
+  (indicators.extra||[]).forEach(item=>items.push([item.label,item.value]));
+  if(!items.length)return '<div class="notice">공개된 정량 지표가 없습니다(정성 전형이거나 미공개).</div>';
+  return linkedScoreItemsHTML(items);
+}
+function udbYearCardHTML(detail,year,status){
+  const badge=status==='linked'?'<span class="badge green">시뮬레이션 연결</span>':status==='pending'?'<span class="badge amber">계산 보류</span>':'';
+  return `<div class="rule-detail-card">
+    <div class="panel-title"><h4>${year.year}학년도 · ${escapeHTML(detail.name)}${detail.group?' · '+escapeHTML(detail.group):''}</h4>${badge}</div>
+    <div>모집인원 ${year.recruitCount??'미공개'}명 · 경쟁률 ${year.competitionRatio??'미공개'}:1 · 충원 ${(year.additionalPass&&year.additionalPass.count)??'미공개'}명</div>
+    <div class="muted" style="margin-top:6px">전형방법: ${escapeHTML(year.admissionMethod||'미공개')}${year.csatMinimum?' · 수능최저 있음':''}</div>
+    ${Array.isArray(year.stageRatios)&&year.stageRatios.length?`<div class="muted" style="margin-top:4px">${year.stageRatios.map(st=>`${escapeHTML(String(st.stage))}: ${escapeHTML(st.ratio||'')}${st.multiplier?' ('+escapeHTML(st.multiplier)+')':''}`).join(' → ')}</div>`:''}
+    ${Array.isArray(year.evaluationFactors)&&year.evaluationFactors.length?`<div class="muted" style="margin-top:4px">평가요소: ${year.evaluationFactors.map(escapeHTML).join(', ')}</div>`:''}
+    <div style="margin-top:10px">${udbIndicatorRowsHTML(year.indicators)}</div>
+    <div style="margin-top:10px">${udbSourceListHTML(year.sources)}</div>
+  </div>`;
+}
+function renderUdbDetailBody(){
+  const target=document.getElementById('udbDetailBody');if(!target)return;
+  const {dept}=findUdbDept(udbDetailState.univId,udbDetailState.deptId);if(!dept)return;
+  const type=udbDetailState.tab;
+  const details=(dept.admissionTypes&&dept.admissionTypes[type]&&dept.admissionTypes[type].details)||[];
+  if(!details.length){target.innerHTML='<div class="empty">이 전형유형은 아직 공식 자료가 등록되지 않았습니다.</div>';return}
+  target.innerHTML=details.map(detail=>(detail.years||[]).map((year,yearIndex)=>{
+    let status=null;
+    if(type==='regular'){
+      const bound=dept.simulationBinding&&dept.simulationBinding.regular===detail.id&&yearIndex===0;
+      const rule=year.calculationRuleId?CALCULATION_RULES[year.calculationRuleId]:null;
+      status=(bound&&rule&&rule.status==='verified')?'linked':'pending';
+    }
+    return udbYearCardHTML(detail,year,status);
+  }).join('')).join('');
 }
 function readLocalArray(key,fallback=[]){
   try{const value=JSON.parse(localStorage.getItem(key)||'null');return Array.isArray(value)?value:structuredClone(fallback)}catch{return structuredClone(fallback)}
@@ -951,7 +1102,7 @@ function normalizeExamConversionRow(row){
   return{referenceId:String(row?.referenceId||'').trim(),area:String(row?.area||'').trim().toLowerCase(),subject:String(row?.subject||'').trim(),selection:String(row?.selection||'').trim(),rawScore:optionalNumber(row?.rawScore),standardScore:optionalNumber(row?.standardScore),percentile:optionalNumber(row?.percentile),grade:optionalNumber(row?.grade),status:String(row?.status||'verified').trim().toLowerCase(),sourceUrl:String(row?.sourceUrl||'').trim()};
 }
 let students = readLocalArray('jy_students',SAMPLE_STUDENTS).map(normalizeStudent);
-let universities = initializeUniversityRows(readLocalArray('jy_universities',INHA_UNIS)).map(normalizeUniversity);
+let universities = initializeUniversityRows(readLocalArray('jy_universities',[])).map(normalizeUniversity);
 let admissionRulePacks = readLocalArray('jy_admission_rule_packs');
 let admissionRuleArchive = readLocalArray('jy_admission_rule_archive');
 let examConversionRows = readLocalArray('jy_exam_conversion_rows').map(normalizeExamConversionRow);
@@ -1045,6 +1196,7 @@ function goView(id){
   if(id==='students')renderStudents();
   if(id==='scores'){renderScoreStudentOptions();renderScoreInput();}
   if(id==='universities')renderUniversities();
+  if(id==='universityStructure')renderUniversityStructureList();
   if(id==='simulator'){renderSimStudentOptions();loadStudentToSimulator()}
   if(id==='data'){renderRulePacks();renderExamReferences()}
   window.scrollTo({top:0,behavior:'smooth'});
@@ -2704,15 +2856,20 @@ function importJSON(e){
     const d=JSON.parse(r.result);if(!Array.isArray(d.students)||!Array.isArray(d.universities))throw new Error('학생 또는 대학 데이터가 없습니다.');
     const packs=Array.isArray(d.admissionRulePacks)?d.admissionRulePacks:[];
     packs.forEach((pack,index)=>validateRulePack(pack,`백업 환산 규칙 ${index+1}`));
-    students=d.students.map(normalizeStudent);universities=mergeOfficialUniversityRows(d.universities).map(normalizeUniversity);
+    students=d.students.map(normalizeStudent);universities=mergeUniversityDBRows(d.universities).map(normalizeUniversity);
     admissionRulePacks=packs;admissionRuleArchive=Array.isArray(d.admissionRuleArchive)?d.admissionRuleArchive:[];
     examConversionRows=Array.isArray(d.examConversionRows)?d.examConversionRows.map(normalizeExamConversionRow):[];examConversionRows.forEach((row,index)=>validateExamConversionRow(row,index+1));
     persist();renderAll();alert('학생·대학·환산 규칙 데이터를 불러왔습니다.');
   }catch(err){alert('올바른 데이터 파일이 아닙니다: '+(err.message||'형식을 확인하세요.'))}};r.readAsText(f);e.target.value='';
 }
 function downloadText(text,name,type){const blob=new Blob([text],{type}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
-function resetData(){if(confirm('학생 DB를 샘플로, 대학 DB를 인하대 60개 모집단위로 초기화할까요? 불러온 대학별 환산 규칙 파일은 유지됩니다.')){students=structuredClone(SAMPLE_STUDENTS).map(normalizeStudent);universities=structuredClone(INHA_UNIS).map(normalizeUniversity);persist();renderAll()}}
-function renderAll(){renderDashboard();renderStudents();renderScoreStudentOptions();renderUniversities();renderSimStudentOptions();renderUniversityGroupButtons();renderRulePacks();renderExamReferences();if(document.getElementById('simType'))changeSimType();if(document.getElementById('scoreStudentSelect'))renderScoreInput()}
+function downloadLegacyUniversityBackup(){
+  const raw=localStorage.getItem('jy_universities_backup_legacy');
+  if(!raw){alert('백업된 이전 대학 DB가 없습니다(이미 대학 구조 DB로 마이그레이션되지 않았거나, 처음부터 새로 시작한 브라우저입니다).');return}
+  downloadText(raw,'jy_universities_backup_legacy.json','application/json');
+}
+function resetData(){if(confirm('학생 DB를 샘플로, 대학 DB를 대학 구조 DB(UNIVERSITY_DB) 기준으로 초기화할까요? 불러온 대학별 환산 규칙 파일은 유지됩니다.')){students=structuredClone(SAMPLE_STUDENTS).map(normalizeStudent);universities=flattenUniversityDB(UNIVERSITY_DB).map(normalizeUniversity);persist();renderAll()}}
+function renderAll(){renderDashboard();renderStudents();renderScoreStudentOptions();renderUniversities();renderUniversityStructureList();renderSimStudentOptions();renderUniversityGroupButtons();renderRulePacks();renderExamReferences();if(document.getElementById('simType'))changeSimType();if(document.getElementById('scoreStudentSelect'))renderScoreInput()}
 renderAll();
 </script>
 <script type="module">
