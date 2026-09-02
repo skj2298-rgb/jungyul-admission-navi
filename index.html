@@ -772,6 +772,32 @@ function gradeNumber(grade){return grade==='고1'?1:grade==='고2'?2:grade==='�
 function estimateAdmissionYear(grade,d=new Date()){const n=gradeNumber(grade);return n?currentAcademicYear(d)-(n-1):null}
 function curriculumForAdmissionYear(year){return Number(year)>=CURRICULUM_CUTOVER_ADMISSION_YEAR?'2022':'2015'}
 function studentCurriculum(s){return curriculumForAdmissionYear(s.admissionYear?.value)}
+// ===== 9등급제 ↔ 5등급제(2022개정) 근사 환산 =====
+// 정부가 발표한 "9등급→5등급 변환표"는 존재하지 않는다(등급을 다시 매기는 게 아니라 새 제도를 새로 적용하는 것이라서).
+// 여기서는 두 제도의 공식 등급별 누적 비율(교육부 학교생활기록부 기재요령 9등급 비율, 2022개정 5등급 비율)을 근거로
+// "같은 누적 백분위 위치"를 기준 삼아 근사 매칭한다. 공식 환산표가 아닌 참고용 추정치임을 항상 함께 표시해야 한다.
+const GRADE9_CUM=[0,4,11,23,40,60,77,89,96,100];
+const GRADE5_CUM=[0,10,34,66,90,100];
+function gradeToCumulativePercentile(grade,cumBounds){
+  const n=cumBounds.length-1,g=Math.min(n,Math.max(1,Number(grade)));
+  const band=Math.min(n-1,Math.floor(g-1)),frac=g-1-band;
+  return cumBounds[band]+frac*(cumBounds[band+1]-cumBounds[band]);
+}
+function cumulativePercentileToGrade(pct,cumBounds){
+  const n=cumBounds.length-1,p=Math.min(100,Math.max(0,pct));
+  for(let i=0;i<n;i++){
+    if(p<=cumBounds[i+1]||i===n-1){
+      const lo=cumBounds[i],hi=cumBounds[i+1],frac=hi>lo?(p-lo)/(hi-lo):0;
+      return Math.min(n,Math.max(1,i+1+frac));
+    }
+  }
+  return n;
+}
+function convertGrade9to5(grade9){
+  if(grade9===null||grade9===undefined||!Number.isFinite(Number(grade9)))return null;
+  return cumulativePercentileToGrade(gradeToCumulativePercentile(Number(grade9),GRADE9_CUM),GRADE5_CUM);
+}
+function currentSimStudent(){return students.find(x=>String(x.id)===String(document.getElementById('simStudent')?.value))||students[0]}
 
 // 상대평가 석차등급 미기재 융합선택과목 9개(2022개정 교육과정 총론<표5>, 151과목 중 9과목·6%) — 교육부 지침 개정 시 이 목록만 수정
 const NO_RANK_FUSION_SUBJECTS_2022=['여행지리','역사로 탐구하는 현대 세계','사회문제 탐구','금융과 경제생활','윤리문제 탐구','기후변화와 지속가능한 세계','과학의 역사와 문화','기후변화와 환경생태','융합과학 탐구'];
@@ -1957,7 +1983,9 @@ function showUniversity(id){
       current=hasScore?avg(Object.values(currentSchoolSim())):null,cutRef=u.rawTrackCutValue,
       gap=current===null?null:current-cutRef,judgment=gap===null?null:universityReferenceJudgment(-gap);
     const yearCards=(u.rawTrackAllYears&&u.rawTrackAllYears.length?u.rawTrackAllYears:[]).map((year,idx)=>udbYearCardHTML({name:subtypeLabel+' 전형',group:u.group},year,idx===0?'linked':'pending')).join('');
-    detailBody.innerHTML=`<div class="sim-summary"><h4>3개년 ${escapeHTML(subtypeLabel)} 입결</h4></div>${yearCards}${gap===null?'<div class="notice">성적 입력에서 학생부 성적을 저장하면 현재 등급과의 차이가 표시됩니다.</div>':`<div class="sim-summary"><h4>현재 성적 참고 비교(최신 연도 기준)</h4><div style="display:flex;justify-content:space-between"><span>현재 반영교과 평균등급</span><b>${pct(current)}</b></div><div style="display:flex;justify-content:space-between;margin-top:6px"><span>${u.rawTrackYear} 참고 등급 컷</span><b>${pct(cutRef)}</b></div><div style="margin-top:10px"><span class="badge ${judgment.color}">${judgment.label}</span></div></div>`}<div class="university-source-note">비교 기준은 대학이 발표한 원 석차등급 평균(등급→배점 환산 이전)이며, 대학의 최종 공식 배점이나 정성평가(면접·서류) 결과를 반영하지 않은 참고용 수치입니다.</div>`;
+    const stu=currentSimStudent(),is5Grade=stu&&studentCurriculum(stu)==='2022',cutRef5=is5Grade?convertGrade9to5(cutRef):null;
+    const grade5Block=is5Grade?`<div class="sim-summary"><h4>5등급제 환산 예상 참고 컷(근사치)</h4><div style="display:flex;justify-content:space-between"><span>${u.rawTrackYear} 참고 등급 컷(9등급제 원자료 → 5등급제 환산)</span><b>${cutRef5===null?'-':pct(cutRef5)}등급</b></div><div class="muted" style="font-size:11px;margin-top:6px">2022개정 교육과정(${escapeHTML(stu.school)} ${escapeHTML(stu.grade)}, 2028학년도 대입부터 적용)은 정부가 발표한 9→5등급제 공식 변환표가 없어, 두 제도의 등급별 누적 비율을 근거로 근사 추정한 값입니다. 실제 5등급제 결과와 다를 수 있으니 참고용으로만 활용하세요.</div></div>`:'';
+    detailBody.innerHTML=`<div class="sim-summary"><h4>3개년 ${escapeHTML(subtypeLabel)} 입결</h4></div>${yearCards}${gap===null?'<div class="notice">성적 입력에서 학생부 성적을 저장하면 현재 등급과의 차이가 표시됩니다.</div>':`<div class="sim-summary"><h4>현재 성적 참고 비교(최신 연도 기준)</h4><div style="display:flex;justify-content:space-between"><span>현재 반영교과 평균등급</span><b>${pct(current)}</b></div><div style="display:flex;justify-content:space-between;margin-top:6px"><span>${u.rawTrackYear} 참고 등급 컷</span><b>${pct(cutRef)}</b></div><div style="margin-top:10px"><span class="badge ${judgment.color}">${judgment.label}</span></div></div>`}${grade5Block}<div class="university-source-note">비교 기준은 대학이 발표한 원 석차등급 평균(등급→배점 환산 이전)이며, 대학의 최종 공식 배점이나 정성평가(면접·서류) 결과를 반영하지 않은 참고용 수치입니다.</div>`;
     document.getElementById('targetUniversity').value=u.university;renderTargetOptions();targetUni.value=u.id;showModal('detailModal');return;
   }
   const school=schoolCutoff(u);
@@ -2045,6 +2073,12 @@ const SIM_SUBTYPE_BANNERS={
   essay:'논술은 논술고사 성적이 핵심이라 교과 평균만으로는 정확한 비교가 어렵습니다. 참고용으로, 저장한 반영교과 평균등급을 대학이 공개한 합격자 참고 등급과 단순 비교합니다.'
 };
 const SIM_SUBTYPE_SCORE_LABELS={schoolRecord:'학생부 교과 성적',comprehensive:'학생부 반영교과 성적(참고)',essay:'학생부 반영교과 성적(참고)'};
+function renderSimModeBanner(){
+  const subtype=simType.value, school=subtype!=='regular',label=SIM_SUBTYPE_LABELS[subtype]||'정시 · 모의고사';
+  simModeBanner.className='mode-banner'+(school?' school':'');
+  const simStuForBanner=currentSimStudent(),grade5Notice=(school&&simStuForBanner&&studentCurriculum(simStuForBanner)==='2022')?`<br><span style="color:#7c3aed">${escapeHTML(simStuForBanner.grade)} 학생은 2028학년도 대입부터 5등급제가 적용됩니다. 아래 참고 등급 컷은 모두 기존 9등급제 기준이라, 결과 카드에 5등급제 환산 예상 컷(근사치)을 함께 표시합니다.</span>`:'';
+  simModeBanner.innerHTML=school?`<b>${label} 기준</b><br>${SIM_SUBTYPE_BANNERS[subtype]||''}${grade5Notice}`:'<b>정시 · 모의고사 기준</b><br>선택한 모의고사 백분위와 영어 등급을 대학별 반영비율에 대입합니다.';
+}
 function changeSimType(){
   const subtype=simType.value, school=subtype!=='regular';
   document.getElementById('mockSimFields').style.display=school?'none':'block';
@@ -2054,8 +2088,7 @@ function changeSimType(){
   document.getElementById('schoolSimFieldsLabel').textContent=SIM_SUBTYPE_SCORE_LABELS[subtype]||'학생부 교과 성적';
   simBasisBadge.textContent=school?(label+' 기준'):'정시 · 모의고사 기준';
   simBasisBadge.className='badge '+(school?'green':'amber');
-  simModeBanner.className='mode-banner'+(school?' school':'');
-  simModeBanner.innerHTML=school?`<b>${label} 기준</b><br>${SIM_SUBTYPE_BANNERS[subtype]||''}`:'<b>정시 · 모의고사 기준</b><br>선택한 모의고사 백분위와 영어 등급을 대학별 반영비율에 대입합니다.';
+  renderSimModeBanner();
   resultSubtitle.textContent=school?(label+' 참고 등급 비교(원점수 평균 기준)'):'모의고사 환산지수와 최근 3개년 정시 샘플 컷 비교';
   document.getElementById('officialGateToggleRow').style.display=school?'none':'flex';
   document.getElementById('officialRuleGate').style.display=school?'none':(officialGateOpen?'block':'none');
@@ -2065,6 +2098,7 @@ function changeSimType(){
 function loadStudentToSimulator(){
   const s=students.find(x=>String(x.id)===simStudent.value)||students[0];if(!s)return;
   renderSimMockOptions();
+  renderSimModeBanner();
   setSimAdjustmentOpen(false);
   if(simType.value!=='regular'){
     const g=effectiveSchoolGrades(s);
@@ -2376,15 +2410,17 @@ function runSimulation(){
   const counts={안정:0,적정:0,추합예상:0,소신:0,상향:0};base.forEach(x=>counts[x.label]++);
   let results=base.filter(x=>(!region||x.u.region===region)&&(!status||x.label===status)).sort((a,b)=>b.advantage-a.advantage);
   simKpis.innerHTML=Object.entries(counts).map(([k,v])=>`<div class="kpi-pill"><strong>${v}</strong><span>${k}</span></div>`).join('');
+  const simStu=currentSimStudent(),is5Grade=school&&simStu&&studentCurriculum(simStu)==='2022';
   resultList.innerHTML=results.map(x=>{
     const source=guideSources(guidePackForUniversity(x.u.university))[0];
     const rawTrack=x.u.rawTrackCutValue!=null;
     const metaText=rawTrack?`${{schoolRecord:'학생부교과',comprehensive:'학생부종합',essay:'논술'}[x.u.admissionType]||'수시'} · 반영교과 원점수 평균 · ${x.u.region}`:(school?`학생부교과 · 내신 · ${x.u.region} · 국${x.u.weights.kor}/수${x.u.weights.mat}/영${x.u.weights.eng}/탐${x.u.weights.inq}`:`정시 · 모고 · ${x.u.group} · ${x.u.region} · 국${x.u.weights.kor}/수${x.u.weights.mat}/영${x.u.weights.eng}/탐${x.u.weights.inq}`);
     const cutLabel=rawTrack?`${x.u.rawTrackYear} 참고 등급 컷`:(school?'교과 3개년 평균':(x.u.rankedRule?'공식 70% 컷':(x.u.officialResult?'2025 70% 참고지수':'정시 3개년 평균컷')));
+    const grade5Cut=is5Grade&&rawTrack?convertGrade9to5(x.cut):null;
     return `<div class="result-card" onclick="showUniversity(${x.u.id})">
     <div><div class="uni-name">${x.u.university} · ${x.u.department}</div><div class="uni-meta">${metaText}</div>${source?`<a class="small-btn" style="display:inline-block;margin-top:6px" href="${escapeHTML(source.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">모집요강 ↗</a>`:''}</div>
     <div class="result-score">${pct(x.sc)}<small> ${school?'환산등급':'환산지수'}</small></div>
-    <div class="cutoff"><b>${pct(x.cut)}${school?'등급':''}</b><div class="muted" style="font-size:10px">${cutLabel}</div></div>
+    <div class="cutoff"><b>${pct(x.cut)}${school?'등급':''}</b><div class="muted" style="font-size:10px">${cutLabel}</div>${grade5Cut!==null?`<div class="muted" style="font-size:10px;color:#7c3aed">5등급제 환산 ${pct(grade5Cut)}등급(근사)</div>`:''}</div>
     <div><span class="badge ${x.color}">${x.label}</span><div class="delta" style="margin-top:5px;color:${x.advantage>=0?'#047857':'#b91c1c'}">${x.advantage>=0?'+':''}${pct(x.advantage)}${school?'등급':''}</div></div>
   </div>`}).join('')||`<div class="empty">${school?'교과 3개년 데이터가 있는':'조건에 맞는'} 결과가 없습니다.</div>`;
   updateTargetSummary();
