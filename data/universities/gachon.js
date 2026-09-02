@@ -57,6 +57,8 @@
   CALCULATION_RULES['gachon-schoolrecord-excellent-2026-science']={id:'gachon-schoolrecord-excellent-2026-science',university:'gachon',admissionType:'schoolRecord',appliesToYears:[2026],status:'draft',reflectedSubjects:['국어','수학','영어','과학'],method:"학생부우수자(2026): 국어·수학·영어·과학, 3학년 1학기까지 학년 구분 없이 통합 이수단위 가중평균. 등급→배점 환산표는 모집요강(82p)으로 확인했지만, 공개된 결과 컷(석차등급 평균 척도)과 실제 배점(70~100/30~100점 척도)의 단위가 달라 비교가 불가능해 draft로 둔다.",sources:[{...SRC,title:'2026학년도수시입시결과.xlsx'}]};
   CALCULATION_RULES['gachon-schoolrecord-balanced-2026-humanities']={id:'gachon-schoolrecord-balanced-2026-humanities',university:'gachon',admissionType:'schoolRecord',appliesToYears:[2026],status:'draft',reflectedSubjects:['국어','수학','영어','사회'],method:"지역균형: 1단계 학생부교과 100%(7배수, 진로선택과목 성취도만 반영) → 2단계 1단계평가 50% + 면접 50%. 2단계 면접이 정성평가라 정량 재현이 불가능해 draft로 둔다.",sources:[{...SRC,title:'2026학년도수시입시결과.xlsx'}]};
   CALCULATION_RULES['gachon-schoolrecord-balanced-2026-science']={id:'gachon-schoolrecord-balanced-2026-science',university:'gachon',admissionType:'schoolRecord',appliesToYears:[2026],status:'draft',reflectedSubjects:['국어','수학','영어','과학'],method:"지역균형: 1단계 학생부교과 100%(7배수, 진로선택과목 성취도만 반영) → 2단계 1단계평가 50% + 면접 50%. 2단계 면접이 정성평가라 정량 재현이 불가능해 draft로 둔다.",sources:[{...SRC,title:'2026학년도수시입시결과.xlsx'}]};
+  CALCULATION_RULES['gachon-regular-general1-2025']={"id":"gachon-regular-general1-2025","university":"gachon","admissionType":"regular","appliesToYears":[2025],"status":"draft","notes":["2025학년도는 2026학년도의 일반전형1/2 분리 이전 단일 트랙(일반전형) 결과다. 반영비율(국/수/영/탐 우수영역순 가중치)을 대학어디가 결과 페이지에서는 확인할 수 없어 draft로 둔다.","모집인원·경쟁률·70%컷(백분위)은 원자료 그대로 등록했다."],"sources":[{"org":"대학어디가","title":"2025학년도 정시 입시결과","url":"https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063","publishedDate":null,"checkedDate":"2026-09-02","page":null}]};
+
 
   const departments = [
    {
@@ -101,6 +103,31 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 82,
+          "competitionRatio": 3.93,
+          "additionalPass": {
+           "count": 47,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 87.4,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          },
@@ -934,6 +961,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 40,
+          "competitionRatio": 8.75,
+          "additionalPass": {
+           "count": 59,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.5,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 52,
@@ -1393,6 +1445,31 @@
             "title": "2026정시입시결과.xls"
            }
           ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 48,
+          "competitionRatio": 11.63,
+          "additionalPass": {
+           "count": 66,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.8,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
          }
         ]
        },
@@ -1679,14 +1756,47 @@
     "college": null,
     "track": "humanities",
     "simulationBinding": {
-     "regular": null,
+     "regular": "gachon-06-regular-general1",
      "schoolRecord": "gachon-06-schoolrecord-excellent",
      "comprehensive": "gachon-06-comprehensive-baram",
      "essay": "gachon-06-essay-general"
     },
     "admissionTypes": {
      "regular": {
-      "details": []
+      "details": [
+       {
+        "id": "gachon-06-regular-general1",
+        "name": "일반전형",
+        "group": "가군",
+        "years": [
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 15,
+          "competitionRatio": 13.93,
+          "additionalPass": {
+           "count": 27,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.1,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         }
+        ]
+       }
+      ]
      },
      "schoolRecord": {
       "details": [
@@ -2243,14 +2353,47 @@
     "college": null,
     "track": "humanities",
     "simulationBinding": {
-     "regular": null,
+     "regular": "gachon-08-regular-general1",
      "schoolRecord": "gachon-08-schoolrecord-excellent",
      "comprehensive": "gachon-08-comprehensive-baram",
      "essay": "gachon-08-essay-general"
     },
     "admissionTypes": {
      "regular": {
-      "details": []
+      "details": [
+       {
+        "id": "gachon-08-regular-general1",
+        "name": "일반전형",
+        "group": "가군",
+        "years": [
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 15,
+          "competitionRatio": 10.27,
+          "additionalPass": {
+           "count": 15,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 82.6,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         }
+        ]
+       }
+      ]
      },
      "schoolRecord": {
       "details": [
@@ -2564,6 +2707,31 @@
         "name": "일반전형(2026학년도부터 일반전형1)",
         "group": "가군",
         "years": [
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 40,
+          "competitionRatio": 6.98,
+          "additionalPass": {
+           "count": 56,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.7,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
          {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
@@ -2990,6 +3158,31 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 70,
+          "competitionRatio": 7.29,
+          "additionalPass": {
+           "count": 123,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.7,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          }
@@ -3484,6 +3677,31 @@
         "group": "가군",
         "years": [
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 24,
+          "competitionRatio": 9.21,
+          "additionalPass": {
+           "count": 42,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 82.5,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 33,
@@ -3908,6 +4126,31 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 14,
+          "competitionRatio": 7.71,
+          "additionalPass": {
+           "count": 17,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 84.8,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          },
@@ -4366,6 +4609,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 12,
+          "competitionRatio": 10.92,
+          "additionalPass": {
+           "count": 24,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.9,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 21,
@@ -4794,6 +5062,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 17,
+          "competitionRatio": 6.18,
+          "additionalPass": {
+           "count": 28,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 84,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 16,
@@ -5218,6 +5511,31 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 41,
+          "competitionRatio": 6.68,
+          "additionalPass": {
+           "count": 62,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 84.5,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          },
@@ -5847,6 +6165,31 @@
             "title": "2026정시입시결과.xls"
            }
           ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 72,
+          "competitionRatio": 6,
+          "additionalPass": {
+           "count": 72,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 85,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
          }
         ]
        },
@@ -6113,6 +6456,31 @@
         "name": "일반전형(2026학년도부터 일반전형1)",
         "group": "가군",
         "years": [
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 15,
+          "competitionRatio": 7.13,
+          "additionalPass": {
+           "count": 30,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.8,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
          {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
@@ -6565,6 +6933,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 14,
+          "competitionRatio": 7.57,
+          "additionalPass": {
+           "count": 30,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 85.6,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 14,
@@ -6979,7 +7372,7 @@
     "college": null,
     "track": "humanities",
     "simulationBinding": {
-     "regular": null,
+     "regular": "gachon-22-regular-general1",
      "schoolRecord": "gachon-22-schoolrecord-excellent",
      "comprehensive": "gachon-22-comprehensive-baram",
      "essay": "gachon-22-essay-general"
@@ -7015,6 +7408,38 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "id": "gachon-22-regular-general1",
+        "name": "일반전형",
+        "group": "가군",
+        "years": [
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 54,
+          "competitionRatio": 8.89,
+          "additionalPass": {
+           "count": 66,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 82.7,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          }
@@ -7690,6 +8115,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 12,
+          "competitionRatio": 10.5,
+          "additionalPass": {
+           "count": 17,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 82.5,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 15,
@@ -8316,6 +8766,31 @@
         "name": "일반전형(2026학년도부터 일반전형1)",
         "group": "가군",
         "years": [
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 15,
+          "competitionRatio": 7.67,
+          "additionalPass": {
+           "count": 28,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.6,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
          {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
@@ -9133,6 +9608,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 17,
+          "competitionRatio": 6.59,
+          "additionalPass": {
+           "count": 45,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.7,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 17,
@@ -9571,6 +10071,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 16,
+          "competitionRatio": 8.31,
+          "additionalPass": {
+           "count": 27,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 19,
@@ -9972,6 +10497,31 @@
         "name": "일반전형(2026학년도부터 일반전형1)",
         "group": "나군",
         "years": [
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 18,
+          "competitionRatio": 6.33,
+          "additionalPass": {
+           "count": 30,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.3,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
          {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
@@ -10457,6 +11007,31 @@
             "title": "2026정시입시결과.xls"
            }
           ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 21,
+          "competitionRatio": 5.52,
+          "additionalPass": {
+           "count": 18,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 84.5,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
          }
         ]
        }
@@ -10713,6 +11288,31 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 17,
+          "competitionRatio": 7.53,
+          "additionalPass": {
+           "count": 33,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          },
@@ -11145,6 +11745,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 12,
+          "competitionRatio": 9.5,
+          "additionalPass": {
+           "count": 26,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 82.1,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 16,
@@ -11569,6 +12194,31 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 16,
+          "competitionRatio": 8.94,
+          "additionalPass": {
+           "count": 33,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 84.2,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          },
@@ -12001,6 +12651,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 13,
+          "competitionRatio": 13.23,
+          "additionalPass": {
+           "count": 23,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 18,
@@ -12425,6 +13100,31 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 15,
+          "competitionRatio": 9.13,
+          "additionalPass": {
+           "count": 33,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 96.8,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          },
@@ -12919,6 +13619,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 14,
+          "competitionRatio": 9.86,
+          "additionalPass": {
+           "count": 23,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 82.4,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 14,
@@ -13343,6 +14068,31 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 13,
+          "competitionRatio": 8.54,
+          "additionalPass": {
+           "count": 20,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 81.3,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          },
@@ -13801,6 +14551,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 10,
+          "competitionRatio": 7.9,
+          "additionalPass": {
+           "count": 10,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 82.8,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 10,
@@ -14080,6 +14855,31 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 16,
+          "competitionRatio": 7.94,
+          "additionalPass": {
+           "count": 20,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.4,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          },
@@ -14512,6 +15312,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 18,
+          "competitionRatio": 8.61,
+          "additionalPass": {
+           "count": 22,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 82.9,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 19,
@@ -14940,6 +15765,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 17,
+          "competitionRatio": 8.65,
+          "additionalPass": {
+           "count": 34,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 82,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 17,
@@ -15337,6 +16187,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 40,
+          "competitionRatio": 5.98,
+          "additionalPass": {
+           "count": 25,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 98.4,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 15,
@@ -15666,6 +16541,31 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 66,
+          "competitionRatio": 6.44,
+          "additionalPass": {
+           "count": 93,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 84.1,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          },
@@ -16308,6 +17208,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 20,
+          "competitionRatio": 5.55,
+          "additionalPass": {
+           "count": 46,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.7,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 29,
@@ -16732,6 +17657,31 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 17,
+          "competitionRatio": 8.71,
+          "additionalPass": {
+           "count": 51,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 80.7,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          },
@@ -17186,6 +18136,31 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 65,
+          "competitionRatio": 5.14,
+          "additionalPass": {
+           "count": 75,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 85.4,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          },
@@ -17648,6 +18623,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 11,
+          "competitionRatio": 5.73,
+          "additionalPass": {
+           "count": 11,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 89.6,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 9,
@@ -17991,6 +18991,31 @@
         "group": "나군",
         "years": [
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 17,
+          "competitionRatio": 6.82,
+          "additionalPass": {
+           "count": 33,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 82.5,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 17,
@@ -18328,6 +19353,31 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 13,
+          "competitionRatio": 10.08,
+          "additionalPass": {
+           "count": 21,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 82.9,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          },
@@ -18985,6 +20035,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 23,
+          "competitionRatio": 10.39,
+          "additionalPass": {
+           "count": 38,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 97.5,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 15,
@@ -19475,6 +20550,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 74,
+          "competitionRatio": 6.47,
+          "additionalPass": {
+           "count": 54,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.2,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 81,
@@ -19910,6 +21010,31 @@
           ]
          },
          {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 15,
+          "competitionRatio": 9.67,
+          "additionalPass": {
+           "count": 10,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 83.5,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
+         },
+         {
           "year": 2024,
           "calculationRuleId": "gachon-regular-general1-2024",
           "recruitCount": 17,
@@ -20336,6 +21461,31 @@
             "title": "2026정시입시결과.xls"
            }
           ]
+         },
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 14,
+          "competitionRatio": 9.93,
+          "additionalPass": {
+           "count": 22,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 84.5,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
+           }
+          ]
          }
         ]
        }
@@ -20589,7 +21739,7 @@
     "college": null,
     "track": "humanities",
     "simulationBinding": {
-     "regular": null,
+     "regular": "gachon-62-regular-general1",
      "schoolRecord": "gachon-62-schoolrecord-excellent",
      "comprehensive": "gachon-62-comprehensive-baram",
      "essay": "gachon-62-essay-general"
@@ -20625,6 +21775,38 @@
             "publishedDate": null,
             "checkedDate": "2026-09-01",
             "title": "2026정시입시결과.xls"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "id": "gachon-62-regular-general1",
+        "name": "일반전형",
+        "group": "가군",
+        "years": [
+         {
+          "year": 2025,
+          "calculationRuleId": "gachon-regular-general1-2025",
+          "recruitCount": 73,
+          "competitionRatio": 6.97,
+          "additionalPass": {
+           "count": 73,
+           "round": null
+          },
+          "admissionMethod": "수능 100%(2025학년도는 2026학년도 일반전형1/2 분리 이전으로, 반영비율을 별도로 확인하지 못해 결과 수치만 참고용으로 등록)",
+          "indicators": {
+           "percentileCut70": 81.9,
+           "extra": []
+          },
+          "sources": [
+           {
+            "org": "대학어디가",
+            "title": "2025학년도 정시 입시결과",
+            "url": "https://www.adiga.kr/ucp/uvt/uni/univDetailSelection.do?menuId=PCUVTINF2000&searchSyr=2026&unvCd=0000063",
+            "publishedDate": null,
+            "checkedDate": "2026-09-02",
+            "page": null
            }
           ]
          }
