@@ -1903,7 +1903,6 @@ function saveMockScore(){
   if(standardScores.some(value=>!Number.isFinite(value)||value<1||value>300)){alert('표준점수는 1~300 범위에서 입력하세요.');return}
   if(inquiryPercentiles.some(value=>!Number.isFinite(value)||value<0||value>100)){alert('탐구 백분위는 0~100 범위에서 입력하세요.');return}
   if(m.koreanHistoryGrade!==null&&(!Number.isFinite(m.koreanHistoryGrade)||m.koreanHistoryGrade<1||m.koreanHistoryGrade>9)){alert('한국사 등급은 1~9 사이로 입력하세요.');return}
-  if(inputMode==='direct'&&!m.simulationReady){alert('성적표 직접 입력은 국어·수학·탐구 백분위와 영어 등급을 모두 입력하세요.');return}
   const idx=s.mockScores.findIndex(x=>x.id===m.id);
   if(idx>=0){m.representative=m.simulationReady&&s.mockScores[idx].representative;s.mockScores[idx]=m}
   else{if(m.simulationReady){s.mockScores.forEach(x=>x.representative=false);m.representative=true}s.mockScores.unshift(m)}
