@@ -473,13 +473,6 @@ tr.needs-review-row{background:#fffbeb}
           <div class="panel-title"><h3>추천 6장 카드</h3><span class="muted" style="font-size:11px">안정 2 · 소신 2 · 상향 2</span></div>
           <div class="six-card-groups" id="sixCardGroups"></div>
         </div>
-        <div id="universityOverview" class="university-overview">
-          <div class="university-overview-head">
-            <div><b>대학 검색·전체 모집단위 비교</b><small>대학교를 검색하면 해당 대학에 등록된 모든 모집단위를 현재 성적과 바로 비교합니다.</small></div>
-            <div id="universityGroupButtons" class="university-buttons"></div>
-          </div>
-          <div id="universityOverviewBody"><div class="empty">전체 모집단위 데이터가 등록된 대학을 선택하세요.</div></div>
-        </div>
         <div class="card">
           <div class="result-toolbar"><div><b>대학별 분석 결과</b><div id="resultSubtitle" class="muted" style="font-size:12px;margin-top:3px">모의고사 환산지수와 최근 3개년 정시 샘플 컷 비교</div></div>
             <select id="simStatus" class="select" onchange="runSimulation()"><option value="">전체 판정</option><option>안정</option><option>적정</option><option>추합예상</option><option>소신</option><option>상향</option></select>
@@ -1997,25 +1990,6 @@ function renderTargetOptions(){
   departmentEl.value=departments.some(u=>String(u.id)===previousDepartment)?previousDepartment:String(departments[0]?.id||'');
 }
 let selectedUniversityOverview='인하대',officialGateOpen=false;
-function officialUniversityGroups(){
-  const counts={};universities.filter(u=>u.officialResult||u.rankedRule).forEach(u=>counts[u.university]=(counts[u.university]||0)+1);return counts;
-}
-function renderUniversityGroupButtons(){
-  const target=document.getElementById('universityGroupButtons');if(!target)return;
-  const groups=officialUniversityGroups(),names=Object.keys(groups);
-  if(!names.length){target.innerHTML='<span class="badge gray">등록 대학 없음</span>';return}
-  if(!names.includes(selectedUniversityOverview))selectedUniversityOverview=names[0];
-  target.innerHTML=`<span class="badge blue">${escapeHTML(selectedUniversityOverview)} · ${groups[selectedUniversityOverview]||0}개 학과</span>`;
-}
-function selectUniversityOverview(name){selectedUniversityOverview=name;renderUniversityGroupButtons();renderUniversityOverview()}
-function changeTargetUniversity(){
-  selectedUniversityOverview=document.getElementById('targetUniversity')?.value||selectedUniversityOverview;renderTargetOptions();renderUniversityGroupButtons();renderUniversityOverview();updateTargetSummary();
-}
-function openUniversityOverview(name){
-  const type=document.getElementById('simType');if(type&&type.value!=='regular'){type.value='regular';changeSimType()}
-  selectedUniversityOverview=name;renderUniversityGroupButtons();renderUniversityOverview();
-  setTimeout(()=>document.getElementById('universityOverview')?.scrollIntoView({behavior:'smooth',block:'start'}),0);
-}
 function toggleOfficialRuleGate(){
   officialGateOpen=!officialGateOpen;const gate=document.getElementById('officialRuleGate'),button=document.getElementById('officialGateToggle');if(!gate||!button)return;
   gate.style.display=officialGateOpen?'block':'none';button.textContent=officialGateOpen?'고급 공식 환산 검수 닫기':'고급 공식 환산 검수 열기';
@@ -2028,41 +2002,6 @@ function universityReferenceJudgment(gap){
 }
 function officialReferenceScore(s,u){return u.university==='인하대'?inhaReferenceScore(s,u):scoreStudent(s,u)}
 function officialCutReferenceScore(u){return u.university==='인하대'?inhaProfileReferenceScore(u):null}
-// 정시 대학 DB 원자료(officialResult=인하대식 백분위 환산, rankedRule=가천대식 우수영역 순위형) 중 어느 쪽이든
-// 같은 방식으로 현재 성적·기준컷을 구하는 공용 함수. "대학 검색·전체 모집단위 비교" 표가 인하대만 보이던 문제를 고친다.
-function regularReferenceScore(s,u){return u.rankedRule?computeRankedRegularScore(s,u.rankedRule):(u.officialResult?officialReferenceScore(s,u):null)}
-function regularReferenceCut(u){return u.rankedRule?u.rankedCutValue:(u.officialResult?officialCutReferenceScore(u):null)}
-function renderUniversityOverview(){
-  const box=document.getElementById('universityOverview'),body=document.getElementById('universityOverviewBody');if(!box||!body)return;
-  const school=document.getElementById('simType')?.value!=='regular';box.style.display=school?'none':'block';if(school)return;
-  renderUniversityGroupButtons();
-  if(!simulationHasStoredScore()){body.innerHTML='<div class="empty">성적 입력에서 분석 가능한 모의고사를 저장하면 전체 학과 비교가 자동으로 표시됩니다.</div>';return}
-  // 검색창 값이 아니라 selectedUniversityOverview를 기준으로 삼는다 — 검색창 값을 그대로 쓰면
-  // selectUniversityOverview()로 다른 대학을 선택해도(그룹 버튼 클릭 등) 이전 검색어가 남아있어 화면이 안 바뀌는 문제가 있었다.
-  const oldUniversitySearch=selectedUniversityOverview,oldSearch=document.getElementById('univDeptSearch')?.value||'',oldGroup=document.getElementById('univDeptGroup')?.value||'',oldStatus=document.getElementById('univDeptStatus')?.value||'';
-  const allRows=universities.filter(u=>u.officialResult||u.rankedRule),schoolNames=[...new Set(allRows.map(u=>u.university))],rows=allRows.filter(u=>u.university===selectedUniversityOverview),groups=[...new Set(rows.map(u=>u.group))];
-  if(!rows.length){body.innerHTML='<div class="empty">선택한 대학의 전체 모집단위 입결이 아직 등록되지 않았습니다.</div>';return}
-  body.innerHTML=`<div class="university-overview-toolbar"><input id="univSchoolSearch" class="input" list="univSchoolOptions" placeholder="대학교 검색" oninput="renderUniversityOverviewTable()" onchange="applyUniversitySearch()"><datalist id="univSchoolOptions">${schoolNames.map(name=>`<option value="${escapeHTML(name)}">`).join('')}</datalist><input id="univDeptSearch" class="input" placeholder="학과·모집단위 검색" oninput="renderUniversityOverviewTable()"><select id="univDeptGroup" class="select" onchange="renderUniversityOverviewTable()"><option value="">전체 군</option>${groups.map(group=>`<option>${escapeHTML(group)}</option>`).join('')}</select><select id="univDeptStatus" class="select" onchange="renderUniversityOverviewTable()"><option value="">전체 판정</option><option>합격권</option><option>추합권</option><option>소신</option><option>부족</option></select><span class="badge blue">${rows.length}개 모집단위</span></div><div id="universityOverviewTable"></div>`;
-  document.getElementById('univSchoolSearch').value=oldUniversitySearch;document.getElementById('univDeptSearch').value=oldSearch;document.getElementById('univDeptGroup').value=oldGroup;document.getElementById('univDeptStatus').value=oldStatus;
-  renderUniversityOverviewTable();
-}
-function applyUniversitySearch(){
-  const value=(document.getElementById('univSchoolSearch')?.value||'').trim(),names=[...new Set(universities.filter(u=>u.officialResult||u.rankedRule).map(u=>u.university))],matched=names.find(name=>name===value)||names.find(name=>name.includes(value));
-  if(!matched){renderUniversityOverviewTable();return}
-  selectedUniversityOverview=matched;const hidden=document.getElementById('targetUniversity');if(hidden)hidden.value=matched;renderTargetOptions();renderUniversityGroupButtons();renderUniversityOverview();
-}
-function renderUniversityOverviewTable(){
-  const target=document.getElementById('universityOverviewTable');if(!target)return;
-  const schoolQuery=(document.getElementById('univSchoolSearch')?.value||'').trim().toLowerCase(),query=(document.getElementById('univDeptSearch')?.value||'').trim().toLowerCase(),group=document.getElementById('univDeptGroup')?.value||'',status=document.getElementById('univDeptStatus')?.value||'',s=currentSim();
-  const rows=universities.filter(u=>(u.officialResult||u.rankedRule)&&(!schoolQuery||u.university.toLowerCase().includes(schoolQuery))).map(u=>{
-    const current=regularReferenceScore(s,u),cut=regularReferenceCut(u),gap=(cut===null||current===null||current===undefined)?null:current-cut,judgment=gap===null?{label:'산출대기',color:'gray'}:universityReferenceJudgment(gap);
-    const yearInfo=Object.values(u.years||{})[0]||{},boundYear=Object.keys(u.years||{})[0]||'';
-    const cutScaleLabel=u.officialResult?`${pct(cut)} / 1000`:(cut===null?'-':`${pct(cut)}%(백분위)`);
-    return{u,current,cut,gap,judgment,yearInfo,boundYear,cutScaleLabel};
-  }).filter(x=>(!query||(x.u.department+x.u.sourceDepartment).toLowerCase().includes(query))&&(!group||x.u.group===group)&&(!status||x.judgment.label===status)).sort((a,b)=>a.u.university.localeCompare(b.u.university,'ko')||(a.u.group||'').localeCompare(b.u.group||'','ko')||(b.gap??-999)-(a.gap??-999));
-  const source=rows[0]?.u.officialResult?.sourceUrl||rows[0]?.u.rankedSourceUrl||'';
-  target.innerHTML=`<div class="university-dept-wrap"><table class="university-dept-table"><thead><tr><th>대학</th><th>군</th><th>모집단위</th><th>모집/충원(연도)</th><th>현재 참고지수</th><th>참고 70%컷</th><th>차이·부족점수</th><th>참고판정</th><th>공식 환산컷</th><th>상세</th></tr></thead><tbody>${rows.map(({u,current,cut,gap,judgment,yearInfo,boundYear,cutScaleLabel})=>`<tr><td><b>${escapeHTML(u.university)}</b></td><td><span class="badge gray">${escapeHTML(u.group)}</span></td><td class="department">${escapeHTML(u.department)}${u.sourceDepartment!==u.department?`<small class="muted" style="display:block">${escapeHTML(boundYear)} 명칭: ${escapeHTML(u.sourceDepartment)}</small>`:''}</td><td>${yearInfo.recruit??'-'}명 / ${yearInfo.extra??'-'}명<div class="muted" style="font-size:10px">${escapeHTML(boundYear)}학년도</div></td><td><b>${current===null||current===undefined?'-':pct(current)}</b></td><td>${cut===null?'-':pct(cut)}</td><td><span class="score-gap ${gap>=0?'positive':'negative'}">${gap===null?'-':gap>=0?`+${pct(gap)}`:`부족 ${pct(Math.abs(gap))}`}</span></td><td><span class="badge ${judgment.color}">${judgment.label}</span></td><td><b>${cutScaleLabel}</b></td><td><button class="small-btn" onclick="showUniversity(${u.id})">보기</button></td></tr>`).join('')||'<tr><td colspan="10" class="empty">검색한 대학의 등록 모집단위가 없습니다.</td></tr>'}</tbody></table></div><div class="university-source-note"><b>읽는 법:</b> 현재·참고 70%컷은 등록된 대학 반영비율로 비교한 참고값이며 공식 합격선이 아닙니다(인하대는 1000점 환산 척도, 가천대는 0~100 백분위 척도로 서로 직접 비교할 수 없습니다). 모집/충원 옆 연도는 시뮬레이터 채점에 실제로 쓰이는 검증된 기준연도이며, 더 최근 연도 결과는 학과 상세에서 참고용으로 확인할 수 있습니다. ${source?`<a href="${escapeHTML(source)}" target="_blank" rel="noopener">대학어디가 공식 입결 ↗</a>`:''}</div>`;
-}
 function renderSimMockOptions(){
   const el=document.getElementById('simMockRecord');if(!el)return;
   const s=students.find(x=>String(x.id)===simStudent.value)||students[0];
@@ -2120,7 +2059,6 @@ function changeSimType(){
   resultSubtitle.textContent=school?(label+' 참고 등급 비교(원점수 평균 기준)'):'모의고사 환산지수와 최근 3개년 정시 샘플 컷 비교';
   document.getElementById('officialGateToggleRow').style.display=school?'none':'flex';
   document.getElementById('officialRuleGate').style.display=school?'none':(officialGateOpen?'block':'none');
-  document.getElementById('universityOverview').style.display=school?'none':'block';
   setSimAdjustmentOpen(false);
   loadStudentToSimulator();
 }
@@ -2429,7 +2367,6 @@ async function generateReportPDF(id){
 function runSimulation(){
   if(!document.getElementById('resultList'))return;
   const school=simType.value!=='regular', region=simRegion.value,status=simStatus.value;
-  renderUniversityOverview();
   if(!simulationHasStoredScore()){
     simKpis.innerHTML=['안정','적정','추합예상','소신','상향'].map(label=>`<div class="kpi-pill"><strong>0</strong><span>${label}</span></div>`).join('');
     resultList.innerHTML='<div class="empty">성적 입력에서 네 영역의 성적을 저장하면 이곳에 대학별 분석 결과가 자동으로 연결됩니다.</div>';
@@ -3040,7 +2977,7 @@ function downloadLegacyUniversityBackup(){
   downloadText(raw,'jy_universities_backup_legacy.json','application/json');
 }
 function resetData(){if(confirm('학생 DB를 샘플로, 대학 DB를 대학 구조 DB(UNIVERSITY_DB) 기준으로 초기화할까요? 불러온 대학별 환산 규칙 파일은 유지됩니다.')){students=structuredClone(SAMPLE_STUDENTS).map(normalizeStudent);universities=flattenUniversityDB(UNIVERSITY_DB).map(normalizeUniversity);persist();renderAll()}}
-function renderAll(){renderDashboard();renderStudents();renderScoreStudentOptions();renderUniversities();renderUniversityStructureList();renderSimStudentOptions();renderUniversityGroupButtons();renderRulePacks();renderExamReferences();if(document.getElementById('simType'))changeSimType();if(document.getElementById('scoreStudentSelect'))renderScoreInput()}
+function renderAll(){renderDashboard();renderStudents();renderScoreStudentOptions();renderUniversities();renderUniversityStructureList();renderSimStudentOptions();renderRulePacks();renderExamReferences();if(document.getElementById('simType'))changeSimType();if(document.getElementById('scoreStudentSelect'))renderScoreInput()}
 renderAll();
 </script>
 <script type="module">
