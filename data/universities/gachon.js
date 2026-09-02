@@ -66,9 +66,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-01-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-01-schoolrecord-excellent",
+     "comprehensive": "gachon-01-comprehensive-baram",
+     "essay": "gachon-01-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -553,9 +553,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-02-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-02-schoolrecord-excellent",
+     "comprehensive": "gachon-02-comprehensive-baram",
+     "essay": "gachon-02-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -724,9 +724,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-03-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-03-schoolrecord-excellent",
+     "comprehensive": "gachon-03-comprehensive-baram",
+     "essay": "gachon-03-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -895,9 +895,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-04-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-04-schoolrecord-excellent",
+     "comprehensive": "gachon-04-comprehensive-baram",
+     "essay": "gachon-04-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -1356,9 +1356,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": "gachon-05-regular-general1",
-     "schoolRecord": null,
+     "schoolRecord": "gachon-05-schoolrecord-excellent",
      "comprehensive": null,
-     "essay": null
+     "essay": "gachon-05-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -1680,9 +1680,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-06-schoolrecord-excellent",
+     "comprehensive": "gachon-06-comprehensive-baram",
+     "essay": "gachon-06-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -2019,9 +2019,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-07-schoolrecord-excellent",
+     "comprehensive": "gachon-07-comprehensive-baram",
+     "essay": "gachon-07-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -2244,9 +2244,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-08-schoolrecord-excellent",
+     "comprehensive": "gachon-08-comprehensive-baram",
+     "essay": "gachon-08-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -2552,9 +2552,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-09-schoolrecord-excellent",
+     "comprehensive": "gachon-09-comprehensive-baram",
+     "essay": "gachon-09-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -2810,9 +2810,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
+     "schoolRecord": "gachon-10-schoolrecord-excellent",
      "comprehensive": null,
-     "essay": null
+     "essay": "gachon-10-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -2955,9 +2955,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-11-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-11-schoolrecord-excellent",
+     "comprehensive": "gachon-11-comprehensive-baram",
+     "essay": "gachon-11-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -3246,9 +3246,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-12-schoolrecord-excellent",
+     "comprehensive": "gachon-12-comprehensive-baram",
+     "essay": "gachon-12-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -3471,9 +3471,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-13-schoolrecord-excellent",
+     "comprehensive": "gachon-13-comprehensive-baram",
+     "essay": "gachon-13-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -3873,9 +3873,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-14-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-14-schoolrecord-excellent",
+     "comprehensive": "gachon-14-comprehensive-baram",
+     "essay": "gachon-14-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -4327,9 +4327,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": "gachon-15-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-15-schoolrecord-excellent",
+     "comprehensive": "gachon-15-comprehensive-baram",
+     "essay": "gachon-15-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -4755,9 +4755,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-16-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-16-schoolrecord-excellent",
+     "comprehensive": "gachon-16-comprehensive-baram",
+     "essay": "gachon-16-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -5183,9 +5183,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-17-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-17-schoolrecord-excellent",
+     "comprehensive": "gachon-17-comprehensive-baram",
+     "essay": "gachon-17-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -5585,9 +5585,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-18-schoolrecord-excellent",
+     "comprehensive": "gachon-18-comprehensive-baram",
+     "essay": "gachon-18-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -5810,9 +5810,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-19-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-19-schoolrecord-excellent",
+     "comprehensive": "gachon-19-comprehensive-baram",
+     "essay": "gachon-19-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -6101,9 +6101,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-20-schoolrecord-excellent",
+     "comprehensive": "gachon-20-comprehensive-baram",
+     "essay": "gachon-20-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -6526,9 +6526,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-21-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-21-schoolrecord-excellent",
+     "comprehensive": "gachon-21-comprehensive-baram",
+     "essay": "gachon-21-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -6980,9 +6980,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-22-schoolrecord-excellent",
+     "comprehensive": "gachon-22-comprehensive-baram",
+     "essay": "gachon-22-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -7238,9 +7238,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-23-schoolrecord-excellent",
+     "comprehensive": "gachon-23-comprehensive-baram",
+     "essay": "gachon-23-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -7463,9 +7463,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-24-schoolrecord-excellent",
+     "comprehensive": "gachon-24-comprehensive-baram",
+     "essay": "gachon-24-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -7651,9 +7651,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": "gachon-25-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-25-schoolrecord-excellent",
+     "comprehensive": "gachon-25-comprehensive-baram",
+     "essay": "gachon-25-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -8079,9 +8079,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-26-schoolrecord-excellent",
+     "comprehensive": "gachon-26-comprehensive-baram",
+     "essay": "gachon-26-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -8304,9 +8304,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-27-schoolrecord-excellent",
+     "comprehensive": "gachon-27-comprehensive-baram",
+     "essay": "gachon-27-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -8706,9 +8706,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-28-schoolrecord-excellent",
+     "comprehensive": "gachon-28-comprehensive-baram",
+     "essay": "gachon-28-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -8931,9 +8931,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
+     "schoolRecord": "gachon-29-schoolrecord-excellent",
      "comprehensive": null,
-     "essay": null
+     "essay": "gachon-29-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -9094,9 +9094,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-30-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-30-schoolrecord-excellent",
+     "comprehensive": "gachon-30-comprehensive-baram",
+     "essay": "gachon-30-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -9532,9 +9532,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-31-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-31-schoolrecord-excellent",
+     "comprehensive": "gachon-31-comprehensive-baram",
+     "essay": "gachon-31-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -9960,9 +9960,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-32-schoolrecord-excellent",
+     "comprehensive": "gachon-32-comprehensive-baram",
+     "essay": "gachon-32-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -10249,9 +10249,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-33-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-33-schoolrecord-excellent",
+     "comprehensive": "gachon-33-comprehensive-baram",
+     "essay": "gachon-33-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -10420,9 +10420,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-34-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-34-schoolrecord-excellent",
+     "comprehensive": "gachon-34-comprehensive-baram",
+     "essay": "gachon-34-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -10678,9 +10678,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-35-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-35-schoolrecord-excellent",
+     "comprehensive": "gachon-35-comprehensive-baram",
+     "essay": "gachon-35-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -11106,9 +11106,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-36-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-36-schoolrecord-excellent",
+     "comprehensive": "gachon-36-comprehensive-baram",
+     "essay": "gachon-36-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -11534,9 +11534,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-37-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-37-schoolrecord-excellent",
+     "comprehensive": "gachon-37-comprehensive-baram",
+     "essay": "gachon-37-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -11962,9 +11962,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": "gachon-38-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-38-schoolrecord-excellent",
+     "comprehensive": "gachon-38-comprehensive-baram",
+     "essay": "gachon-38-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -12655,9 +12655,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-40-schoolrecord-excellent",
+     "comprehensive": "gachon-40-comprehensive-baram",
+     "essay": "gachon-40-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -12880,9 +12880,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-41-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-41-schoolrecord-excellent",
+     "comprehensive": "gachon-41-comprehensive-baram",
+     "essay": "gachon-41-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -13308,9 +13308,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": "gachon-42-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-42-schoolrecord-excellent",
+     "comprehensive": "gachon-42-comprehensive-baram",
+     "essay": "gachon-42-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -13763,8 +13763,8 @@
     "simulationBinding": {
      "regular": "gachon-43-regular-general1",
      "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "comprehensive": "gachon-43-comprehensive-baram",
+     "essay": "gachon-43-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -14045,9 +14045,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": "gachon-44-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-44-schoolrecord-excellent",
+     "comprehensive": "gachon-44-comprehensive-baram",
+     "essay": "gachon-44-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -14473,9 +14473,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-45-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-45-schoolrecord-excellent",
+     "comprehensive": "gachon-45-comprehensive-baram",
+     "essay": "gachon-45-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -14901,9 +14901,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": "gachon-46-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-46-schoolrecord-excellent",
+     "comprehensive": "gachon-46-comprehensive-baram",
+     "essay": "gachon-46-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -15298,9 +15298,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-47-regular-general1",
-     "schoolRecord": null,
+     "schoolRecord": "gachon-47-schoolrecord-excellent",
      "comprehensive": null,
-     "essay": null
+     "essay": "gachon-47-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -15631,9 +15631,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-48-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-48-schoolrecord-excellent",
+     "comprehensive": "gachon-48-comprehensive-baram",
+     "essay": "gachon-48-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -16054,9 +16054,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
+     "schoolRecord": "gachon-49-schoolrecord-excellent",
      "comprehensive": null,
-     "essay": null
+     "essay": "gachon-49-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -16269,9 +16269,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-50-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-50-schoolrecord-excellent",
+     "comprehensive": "gachon-50-comprehensive-baram",
+     "essay": "gachon-50-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -16697,9 +16697,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-51-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-51-schoolrecord-excellent",
+     "comprehensive": "gachon-51-comprehensive-baram",
+     "essay": "gachon-51-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -17151,9 +17151,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-52-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-52-schoolrecord-excellent",
+     "comprehensive": "gachon-52-comprehensive-baram",
+     "essay": "gachon-52-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -17609,9 +17609,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-53-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-53-schoolrecord-excellent",
+     "comprehensive": "gachon-53-comprehensive-baram",
+     "essay": "gachon-53-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -17978,9 +17978,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-54-schoolrecord-excellent",
+     "comprehensive": "gachon-54-comprehensive-baram",
+     "essay": "gachon-54-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -18293,9 +18293,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": "gachon-55-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-55-schoolrecord-excellent",
+     "comprehensive": "gachon-55-comprehensive-baram",
+     "essay": "gachon-55-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -18721,9 +18721,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-56-schoolrecord-excellent",
+     "comprehensive": "gachon-56-comprehensive-baram",
+     "essay": "gachon-56-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -18946,7 +18946,7 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-57-regular-general1",
-     "schoolRecord": null,
+     "schoolRecord": "gachon-57-schoolrecord-excellent",
      "comprehensive": null,
      "essay": null
     },
@@ -19211,9 +19211,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-58-schoolrecord-excellent",
+     "comprehensive": "gachon-58-comprehensive-baram",
+     "essay": "gachon-58-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -19436,9 +19436,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-59-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-59-schoolrecord-excellent",
+     "comprehensive": "gachon-59-comprehensive-baram",
+     "essay": "gachon-59-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -19871,9 +19871,9 @@
     "track": "science",
     "simulationBinding": {
      "regular": "gachon-60-regular-general1",
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-60-schoolrecord-excellent",
+     "comprehensive": "gachon-60-comprehensive-baram",
+     "essay": "gachon-60-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -20299,9 +20299,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": "gachon-61-regular-general1",
-     "schoolRecord": null,
+     "schoolRecord": "gachon-61-schoolrecord-excellent",
      "comprehensive": null,
-     "essay": null
+     "essay": "gachon-61-essay-general"
     },
     "admissionTypes": {
      "regular": {
@@ -20590,9 +20590,9 @@
     "track": "humanities",
     "simulationBinding": {
      "regular": null,
-     "schoolRecord": null,
-     "comprehensive": null,
-     "essay": null
+     "schoolRecord": "gachon-62-schoolrecord-excellent",
+     "comprehensive": "gachon-62-comprehensive-baram",
+     "essay": "gachon-62-essay-general"
     },
     "admissionTypes": {
      "regular": {
