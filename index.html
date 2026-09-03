@@ -102,6 +102,51 @@ tbody tr:hover{background:#fafbff}
 .rule-detail-card h4{margin:0 0 7px;font-size:14px}.rule-detail-card p{margin:5px 0;font-size:12px;line-height:1.6}
 .rule-list{margin:7px 0 0;padding-left:18px;color:#4b5563;font-size:12px;line-height:1.65}
 .rule-source-list{display:grid;gap:8px}.rule-source-list a{font-size:12px;font-weight:750}
+/* ===== 대학 DB 입결 카드(연도 탭형) — 대학 DB 상세 화면과 시뮬레이션 상세 팝업이 공유 ===== */
+.udb-card{border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden;margin-top:12px;box-shadow:0 12px 35px rgba(31,41,55,.06)}
+.udb-year-tabs{display:flex;border-bottom:1px solid var(--line);background:#fafbff}
+.udb-year-tab{flex:1;text-align:center;padding:12px 6px;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;position:relative;border-right:1px solid var(--line)}
+.udb-year-tab:last-child{border-right:none}
+.udb-year-tab.active{color:var(--primary);background:#fff}
+.udb-year-tab.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--primary)}
+.udb-yt-year{display:block;font-size:14px}
+.udb-yt-status{display:block;font-size:9px;font-weight:700;margin-top:3px;color:var(--muted)}
+.udb-year-tab.active .udb-yt-status.linked{color:var(--green)}
+.udb-yt-status.pending{color:var(--amber)}
+.udb-panel-body{display:none;padding:18px 18px 14px}
+.udb-panel-body.active{display:block}
+.udb-panel-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.udb-panel-title-group h4{margin:0;font-size:15px}
+.udb-sub{margin-top:3px;font-size:11.5px;color:var(--muted)}
+.udb-status-pill{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:800;padding:4px 10px;border-radius:999px;flex-shrink:0;white-space:nowrap}
+.udb-status-pill.linked{background:#ecfdf5;color:var(--green)}
+.udb-status-pill.linked::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green)}
+.udb-status-pill.pending{background:#fffbeb;color:var(--amber)}
+.udb-status-pill.pending::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--amber)}
+.udb-headline-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.udb-headline{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fbfcff}
+.udb-headline.primary{background:var(--soft);border-color:#d9deff}
+.udb-h-label{font-size:10.5px;color:var(--muted);font-weight:700}
+.udb-h-value{font-size:22px;font-weight:850;margin-top:3px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.udb-headline.primary .udb-h-value{color:var(--primary)}
+.udb-meta-strip{display:flex;gap:16px;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:14px;font-size:11.5px}
+.udb-m-label{color:var(--muted);margin-right:5px}
+.udb-m-value{font-weight:800}
+.udb-subject-wrap{margin-bottom:14px}
+.udb-subject-title{font-size:11.5px;font-weight:800;color:var(--text);margin-bottom:7px}
+.udb-subject-table{width:100%;min-width:380px;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+.udb-subject-table th{font-size:10px;color:var(--muted);font-weight:700;text-align:center;padding:5px 4px;border-bottom:1px solid var(--line)}
+.udb-subject-table th:first-child{text-align:left}
+.udb-subject-table td{text-align:center;padding:7px 4px;font-weight:700}
+.udb-subject-table td:first-child{text-align:left;color:var(--muted);font-weight:700;font-size:10.5px}
+.udb-subject-table tr:not(:last-child) td{border-bottom:1px solid #f1f2f7}
+.udb-subject-table .na{color:#c2c7d4;font-weight:400}
+.udb-extra-list{display:flex;flex-wrap:wrap;gap:6px 16px;margin-bottom:14px;font-size:11.5px}
+.udb-extra-list>div{display:flex;gap:5px}
+.udb-extra-list span{color:var(--muted)}
+.udb-panel-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.udb-checked{font-size:10px;color:#9aa3b2;white-space:nowrap}
+.method-note{margin-top:12px;font-size:11.5px;color:var(--muted);background:#fafbff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;line-height:1.6}
 .rule-scope-list{display:grid;gap:7px;font-size:12px;line-height:1.5}
 .rule-scope-item{display:flex;gap:7px;align-items:flex-start}.rule-scope-item span:first-child{flex:0 0 auto}
 .rule-mini{font-size:11px;line-height:1.55;color:#667085;margin-top:5px}
@@ -1126,28 +1171,103 @@ function udbSourceListHTML(sources){
     return s.url?`<a class="small-btn" href="${escapeHTML(s.url)}" target="_blank" rel="noopener">${label} ↗</a>`:`<span class="badge gray">${label}</span>`;
   }).join('')}</div>`;
 }
-function udbIndicatorRowsHTML(indicators){
-  if(!indicators)return '<div class="notice">공개된 정량 지표가 없습니다(정성 전형이거나 미공개).</div>';
-  const labels={universityScoreCut50:'대학환산 50%컷',universityScoreCut70:'대학환산 70%컷',percentileCut50:'백분위 50%컷',percentileCut70:'백분위 70%컷',percentileCut90:'백분위 90%컷',standardScoreCut50:'표준점수 50%컷',standardScoreCut70:'표준점수 70%컷',standardScoreCut90:'표준점수 90%컷',avgGradeReference50:'평균등급 50%컷(참고)',avgGradeReference70:'평균등급 70%컷(참고)',avgGradeReference90:'평균등급 90%컷(참고)'};
-  const items=Object.entries(labels).filter(([key])=>indicators[key]!==undefined&&indicators[key]!==null).map(([key,label])=>[label,indicators[key]]);
-  (indicators.extra||[]).forEach(item=>items.push([item.label,item.value]));
-  if(!items.length)return '<div class="notice">공개된 정량 지표가 없습니다(정성 전형이거나 미공개).</div>';
-  return linkedScoreItemsHTML(items);
+// 헤드라인 지표(컷 점수)를 인디케이터 종류(대학환산/백분위/표준점수/평균등급 참고)에 따라 최대 2개까지 뽑고,
+// 90%컷처럼 셋째 값이 있으면 메타 스트립에 얹을 보조 항목으로 분리한다.
+function udbHeadlineMetrics(ind){
+  if(!ind)return{headline:[],metaExtra:[]};
+  if(ind.universityScoreCut70!=null||ind.universityScoreCut50!=null){
+    const scale=ind.universityScoreScale||1000,headline=[];
+    if(ind.universityScoreCut70!=null)headline.push({label:'대학환산 70%컷',value:pct(ind.universityScoreCut70)+' / '+scale,primary:true});
+    if(ind.universityScoreCut50!=null)headline.push({label:'대학환산 50%컷',value:pct(ind.universityScoreCut50)+' / '+scale});
+    return{headline,metaExtra:[]};
+  }
+  if(ind.percentileCut70!=null||ind.percentileCut50!=null){
+    const headline=[];
+    if(ind.percentileCut70!=null)headline.push({label:'백분위 70%컷',value:pct(ind.percentileCut70)+'%',primary:true});
+    if(ind.percentileCut50!=null)headline.push({label:'백분위 50%컷',value:pct(ind.percentileCut50)+'%'});
+    return{headline,metaExtra:ind.percentileCut90!=null?[{label:'백분위 90%컷',value:pct(ind.percentileCut90)+'%'}]:[]};
+  }
+  if(ind.standardScoreCut70!=null||ind.standardScoreCut50!=null){
+    const headline=[];
+    if(ind.standardScoreCut70!=null)headline.push({label:'표준점수 70%컷',value:pct(ind.standardScoreCut70),primary:true});
+    if(ind.standardScoreCut50!=null)headline.push({label:'표준점수 50%컷',value:pct(ind.standardScoreCut50)});
+    return{headline,metaExtra:ind.standardScoreCut90!=null?[{label:'표준점수 90%컷',value:pct(ind.standardScoreCut90)}]:[]};
+  }
+  if(ind.avgGradeReference70!=null||ind.avgGradeReference50!=null){
+    const headline=[];
+    if(ind.avgGradeReference70!=null)headline.push({label:'평균등급 70%컷(참고)',value:pct(ind.avgGradeReference70)+'등급',primary:true});
+    if(ind.avgGradeReference50!=null)headline.push({label:'평균등급 50%컷(참고)',value:pct(ind.avgGradeReference50)+'등급'});
+    return{headline,metaExtra:[]};
+  }
+  return{headline:[],metaExtra:[]};
 }
-function udbYearCardHTML(detail,year,status){
-  const badge=status==='linked'?'<span class="badge green">시뮬레이션 연결</span>':status==='pending'?'<span class="badge amber">계산 보류</span>':'';
+// extra 항목 중 "국어/수학/탐구1/탐구2/영어/한국사"로 시작하는 영역별 백분위 항목을 찾아 표 구조로 접는다.
+// "86 / 88"처럼 50%·70% 값이 한 문자열에 같이 오는 해와, 70%컷 값 하나만 오는 해가 섞여 있어 둘 다 처리한다.
+const UDB_SUBJECT_ORDER=['국어','수학','탐구1','탐구2','영어','한국사'];
+function parseUdbSubjectExtras(extra){
+  if(!Array.isArray(extra)||!extra.length)return null;
+  const subjectItems=extra.filter(item=>UDB_SUBJECT_ORDER.some(s=>String(item.label||'').startsWith(s)));
+  if(!subjectItems.length)return null;
+  const rows={50:{},70:{}};let has50=false,has70=false;
+  subjectItems.forEach(item=>{
+    const subj=UDB_SUBJECT_ORDER.find(s=>String(item.label).startsWith(s));
+    const valStr=String(item.value);
+    if(valStr.includes('/')){
+      const[v50,v70]=valStr.split('/').map(v=>v.trim());
+      rows[50][subj]=v50;rows[70][subj]=v70;has50=true;has70=true;
+    }else if(item.label.includes('50%')){rows[50][subj]=valStr;has50=true}
+    else{rows[70][subj]=valStr;has70=true}
+  });
+  const subjects=UDB_SUBJECT_ORDER.filter(s=>rows[50][s]!==undefined||rows[70][s]!==undefined);
+  const otherExtras=extra.filter(item=>!subjectItems.includes(item));
+  return{subjects,rows,has50,has70,otherExtras};
+}
+function udbYearPanelHTML(detail,year,status,isActive){
   const rule=year.calculationRuleId?CALCULATION_RULES[year.calculationRuleId]:null;
-  return `<div class="rule-detail-card">
-    <div class="panel-title"><h4>${year.year}학년도 · ${escapeHTML(detail.name)}${detail.group?' · '+escapeHTML(detail.group):''}</h4>${badge}</div>
-    <div>모집인원 ${year.recruitCount??'미공개'}명 · 경쟁률 ${year.competitionRatio??'미공개'}:1 · 충원 ${(year.additionalPass&&year.additionalPass.count)??'미공개'}명</div>
-    <div class="muted" style="margin-top:6px">전형방법: ${escapeHTML(year.admissionMethod||'미공개')}${year.csatMinimum?' · 수능최저 있음':''}</div>
-    ${Array.isArray(year.stageRatios)&&year.stageRatios.length?`<div class="muted" style="margin-top:4px">${year.stageRatios.map(st=>`${escapeHTML(String(st.stage))}: ${escapeHTML(st.ratio||'')}${st.multiplier?' ('+escapeHTML(st.multiplier)+')':''}`).join(' → ')}</div>`:''}
-    ${Array.isArray(year.evaluationFactors)&&year.evaluationFactors.length?`<div class="muted" style="margin-top:4px">평가요소: ${year.evaluationFactors.map(escapeHTML).join(', ')}</div>`:''}
-    <div style="margin-top:10px">${udbIndicatorRowsHTML(year.indicators)}</div>
-    ${rule&&rule.method?`<div class="notice" style="margin-top:10px"><b>반영방법(계산규칙):</b> ${escapeHTML(rule.method)}</div>`:''}
+  const ind=year.indicators||{};
+  const{headline,metaExtra}=udbHeadlineMetrics(ind);
+  const subj=parseUdbSubjectExtras(ind.extra);
+  const groupItem=(subj?subj.otherExtras:(ind.extra||[])).find(x=>x.label==='모집군');
+  const group=groupItem?groupItem.value:detail.group;
+  const otherExtras=(subj?subj.otherExtras:(ind.extra||[])).filter(x=>x.label!=='모집군');
+  const statusPill=status==='linked'?'<span class="udb-status-pill linked">시뮬레이션 연결됨</span>':status==='pending'?'<span class="udb-status-pill pending">계산 보류(참고용)</span>':'';
+  const sourceOrg=(year.sources&&year.sources[0]&&year.sources[0].org)||'';
+  const checkedDate=year.sources&&year.sources[0]&&year.sources[0].checkedDate;
+  return`<div class="udb-panel-body${isActive?' active':''}">
+    <div class="udb-panel-top">
+      <div class="udb-panel-title-group"><h4>${escapeHTML(detail.name)}${group?' · '+escapeHTML(group):''}</h4><div class="udb-sub">${year.year}학년도${sourceOrg?' · '+escapeHTML(sourceOrg):''}</div></div>
+      ${statusPill}
+    </div>
+    ${headline.length?`<div class="udb-headline-row">${headline.map(h=>`<div class="udb-headline${h.primary?' primary':''}"><div class="udb-h-label">${escapeHTML(h.label)}</div><div class="udb-h-value">${escapeHTML(h.value)}</div></div>`).join('')}</div>`:'<div class="notice">공개된 정량 지표가 없습니다(정성 전형이거나 미공개).</div>'}
+    <div class="udb-meta-strip">
+      <div><span class="udb-m-label">모집인원</span><span class="udb-m-value">${year.recruitCount??'미공개'}명</span></div>
+      <div><span class="udb-m-label">경쟁률</span><span class="udb-m-value">${year.competitionRatio??'미공개'} : 1</span></div>
+      <div><span class="udb-m-label">충원</span><span class="udb-m-value">${(year.additionalPass&&year.additionalPass.count)??'미공개'}명</span></div>
+      <div><span class="udb-m-label">전형방법</span><span class="udb-m-value">${escapeHTML(year.admissionMethod||'미공개')}${year.csatMinimum?' · 수능최저 있음':''}</span></div>
+      ${metaExtra.map(m=>`<div><span class="udb-m-label">${escapeHTML(m.label)}</span><span class="udb-m-value">${escapeHTML(m.value)}</span></div>`).join('')}
+    </div>
+    ${Array.isArray(year.stageRatios)&&year.stageRatios.length?`<div class="muted" style="margin-bottom:10px">${year.stageRatios.map(st=>`${escapeHTML(String(st.stage))}: ${escapeHTML(st.ratio||'')}${st.multiplier?' ('+escapeHTML(st.multiplier)+')':''}`).join(' → ')}</div>`:''}
+    ${Array.isArray(year.evaluationFactors)&&year.evaluationFactors.length?`<div class="muted" style="margin-bottom:10px">평가요소: ${year.evaluationFactors.map(escapeHTML).join(', ')}</div>`:''}
+    ${subj&&subj.subjects.length?`<div class="udb-subject-wrap"><div class="udb-subject-title">영역별 백분위</div><div style="overflow-x:auto"><table class="udb-subject-table"><thead><tr><th></th>${subj.subjects.map(s=>`<th>${s}</th>`).join('')}</tr></thead><tbody>${subj.has50?`<tr><td>50%컷</td>${subj.subjects.map(s=>`<td>${subj.rows[50][s]!==undefined?escapeHTML(String(subj.rows[50][s])):'<span class="na">—</span>'}</td>`).join('')}</tr>`:''}${subj.has70?`<tr><td>70%컷</td>${subj.subjects.map(s=>`<td>${subj.rows[70][s]!==undefined?escapeHTML(String(subj.rows[70][s])):'<span class="na">—</span>'}</td>`).join('')}</tr>`:''}</tbody></table></div></div>`:''}
+    ${otherExtras.length?`<div class="udb-extra-list">${otherExtras.map(x=>`<div><span>${escapeHTML(x.label)}</span><b>${escapeHTML(String(x.value))}</b></div>`).join('')}</div>`:''}
+    ${rule&&rule.method?`<div class="method-note"><b>반영방법(계산규칙):</b> ${escapeHTML(rule.method)}</div>`:''}
     ${rule&&Array.isArray(rule.notes)&&rule.notes.length?`<div class="muted" style="margin-top:6px;font-size:11px">${rule.notes.map(escapeHTML).join('<br>')}</div>`:''}
-    <div style="margin-top:10px">${udbSourceListHTML(year.sources)}</div>
+    <div class="udb-panel-foot">${udbSourceListHTML(year.sources)}${checkedDate?`<span class="udb-checked">확인일 ${escapeHTML(checkedDate)}</span>`:''}</div>
   </div>`;
+}
+let udbTabSeq=0;
+function udbYearTabsHTML(detail,years,statusForYear){
+  if(!Array.isArray(years)||!years.length)return '<div class="empty">등록된 학년도 데이터가 없습니다.</div>';
+  const uid='udbtabs-'+(udbTabSeq++);
+  const entries=years.map(year=>({year,status:statusForYear(year)}));
+  const tabs=entries.map((e,i)=>`<div class="udb-year-tab${i===0?' active':''}" onclick="switchUdbYearTab('${uid}',${i})"><span class="udb-yt-year">${e.year.year}</span><span class="udb-yt-status ${e.status||''}">${e.status==='linked'?'시뮬레이션 연결':e.status==='pending'?'계산 보류':'참고'}</span></div>`).join('');
+  const panels=entries.map((e,i)=>udbYearPanelHTML(detail,e.year,e.status,i===0)).join('');
+  return`<div class="udb-card" id="${uid}"><div class="udb-year-tabs">${tabs}</div>${panels}</div>`;
+}
+function switchUdbYearTab(uid,idx){
+  const root=document.getElementById(uid);if(!root)return;
+  [...root.querySelectorAll('.udb-year-tab')].forEach((el,i)=>el.classList.toggle('active',i===idx));
+  [...root.querySelectorAll('.udb-panel-body')].forEach((el,i)=>el.classList.toggle('active',i===idx));
 }
 function renderUdbDetailBody(){
   const target=document.getElementById('udbDetailBody');if(!target)return;
@@ -1168,20 +1288,24 @@ function renderUdbDetailBody(){
       if(others)extraNote=`<div class="notice" style="margin-bottom:10px">이 모집단위는 정시에 별도 전형(${escapeHTML(others)})이 더 있습니다. 반영비율이 달라 시뮬레이터에는 연결하지 않았고, 필요하면 대학 원문 모집요강에서 직접 확인하세요.</div>`;
     }
   }
-  target.innerHTML=extraNote+details.map(detail=>(detail.years||[]).map((year,yearIndex)=>{
-    const rule=year.calculationRuleId?CALCULATION_RULES[year.calculationRuleId]:null;
-    const isBoundDetail=boundDetailId===detail.id&&yearIndex===0;
-    let status=null;
-    if(type==='regular'){
-      if(rule)status=(isBoundDetail&&rule.status==='verified')?'linked':'pending';
-    }else{
+  target.innerHTML=extraNote+details.map(detail=>{
+    const isBoundDetail=boundDetailId===detail.id,years=detail.years||[];
+    // 정시는 배열 순서가 아니라 실제 검증된 계산규칙을 가진 연도를 찾아 "연결됨"으로 표시한다
+    // (최신 연도가 참고용(계산 보류)일 수 있어 첫 번째 카드만 보고 판단하면 틀린다).
+    // 학생부교과·학생부종합 등은 flattenUniversityDB가 항상 배열 첫 항목만 시뮬레이터에 쓰므로 그 규칙을 그대로 따른다.
+    const statusForYear=year=>{
+      if(type==='regular'){
+        const rule=year.calculationRuleId?CALCULATION_RULES[year.calculationRuleId]:null;
+        if(isBoundDetail&&rule&&rule.status==='verified')return 'linked';
+        return rule?'pending':null;
+      }
       const ind=year.indicators||{};
-      const hasRawTrackCut=ind.avgGradeReference70!==undefined&&ind.avgGradeReference70!==null||ind.avgGradeReference50!==undefined&&ind.avgGradeReference50!==null;
-      if(isBoundDetail&&hasRawTrackCut)status='linked';
-      else if(rule)status='pending';
-    }
-    return udbYearCardHTML(detail,year,status);
-  }).join('')).join('');
+      const hasRawTrackCut=(ind.avgGradeReference70!=null)||(ind.avgGradeReference50!=null);
+      if(isBoundDetail&&years[0]===year&&hasRawTrackCut)return 'linked';
+      return hasRawTrackCut?'pending':null;
+    };
+    return udbYearTabsHTML(detail,years,statusForYear);
+  }).join('');
 }
 function readLocalArray(key,fallback=[]){
   try{const value=JSON.parse(localStorage.getItem(key)||'null');return Array.isArray(value)?value:structuredClone(fallback)}catch{return structuredClone(fallback)}
@@ -1965,14 +2089,15 @@ function showUniversity(id){
   detailTitle.textContent=`${u.university} ${u.department}`;
   if(u.officialResult){
     const d=u.officialResult,cutRef=officialCutReferenceScore(u),hasScore=document.getElementById('simType')?.value!=='regular'&&simulationHasStoredScore(),current=hasScore?officialReferenceScore(currentSim(),u):null,gap=current===null||cutRef===null?null:current-cutRef,judgment=gap===null?null:universityReferenceJudgment(gap),weightText=(u.weightOptions||[u.weights]).map(w=>`국어 ${w.kor}% · 수학 ${w.mat}% · 영어 ${w.eng}% · 탐구 ${w.inq}%`).join('<br>');
-    const yearCards=(u.regularAllYears&&u.regularAllYears.length?u.regularAllYears:[{year:d.year,calculationRuleId:null,recruitCount:d.recruit,competitionRatio:d.competition,additionalPass:{count:d.extra},admissionMethod:'수능 100%',indicators:{universityScoreCut50:d.cut50,universityScoreCut70:d.cut70,extra:[]},sources:[{org:'대학어디가',title:d.year+'학년도 정시 결과',url:d.sourceUrl}]}]).map((year,idx)=>udbYearCardHTML(u.regularDetailMeta||{name:'일반전형',group:u.group},year,idx===0?'linked':null)).join('');
+    const regularYears=u.regularAllYears&&u.regularAllYears.length?u.regularAllYears:[{year:d.year,calculationRuleId:null,recruitCount:d.recruit,competitionRatio:d.competition,additionalPass:{count:d.extra},admissionMethod:'수능 100%',indicators:{universityScoreCut50:d.cut50,universityScoreCut70:d.cut70,extra:[]},sources:[{org:'대학어디가',title:d.year+'학년도 정시 결과',url:d.sourceUrl}]}];
+    const yearCards=udbYearTabsHTML(u.regularDetailMeta||{name:'일반전형',group:u.group},regularYears,year=>year.year===d.year?'linked':(year.calculationRuleId?'pending':null));
     detailBody.innerHTML=`<div class="sim-summary"><h4>3개년 정시 입결</h4></div>${yearCards}${gap===null?'<div class="notice">성적 입력에서 분석 가능한 모의고사를 저장하면 현재 점수와의 차이가 표시됩니다.</div>':`<div class="sim-summary"><h4>현재 성적 참고 비교(최신 연도 기준)</h4><div style="display:flex;justify-content:space-between"><span>현재 참고지수</span><b>${pct(current)}</b></div><div style="display:flex;justify-content:space-between;margin-top:6px"><span>${d.year} 70% 참고지수</span><b>${pct(cutRef)}</b></div><div style="margin-top:10px"><span class="badge ${judgment.color}">${judgment.label}</span> <b class="score-gap ${gap>=0?'positive':'negative'}">${gap>=0?`+${pct(gap)}`:`부족 ${pct(Math.abs(gap))}`}</b></div></div>`}<div class="rule-detail-card"><h4>정시 반영 구조</h4><div>${weightText}</div><div class="muted" style="margin-top:7px;font-size:11px">국어·수학 표준점수, 탐구 대학 변환표준점수, 영어 등급점수 적용. 자연계열 미적분/기하 및 과탐, 인문계열 사탐은 해당 시 3% 가산점이 있으며, 한국사는 5등급부터 등급별 감점(5등급 -1점 ~ 9등급 -5점, 1,000점 만점 기준)이 있으나 위 참고 비교에는 모두 미반영했습니다.</div></div><div class="university-source-note"><b>주의:</b> 참고지수와 참고판정은 백분위 비교용이며 대학의 공식 환산점수나 합격 보장이 아닙니다.</div>`;
     document.getElementById('targetUniversity').value=u.university;renderTargetOptions();targetUni.value=u.id;showModal('detailModal');return;
   }
   if(u.rankedRule){
     const rule=u.rankedRule,ind=u.rankedIndicators||{},hasScore=document.getElementById('simType')?.value!=='regular'&&simulationHasStoredScore(),current=hasScore?computeRankedRegularScore(currentSim(),rule):null,cutRef=u.rankedCutValue,gap=current===null||!cutRef?null:current-cutRef,judgment=gap===null?null:universityReferenceJudgment(gap);
-    const yr=Object.keys(u.years)[0];
-    const yearCards=(u.regularAllYears&&u.regularAllYears.length?u.regularAllYears:[]).map((year,idx)=>udbYearCardHTML(u.regularDetailMeta||{name:'일반전형',group:u.group},year,idx===0?'linked':'pending')).join('');
+    const yr=Number(Object.keys(u.years)[0]);
+    const yearCards=udbYearTabsHTML(u.regularDetailMeta||{name:'일반전형',group:u.group},u.regularAllYears||[],year=>year.year===yr?'linked':(year.calculationRuleId?'pending':null));
     detailBody.innerHTML=`<div class="sim-summary"><h4>3개년 정시 입결</h4></div>${yearCards}${gap===null?'<div class="notice">성적 입력에서 분석 가능한 모의고사를 저장하면 현재 점수와의 차이가 표시됩니다.</div>':`<div class="sim-summary"><h4>현재 성적 참고 비교(최신 연도 기준)</h4><div style="display:flex;justify-content:space-between"><span>현재 참고지수</span><b>${pct(current)}</b></div><div style="display:flex;justify-content:space-between;margin-top:6px"><span>${yr} 70% 컷</span><b>${pct(cutRef)}</b></div><div style="margin-top:10px"><span class="badge ${judgment.color}">${judgment.label}</span> <b class="score-gap ${gap>=0?'positive':'negative'}">${gap>=0?`+${pct(gap)}`:`부족 ${pct(Math.abs(gap))}`}</b></div></div>`}<div class="rule-detail-card"><h4>정시 반영 구조(우수영역 순위형)</h4><div>${escapeHTML(rule.method||'')}</div></div>`;
     document.getElementById('targetUniversity').value=u.university;renderTargetOptions();targetUni.value=u.id;showModal('detailModal');return;
   }
@@ -1981,7 +2106,7 @@ function showUniversity(id){
       hasScore=document.getElementById('simType')?.value===u.admissionType&&simulationHasStoredScore(),
       current=hasScore?avg(Object.values(currentSchoolSim())):null,cutRef=u.rawTrackCutValue,
       gap=current===null?null:current-cutRef,judgment=gap===null?null:universityReferenceJudgment(-gap);
-    const yearCards=(u.rawTrackAllYears&&u.rawTrackAllYears.length?u.rawTrackAllYears:[]).map((year,idx)=>udbYearCardHTML({name:subtypeLabel+' 전형',group:u.group},year,idx===0?'linked':'pending')).join('');
+    const yearCards=udbYearTabsHTML({name:subtypeLabel+' 전형',group:u.group},u.rawTrackAllYears||[],year=>year.year===u.rawTrackYear?'linked':'pending');
     const stu=currentSimStudent(),is5Grade=stu&&studentCurriculum(stu)==='2022',cutRef5=is5Grade?convertGrade9to5(cutRef):null;
     const grade5Block=is5Grade?`<div class="sim-summary"><h4>5등급제 환산 예상 참고 컷(근사치)</h4><div style="display:flex;justify-content:space-between"><span>${u.rawTrackYear} 참고 등급 컷(9등급제 원자료 → 5등급제 환산)</span><b>${cutRef5===null?'-':pct(cutRef5)}등급</b></div><div class="muted" style="font-size:11px;margin-top:6px">2022개정 교육과정(${escapeHTML(stu.school)} ${escapeHTML(stu.grade)}, 2028학년도 대입부터 적용)은 정부가 발표한 9→5등급제 공식 변환표가 없어, 두 제도의 등급별 누적 비율을 근거로 근사 추정한 값입니다. 실제 5등급제 결과와 다를 수 있으니 참고용으로만 활용하세요.</div></div>`:'';
     detailBody.innerHTML=`<div class="sim-summary"><h4>3개년 ${escapeHTML(subtypeLabel)} 입결</h4></div>${yearCards}${gap===null?'<div class="notice">성적 입력에서 학생부 성적을 저장하면 현재 등급과의 차이가 표시됩니다.</div>':`<div class="sim-summary"><h4>현재 성적 참고 비교(최신 연도 기준)</h4><div style="display:flex;justify-content:space-between"><span>현재 반영교과 평균등급</span><b>${pct(current)}</b></div><div style="display:flex;justify-content:space-between;margin-top:6px"><span>${u.rawTrackYear} 참고 등급 컷</span><b>${pct(cutRef)}</b></div><div style="margin-top:10px"><span class="badge ${judgment.color}">${judgment.label}</span></div></div>`}${grade5Block}<div class="university-source-note">비교 기준은 대학이 발표한 원 석차등급 평균(등급→배점 환산 이전)이며, 대학의 최종 공식 배점이나 정성평가(면접·서류) 결과를 반영하지 않은 참고용 수치입니다.</div>`;
