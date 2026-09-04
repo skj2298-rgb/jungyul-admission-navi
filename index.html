@@ -19,8 +19,13 @@ button{cursor:pointer}
 .brand-mark{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--primary),#8b5cf6);display:grid;place-items:center;color:white;font-weight:900}
 .brand small{display:block;font-weight:600;color:var(--muted);font-size:11px;margin-top:2px}
 .top-nav{display:flex;gap:6px;flex:1}
-.nav-btn{border:0;background:transparent;color:#667085;padding:10px 13px;border-radius:10px;font-weight:700}
+.nav-btn{border:0;background:transparent;color:#667085;padding:10px 13px;border-radius:10px;font-weight:700;cursor:pointer}
 .nav-btn:hover,.nav-btn.active{background:var(--soft);color:var(--primary)}
+.nav-dropdown{position:relative;display:flex;align-items:center}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:6px;min-width:150px;z-index:60}
+.nav-dropdown.open .nav-dropdown-menu,.nav-dropdown:hover .nav-dropdown-menu{display:block}
+.nav-dropdown-item{display:block;width:100%;text-align:left;border:0;background:transparent;padding:9px 11px;border-radius:8px;font-weight:700;color:#374151;font-size:13px;cursor:pointer}
+.nav-dropdown-item:hover,.nav-dropdown-item.active{background:var(--soft);color:var(--primary)}
 .header-actions{display:flex;gap:8px}
 .shell{max-width:1500px;margin:0 auto;padding:26px}
 .view{display:none}.view.active{display:block}
@@ -224,10 +229,20 @@ tr.needs-review-row{background:#fffbeb}
   </div>
   <nav class="top-nav">
     <button class="nav-btn active" data-view="dashboard">대시보드</button>
-    <button class="nav-btn" data-view="students">학생 관리</button>
-    <button class="nav-btn" data-view="scores">성적 입력</button>
-    <button class="nav-btn" data-view="universityStructure">대학 DB</button>
-    <button class="nav-btn" data-view="simulator">성적 시뮬레이션</button>
+    <div class="nav-dropdown">
+      <button class="nav-btn nav-btn-group" data-views="students,scores">학생 ▾</button>
+      <div class="nav-dropdown-menu">
+        <button class="nav-dropdown-item" data-view="students">학생 관리</button>
+        <button class="nav-dropdown-item" data-view="scores">성적 입력</button>
+      </div>
+    </div>
+    <div class="nav-dropdown">
+      <button class="nav-btn nav-btn-group" data-views="simulator,universityStructure">시뮬레이션 ▾</button>
+      <div class="nav-dropdown-menu">
+        <button class="nav-dropdown-item" data-view="simulator">성적 시뮬레이션</button>
+        <button class="nav-dropdown-item" data-view="universityStructure">대학 DB</button>
+      </div>
+    </div>
     <button class="nav-btn" data-view="data">데이터 관리</button>
   </nav>
   <div class="header-actions">
@@ -527,8 +542,8 @@ tr.needs-review-row{background:#fffbeb}
         </div>
       </div>
       <div class="card">
-        <h3 class="section-title">대학 데이터 CSV 입력</h3>
-        <p class="muted" style="font-size:13px;line-height:1.7">엑셀에서 대학·학과별 데이터를 정리한 뒤 CSV로 저장하면 한 번에 불러올 수 있습니다.</p>
+        <h3 class="section-title">대학 데이터 CSV 간단 입력(구버전 형식)</h3>
+        <p class="muted" style="font-size:13px;line-height:1.7">인하대·가천대처럼 "대학 DB"에 이미 등록된 대학은 이 방식으로 다시 넣지 마세요 — 별도의 중복 데이터가 생겨 시뮬레이션 결과가 두 번 나올 수 있습니다. 아직 대학 DB에 없는 학교를 임시로 대략 넣어볼 때만 쓰는 구버전 간단 입력입니다.</p>
         <div class="data-actions">
           <button class="btn soft" onclick="downloadUniversityTemplate()">CSV 입력 양식 다운로드</button>
           <label class="btn primary file-label">대학 CSV 불러오기<input id="universityCsvImport" type="file" accept=".csv,text/csv" hidden onchange="importUniversityCSV(event)"></label>
@@ -1419,7 +1434,8 @@ function classifySchool(score,cut){
 }
 function goView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
+  document.querySelectorAll('.nav-btn[data-view],.nav-dropdown-item').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
+  document.querySelectorAll('.nav-btn-group').forEach(b=>b.classList.toggle('active',(b.dataset.views||'').split(',').includes(id)));
   document.getElementById(id).classList.add('active');
   if(id==='students')renderStudents();
   if(id==='scores'){renderScoreStudentOptions();renderScoreInput();}
@@ -1429,7 +1445,9 @@ function goView(id){
   if(id==='data'){renderRulePacks();renderExamReferences()}
   window.scrollTo({top:0,behavior:'smooth'});
 }
-document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>goView(b.dataset.view)));
+document.querySelectorAll('.nav-btn[data-view],.nav-dropdown-item').forEach(b=>b.addEventListener('click',()=>{goView(b.dataset.view);document.querySelectorAll('.nav-dropdown.open').forEach(d=>d.classList.remove('open'))}));
+document.querySelectorAll('.nav-btn-group').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const d=b.closest('.nav-dropdown');document.querySelectorAll('.nav-dropdown.open').forEach(o=>{if(o!==d)o.classList.remove('open')});d.classList.toggle('open')}));
+document.addEventListener('click',()=>document.querySelectorAll('.nav-dropdown.open').forEach(d=>d.classList.remove('open')));
 
 function renderDashboard(){
   const uniCount=[...new Set(universities.map(u=>u.university))].length;
